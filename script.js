@@ -64,6 +64,7 @@ const FINISH_DATA = {
 
 // Initialize on DOM Ready
 document.addEventListener('DOMContentLoaded', () => {
+  initLuxuryBackgroundAnimation();
   initMobileNav();
   initPortfolioFilters();
   initQuoteCalculator();
@@ -151,7 +152,7 @@ function initPortfolioFilters() {
       cards.forEach(card => {
         const cat = card.getAttribute('data-cat');
         if (filterValue === 'all' || cat === filterValue) {
-          card.style.display = 'block';
+          card.style.display = 'flex';
           setTimeout(() => { card.style.opacity = '1'; }, 20);
         } else {
           card.style.opacity = '0';
@@ -241,7 +242,7 @@ function setLeadMode(mode) {
       qtySelect.value = '1 Sample Kit (₹499)';
     }
     if (submitBtnLabel) {
-      submitBtnLabel.textContent = '📦 Request Sample Kit (₹499) & Chat on WhatsApp';
+      submitBtnLabel.textContent = 'Order Sample Kit (₹499)';
     }
     if (summaryModeLabel) {
       summaryModeLabel.textContent = 'PHYSICAL SAMPLE KIT REQUEST';
@@ -274,7 +275,7 @@ function setLeadMode(mode) {
       qtySelect.value = '500 pcs';
     }
     if (submitBtnLabel) {
-      submitBtnLabel.textContent = '⚡ Get Instant Quote & Connect on WhatsApp';
+      submitBtnLabel.textContent = 'Get Instant Quote';
     }
     if (summaryModeLabel) {
       summaryModeLabel.textContent = 'LIVE INQUIRY SPECIFICATION';
@@ -703,4 +704,330 @@ function initHeroCounters() {
     runCounters();
   }
 }
+
+/* ==========================================================================
+   10. LUXURY BACKGROUND ANIMATION (GOLD PARTICLES & AMBIENT SHIMMER)
+   ========================================================================== */
+function initLuxuryBackgroundAnimation() {
+  const canvas = document.getElementById('luxuryBgCanvas');
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  let width = 0;
+  let height = 0;
+  let dpr = 1;
+  let particles = [];
+  let animFrameId = null;
+  let isPaused = false;
+
+  const pointer = {
+    x: -9999,
+    y: -9999,
+    radius: 90,
+    active: false
+  };
+
+  const goldColors = [
+    { r: 212, g: 175, b: 55 },   // Primary 24K Gold
+    { r: 243, g: 229, b: 171 },  // Pale Gold
+    { r: 255, g: 215, b: 0 },    // Bright Gold
+    { r: 197, g: 160, b: 89 },   // Champagne
+    { r: 255, g: 255, b: 255 }   // Diamond Sparkle Speck
+  ];
+
+  class Particle {
+    constructor() {
+      this.reset(true);
+    }
+
+    reset(initial = false) {
+      this.x = Math.random() * width;
+      this.y = initial ? Math.random() * height : height + Math.random() * 20;
+
+      // Select particle type:
+      // - 'registration': CMYK alignment registration target crosshairs (12%)
+      // - 'paper': Miniature luxury paper swatch sheets drifting in 3D (12%)
+      // - 'cropmark': Printer dieline corner trim marks (8%)
+      // - 'bokeh': Soft ambient glowing disks (8%)
+      // - 'goldDust': Shimmering 24K gold dust specks (60%)
+      const rand = Math.random();
+      if (rand < 0.12) {
+        this.type = 'registration';
+        this.radius = 7 + Math.random() * 6;
+        this.baseAlpha = 0.12 + Math.random() * 0.22;
+        this.speedY = 0.18 + Math.random() * 0.3;
+        this.speedX = (Math.random() - 0.5) * 0.25;
+        this.rotation = Math.random() * Math.PI * 2;
+        this.rotSpeed = (Math.random() - 0.5) * 0.008;
+      } else if (rand < 0.24) {
+        this.type = 'paper';
+        this.cardW = 12 + Math.random() * 8;
+        this.cardH = 16 + Math.random() * 10;
+        this.radius = Math.max(this.cardW, this.cardH);
+        this.baseAlpha = 0.10 + Math.random() * 0.18;
+        this.speedY = 0.22 + Math.random() * 0.35;
+        this.speedX = (Math.random() - 0.5) * 0.3;
+        this.rotation = Math.random() * Math.PI * 2;
+        this.rotSpeed = (Math.random() - 0.5) * 0.01;
+        this.flipAngle = Math.random() * Math.PI * 2;
+        this.flipSpeed = 0.012 + Math.random() * 0.015;
+      } else if (rand < 0.32) {
+        this.type = 'cropmark';
+        this.radius = 6 + Math.random() * 4;
+        this.baseAlpha = 0.14 + Math.random() * 0.24;
+        this.speedY = 0.2 + Math.random() * 0.35;
+        this.speedX = (Math.random() - 0.5) * 0.25;
+        this.rotation = Math.random() * Math.PI * 2;
+        this.rotSpeed = (Math.random() - 0.5) * 0.006;
+      } else if (rand < 0.40) {
+        this.type = 'bokeh';
+        this.radius = 16 + Math.random() * 26;
+        this.baseAlpha = 0.02 + Math.random() * 0.04;
+        this.speedY = 0.15 + Math.random() * 0.25;
+        this.speedX = (Math.random() - 0.5) * 0.2;
+      } else {
+        this.type = 'goldDust';
+        this.radius = 0.7 + Math.random() * 2.2;
+        this.baseAlpha = 0.15 + Math.random() * 0.55;
+        this.speedY = 0.25 + Math.random() * 0.65;
+        this.speedX = (Math.random() - 0.5) * 0.35;
+      }
+
+      this.color = goldColors[Math.floor(Math.random() * goldColors.length)];
+      this.shimmerSpeed = 0.02 + Math.random() * 0.04;
+      this.shimmerPhase = Math.random() * Math.PI * 2;
+      this.angle = Math.random() * Math.PI * 2;
+      this.angleSpeed = 0.01 + Math.random() * 0.02;
+    }
+
+    update() {
+      this.angle += this.angleSpeed;
+      this.shimmerPhase += this.shimmerSpeed;
+      if (this.rotation !== undefined) this.rotation += this.rotSpeed;
+      if (this.flipAngle !== undefined) this.flipAngle += this.flipSpeed;
+
+      // Natural floating upwards with harmonic sine wave drift
+      this.y -= this.speedY;
+      const swayScale = (this.type === 'bokeh' || this.type === 'paper') ? 0.35 : 0.6;
+      this.x += Math.sin(this.angle) * swayScale + this.speedX;
+
+      // Cursor / touch interaction
+      if (pointer.active) {
+        const dx = this.x - pointer.x;
+        const dy = this.y - pointer.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < pointer.radius && dist > 0) {
+          const force = (pointer.radius - dist) / pointer.radius;
+          const angle = Math.atan2(dy, dx);
+          this.x += Math.cos(angle) * force * 3;
+          this.y += Math.sin(angle) * force * 3;
+        }
+      }
+
+      // Recycle off-screen particles
+      const bound = (this.radius || 15) * 2;
+      if (this.y < -bound || this.x < -bound || this.x > width + bound) {
+        this.reset(false);
+      }
+    }
+
+    draw() {
+      const shimmer = Math.sin(this.shimmerPhase);
+      let currentAlpha = this.baseAlpha + shimmer * 0.12;
+      currentAlpha = Math.max(0.01, Math.min(0.85, currentAlpha));
+
+      ctx.save();
+
+      if (this.type === 'registration') {
+        // Subtle CMYK Registration Crosshair target mark
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        ctx.strokeStyle = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${currentAlpha})`;
+        ctx.lineWidth = 0.8;
+
+        // Alignment circle
+        ctx.beginPath();
+        ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Crosshair lines
+        ctx.beginPath();
+        ctx.moveTo(-this.radius * 1.5, 0);
+        ctx.lineTo(this.radius * 1.5, 0);
+        ctx.moveTo(0, -this.radius * 1.5);
+        ctx.lineTo(0, this.radius * 1.5);
+        ctx.stroke();
+
+        // Center dot
+        ctx.beginPath();
+        ctx.arc(0, 0, 1, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${currentAlpha * 1.2})`;
+        ctx.fill();
+
+      } else if (this.type === 'paper') {
+        // Miniature luxury paper card swatch drifting in 3D perspective
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        ctx.scale(Math.cos(this.flipAngle), 1); // 3D paper rotation in wind
+
+        ctx.strokeStyle = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${currentAlpha * 0.8})`;
+        ctx.fillStyle = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${currentAlpha * 0.12})`;
+        ctx.lineWidth = 0.75;
+
+        ctx.beginPath();
+        ctx.rect(-this.cardW / 2, -this.cardH / 2, this.cardW, this.cardH);
+        ctx.fill();
+        ctx.stroke();
+
+        // Faint inner watermark / deckle line
+        ctx.beginPath();
+        ctx.rect(-this.cardW / 2 + 2, -this.cardH / 2 + 2, this.cardW - 4, this.cardH - 4);
+        ctx.strokeStyle = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${currentAlpha * 0.4})`;
+        ctx.stroke();
+
+      } else if (this.type === 'cropmark') {
+        // Printer dieline / bleed corner crop mark ( ┌ )
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        ctx.strokeStyle = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${currentAlpha * 0.9})`;
+        ctx.lineWidth = 0.85;
+
+        ctx.beginPath();
+        ctx.moveTo(-this.radius, this.radius);
+        ctx.lineTo(-this.radius, -this.radius);
+        ctx.lineTo(this.radius, -this.radius);
+        ctx.stroke();
+
+      } else if (this.type === 'bokeh') {
+        // Soft ambient bokeh disc
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
+        grad.addColorStop(0, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${currentAlpha})`);
+        grad.addColorStop(1, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, 0)`);
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+      } else {
+        // Shimmering 24K Gold Dust speck
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${currentAlpha})`;
+        if (this.radius > 1.8) {
+          ctx.shadowBlur = 6;
+          ctx.shadowColor = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, 0.8)`;
+        }
+        ctx.fill();
+      }
+
+      ctx.restore();
+    }
+  }
+
+  function resize() {
+    dpr = window.devicePixelRatio || 1;
+    width = window.innerWidth;
+    height = window.innerHeight;
+
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.scale(dpr, dpr);
+
+    // Responsive density: ~32 on mobile for smooth 60fps and low battery use, ~65 on desktop
+    const targetCount = width < 768 ? 32 : 65;
+    particles = [];
+    for (let i = 0; i < targetCount; i++) {
+      particles.push(new Particle());
+    }
+  }
+
+  function animate() {
+    if (isPaused) return;
+
+    ctx.clearRect(0, 0, width, height);
+
+    for (let i = 0; i < particles.length; i++) {
+      particles[i].update();
+      particles[i].draw();
+    }
+
+    animFrameId = requestAnimationFrame(animate);
+  }
+
+  // Pointer & Touch Events
+  window.addEventListener('resize', () => {
+    resize();
+  }, { passive: true });
+
+  window.addEventListener('mousemove', (e) => {
+    pointer.x = e.clientX;
+    pointer.y = e.clientY;
+    pointer.active = true;
+  }, { passive: true });
+
+  window.addEventListener('mouseleave', () => {
+    pointer.active = false;
+  }, { passive: true });
+
+  window.addEventListener('touchmove', (e) => {
+    if (e.touches.length > 0) {
+      pointer.x = e.touches[0].clientX;
+      pointer.y = e.touches[0].clientY;
+      pointer.active = true;
+    }
+  }, { passive: true });
+
+  window.addEventListener('touchend', () => {
+    pointer.active = false;
+  }, { passive: true });
+
+  // Battery saving: auto-pause animation loop when tab is in background
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      isPaused = true;
+      if (animFrameId) cancelAnimationFrame(animFrameId);
+    } else {
+      isPaused = false;
+      animFrameId = requestAnimationFrame(animate);
+    }
+  });
+
+  resize();
+  animFrameId = requestAnimationFrame(animate);
+}
+
+/* ==========================================================================
+   SYNCHRONIZED RGB ANGLE ROTATOR ENGINE
+   Ensures 100% fluid 60fps rotation across all browsers and devices
+   ========================================================================== */
+(function initRgbAngleEngine() {
+  let rgbAngle = 0;
+  let lastTime = performance.now();
+  let rgbAnimId = null;
+
+  function stepRgb(currentTime) {
+    const delta = (currentTime - lastTime) / 1000;
+    lastTime = currentTime;
+    // Smooth 3.5s full rotation cycle (~102.85 deg/sec)
+    rgbAngle = (rgbAngle + delta * 102.85) % 360;
+    document.documentElement.style.setProperty('--rgb-angle', rgbAngle.toFixed(1) + 'deg');
+    rgbAnimId = requestAnimationFrame(stepRgb);
+  }
+
+  // Auto-pause when tab is hidden to conserve GPU/battery
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      if (rgbAnimId) cancelAnimationFrame(rgbAnimId);
+    } else {
+      lastTime = performance.now();
+      rgbAnimId = requestAnimationFrame(stepRgb);
+    }
+  });
+
+  rgbAnimId = requestAnimationFrame(stepRgb);
+})();
+
+
 

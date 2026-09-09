@@ -3,6 +3,21 @@
    Saki Naka, Mumbai
    ========================================================================== */
 
+@property --rgb-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rgbBorderSpin {
+  0% {
+    --rgb-angle: 0deg;
+  }
+  100% {
+    --rgb-angle: 360deg;
+  }
+}
+
 :root {
   /* Color Palette */
   --bg-main: #090c12;
@@ -44,7 +59,7 @@
   --radius-md: 12px;
   --radius-lg: 20px;
   --radius-xl: 28px;
-  --header-height: 114px;
+  --header-height: 98px;
   --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
@@ -79,6 +94,81 @@ body {
   background: radial-gradient(circle at 50% 0%, #151b27 0%, var(--bg-main) 70%);
   min-height: 100vh;
   padding-top: var(--header-height);
+}
+
+/* Dynamic Luxury Background Canvas & Animated Glow */
+.luxury-bg-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.luxury-ambient-mesh {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.mesh-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+  will-change: transform;
+}
+
+.mesh-orb-1 {
+  top: 5%;
+  right: 15%;
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.18) 0%, rgba(212, 175, 55, 0) 70%);
+  animation: orbFloat1 22s ease-in-out infinite alternate;
+}
+
+.mesh-orb-2 {
+  bottom: 20%;
+  left: 5%;
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, rgba(180, 130, 20, 0.15) 0%, rgba(212, 175, 55, 0) 70%);
+  animation: orbFloat2 26s ease-in-out infinite alternate;
+}
+
+.mesh-orb-3 {
+  top: 45%;
+  right: 25%;
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(243, 229, 171, 0.12) 0%, rgba(243, 229, 171, 0) 70%);
+  animation: orbFloat3 18s ease-in-out infinite alternate;
+}
+
+@keyframes orbFloat1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-45px, 60px) scale(1.12); }
+  100% { transform: translate(30px, 90px) scale(0.95); }
+}
+
+@keyframes orbFloat2 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(60px, -40px) scale(0.92); }
+  100% { transform: translate(-30px, -70px) scale(1.08); }
+}
+
+@keyframes orbFloat3 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-50px, -45px) scale(1.1); }
+  100% { transform: translate(40px, 35px) scale(0.9); }
 }
 
 img {
@@ -227,14 +317,222 @@ section,
 }
 
 /* ==========================================================================
-   TOP BAR
+   RGB / LUMINOUS BORDER & RADIANT GLOW SYSTEM (ZERO FILL, FLAWLESS GLOW)
+   - Inside Card / Content Area: 100% solid dark interior (#0e1422), ZERO RGB fill!
+   - On the Border: Crisp 1.5px continuous rotating RGB / luminous laser line
+   - Outside Card: Radiant neon ambient glow bloom diffusing smoothly into background
+   ========================================================================== */
+
+/* 1. Base properties for all target cards & boxes */
+.hero-specs-list,
+.mockup-stage-card,
+.category-card,
+.custom-print-banner,
+.finish-detail-box,
+.finish-nav-item,
+.why-card,
+.process-step,
+.portfolio-card,
+.testimonial-card,
+.metrics-row,
+.quote-form-card,
+.summary-card,
+.studio-direct-card,
+.sample-kit-banner,
+.rgb-glow-box {
+  position: relative !important;
+  isolation: isolate; /* Creates local stacking context: keeps outer glow behind card surface but ABOVE section backgrounds */
+  background: transparent !important;
+  border: 1.5px solid transparent !important;
+  border-radius: var(--radius-md);
+  box-sizing: border-box !important;
+  overflow: visible !important;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+}
+
+/* Individual card border radius specifications */
+.finish-detail-box,
+.quote-form-card,
+.mockup-stage-card,
+.metrics-row {
+  border-radius: var(--radius-lg) !important;
+}
+
+.sample-kit-banner {
+  border-radius: var(--radius-sm) !important;
+}
+
+/* 2. Ensure all child content inside cards stays pristine, readable and on top */
+.hero-specs-list > *,
+.mockup-stage-card > *,
+.category-card > *,
+.custom-print-banner > *,
+.finish-detail-box > *,
+.finish-nav-item > *,
+.why-card > *,
+.process-step > *,
+.portfolio-card > *,
+.testimonial-card > *,
+.metrics-row > *,
+.quote-form-card > *,
+.summary-card > *,
+.studio-direct-card > *,
+.sample-kit-banner > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* 3. Layer 1 (z-index: 0): Radiant Outer Neon Glow Bloom Radiating into Background
+      Unmasked Gaussian blur diffuses with 100% smooth natural falloff into canvas */
+.hero-specs-list::after,
+.mockup-stage-card::after,
+.category-card::after,
+.custom-print-banner::after,
+.finish-detail-box::after,
+.finish-nav-item::after,
+.why-card::after,
+.process-step::after,
+.portfolio-card::after,
+.testimonial-card::after,
+.metrics-row::after,
+.quote-form-card::after,
+.summary-card::after,
+.studio-direct-card::after,
+.sample-kit-banner::after,
+.rgb-glow-box::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--rgb-angle, 0deg),
+    #00f0ff 0%,
+    #0066ff 14%,
+    #7928ca 28%,
+    #ff0080 42%,
+    #ff2200 56%,
+    #ffb700 70%,
+    #00ff66 84%,
+    #00f0ff 100%
+  );
+  filter: blur(18px);
+  -webkit-filter: blur(18px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.55; /* Always beautifully luminous in resting state */
+  transition: opacity 0.35s ease, filter 0.35s ease;
+  animation: rgbBorderSpin 3.5s linear infinite;
+}
+
+/* 4. Layer 2 (z-index: 1): Razor-Sharp 1.5px Laser Border Line + 100% Solid Dark Interior Shield
+      Padding-box is 100% solid dark #0e1422, completely sealing the interior!
+      Border-box lets the 1.5px continuous rotating RGB laser line shine around perimeter */
+.hero-specs-list::before,
+.mockup-stage-card::before,
+.category-card::before,
+.custom-print-banner::before,
+.finish-detail-box::before,
+.finish-nav-item::before,
+.why-card::before,
+.process-step::before,
+.portfolio-card::before,
+.testimonial-card::before,
+.metrics-row::before,
+.quote-form-card::before,
+.summary-card::before,
+.studio-direct-card::before,
+.sample-kit-banner::before,
+.rgb-glow-box::before {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: inherit;
+  box-sizing: border-box;
+  background: 
+    linear-gradient(#0e1422, #0e1422) padding-box,
+    conic-gradient(
+      from var(--rgb-angle, 0deg),
+      #00f0ff 0%,
+      #0066ff 14%,
+      #7928ca 28%,
+      #ff0080 42%,
+      #ff2200 56%,
+      #ffb700 70%,
+      #00ff66 84%,
+      #00f0ff 100%
+    ) border-box;
+  border: 1.5px solid transparent;
+  pointer-events: none;
+  z-index: 1;
+  animation: rgbBorderSpin 3.5s linear infinite;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  transition: box-shadow 0.35s ease;
+}
+
+/* 5. ON HOVER & ACTIVE: Radiant outer neon glow intensifies and expands */
+.hero-specs-list:hover::after,
+.mockup-stage-card:hover::after,
+.category-card:hover::after,
+.custom-print-banner:hover::after,
+.finish-detail-box:hover::after,
+.finish-nav-item:hover::after,
+.why-card:hover::after,
+.process-step:hover::after,
+.portfolio-card:hover::after,
+.testimonial-card:hover::after,
+.metrics-row:hover::after,
+.quote-form-card:hover::after,
+.summary-card:hover::after,
+.studio-direct-card:hover::after,
+.sample-kit-banner:hover::after,
+.rgb-glow-box:hover::after,
+.hero-specs-list:active::after,
+.mockup-stage-card:active::after,
+.category-card:active::after,
+.custom-print-banner:active::after,
+.finish-detail-box:active::after,
+.finish-nav-item:active::after,
+.why-card:active::after,
+.process-step:active::after,
+.portfolio-card:active::after,
+.testimonial-card:active::after,
+.metrics-row:active::after,
+.quote-form-card:active::after,
+.summary-card:active::after,
+.studio-direct-card:active::after,
+.sample-kit-banner:active::after {
+  opacity: 0.92 !important;
+  filter: blur(24px) !important;
+  -webkit-filter: blur(24px) !important;
+}
+
+.hero-specs-list:hover::before,
+.mockup-stage-card:hover::before,
+.category-card:hover::before,
+.custom-print-banner:hover::before,
+.finish-detail-box:hover::before,
+.finish-nav-item:hover::before,
+.why-card:hover::before,
+.process-step:hover::before,
+.portfolio-card:hover::before,
+.testimonial-card:hover::before,
+.metrics-row:hover::before,
+.quote-form-card:hover::before,
+.summary-card:hover::before,
+.studio-direct-card:hover::before,
+.sample-kit-banner:hover::before {
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.6);
+}
+
+/* ==========================================================================
+   TOP BAR (LEFT-RIGHT ALIGNED DIRECT CONTACT STRIP)
    ========================================================================== */
 .top-bar {
   background: #06080d;
   border-bottom: 1px solid var(--border-subtle);
   font-size: 0.82rem;
   color: var(--text-secondary);
-  padding: 8px 0;
+  padding: 6px 0;
   width: 100%;
   max-width: 100vw;
   box-sizing: border-box;
@@ -245,46 +543,8 @@ section,
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
   width: 100%;
   box-sizing: border-box;
-}
-
-.top-bar-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.live-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background-color: #25d366;
-  box-shadow: 0 0 8px #25d366;
-  display: inline-block;
-  animation: pulse-dot 2s infinite ease-in-out;
-}
-
-@keyframes pulse-dot {
-
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  50% {
-    opacity: 0.5;
-    transform: scale(0.85);
-  }
-}
-
-.top-bar-right {
-  display: flex;
-  align-items: center;
-  gap: 14px;
 }
 
 .top-bar-link {
@@ -292,14 +552,21 @@ section,
   align-items: center;
   gap: 6px;
   color: var(--text-secondary);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  transition: var(--transition-smooth);
 }
 
 .top-bar-link:hover {
   color: var(--gold-light);
 }
 
-.sep {
-  opacity: 0.4;
+.top-bar-left {
+  text-align: left;
+}
+
+.top-bar-right {
+  text-align: right;
 }
 
 /* ==========================================================================
@@ -549,14 +816,10 @@ section,
   gap: 28px;
   padding: 16px 22px;
   margin-top: 14px;
-  background: rgba(14, 19, 29, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(212, 175, 55, 0.22);
   border-radius: var(--radius-md);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   animation: heroSpecFadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) backwards;
   animation-delay: 0.25s;
+  transition: transform 0.35s ease;
 }
 
 @keyframes heroSpecFadeUp {
@@ -690,13 +953,11 @@ section,
 
 .mockup-stage-card {
   position: relative;
-  background: var(--bg-card);
-  border: 1px solid var(--gold-border);
   border-radius: var(--radius-lg);
   padding: 14px;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(212, 175, 55, 0.1);
   transform: perspective(1000px) rotateY(-4deg) rotateX(2deg);
   transition: transform 0.5s ease, box-shadow 0.5s ease;
+  overflow: visible;
 }
 
 .mockup-stage-card:hover {
@@ -1104,30 +1365,28 @@ section,
 }
 
 .category-card {
-  background: var(--bg-card);
-  border: 1px solid rgba(212, 175, 55, 0.18);
   border-radius: var(--radius-md);
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: column;
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.35s ease,
     box-shadow 0.35s ease;
   position: relative;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
 .category-card:hover {
-  border-color: rgba(212, 175, 55, 0.45);
   transform: translateY(-4px);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(212, 175, 55, 0.08);
 }
 
 /* Card Top Numeric/Category Label */
 .card-top-label {
   padding: 12px 20px 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  background: rgba(11, 15, 23, 0.5);
+  background: #0e1422 !important;
+  position: relative;
+  z-index: 2;
+  border-top-left-radius: calc(var(--radius-md) - 1.5px);
+  border-top-right-radius: calc(var(--radius-md) - 1.5px);
 }
 
 .cat-num-label {
@@ -1142,6 +1401,7 @@ section,
 /* 16:9 Product Image */
 .card-media {
   position: relative;
+  z-index: 2;
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
@@ -1162,10 +1422,15 @@ section,
 
 /* Card Body */
 .card-body {
+  background: #0e1422 !important;
+  position: relative;
+  z-index: 2;
   padding: 24px 22px 20px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  border-bottom-left-radius: calc(var(--radius-md) - 1.5px);
+  border-bottom-right-radius: calc(var(--radius-md) - 1.5px);
 }
 
 .card-title {
@@ -1229,16 +1494,20 @@ section,
 
 /* Custom Print Full-Width Banner */
 .custom-print-banner {
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.12), rgba(11, 15, 23, 0.95) 60%),
-    radial-gradient(circle at top right, rgba(212, 175, 55, 0.08), transparent 70%);
-  border: 1px solid rgba(212, 175, 55, 0.28);
   border-radius: var(--radius-md);
   padding: 34px 38px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 32px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: visible;
+  transition: var(--transition-smooth);
+}
+
+.custom-print-banner:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
 }
 
 .banner-content {
@@ -1326,25 +1595,27 @@ section,
 }
 
 .portfolio-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  overflow: hidden;
+  overflow: visible;
   cursor: pointer;
   transition: var(--transition-smooth);
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 
 .portfolio-card:hover {
-  border-color: var(--gold-border);
   transform: translateY(-5px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
 }
 
 .portfolio-media {
   position: relative;
   height: 260px;
   overflow: hidden;
+  border-top-left-radius: calc(var(--radius-md) - 1.5px);
+  border-top-right-radius: calc(var(--radius-md) - 1.5px);
   background: #000;
+  z-index: 2;
 }
 
 .portfolio-media img {
@@ -1395,7 +1666,13 @@ section,
 }
 
 .portfolio-info {
+  background: #0e1422 !important;
+  position: relative;
+  z-index: 2;
   padding: 20px 22px;
+  border-bottom-left-radius: calc(var(--radius-md) - 1.5px);
+  border-bottom-right-radius: calc(var(--radius-md) - 1.5px);
+  flex-grow: 1;
 }
 
 .p-tag {
@@ -1441,23 +1718,30 @@ section,
   align-items: center;
   gap: 16px;
   padding: 18px 20px;
-  background: var(--bg-card);
+  background: #0e1422 !important;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   text-align: left;
   cursor: pointer;
   transition: var(--transition-smooth);
+  position: relative;
+  overflow: visible;
 }
 
-.finish-nav-item:hover,
-.finish-nav-item.active {
-  background: var(--bg-card-hover);
-  border-color: var(--gold-border);
+.finish-nav-item:hover {
+  background: #141a29 !important;
+  border-color: transparent !important;
   transform: translateX(6px);
 }
 
 .finish-nav-item.active {
+  background: #141a29 !important;
+  border-color: var(--gold-border);
   box-shadow: 0 6px 20px rgba(212, 175, 55, 0.15);
+}
+
+.finish-nav-item.active:hover {
+  border-color: transparent !important;
 }
 
 .finish-indicator {
@@ -1528,20 +1812,20 @@ section,
 
 /* Finish Detail Box */
 .finish-detail-box {
-  background: var(--bg-card);
-  border: 1px solid var(--gold-border);
   border-radius: var(--radius-lg);
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
 }
 
 .finish-display-image {
   position: relative;
+  z-index: 2;
   height: 320px;
   background: #000;
   overflow: hidden;
+  border-top-left-radius: calc(var(--radius-lg) - 1.5px);
+  border-top-right-radius: calc(var(--radius-lg) - 1.5px);
 }
 
 .finish-display-image img {
@@ -1578,10 +1862,15 @@ section,
 }
 
 .finish-detail-content {
+  background: #0e1422 !important;
+  position: relative;
+  z-index: 2;
   padding: 34px 30px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  border-bottom-left-radius: calc(var(--radius-lg) - 1px);
+  border-bottom-right-radius: calc(var(--radius-lg) - 1px);
 }
 
 .finish-badge {
@@ -1655,18 +1944,16 @@ section,
 }
 
 .why-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 34px 28px;
   transition: var(--transition-smooth);
   position: relative;
+  text-align: center;
+  overflow: visible;
 }
 
 .why-card:hover {
-  border-color: var(--gold-border);
   transform: translateY(-5px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
 }
 
 .why-icon-wrap {
@@ -1679,7 +1966,7 @@ section,
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 22px;
+  margin: 0 auto 22px auto;
 }
 
 .why-title {
@@ -1709,17 +1996,15 @@ section,
 
 .process-step {
   flex: 1;
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 28px 20px;
   position: relative;
   text-align: center;
   transition: var(--transition-smooth);
+  overflow: visible;
 }
 
 .process-step:hover {
-  border-color: var(--gold-border);
   transform: translateY(-5px);
 }
 
@@ -1735,6 +2020,7 @@ section,
   padding: 3px 12px;
   border-radius: 100px;
   letter-spacing: 0.05em;
+  z-index: 3;
 }
 
 .step-icon {
@@ -1781,18 +2067,16 @@ section,
 }
 
 .testimonial-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 34px 28px;
   display: flex;
   flex-direction: column;
   position: relative;
   transition: var(--transition-smooth);
+  overflow: visible;
 }
 
 .testimonial-card:hover {
-  border-color: var(--gold-border);
   transform: translateY(-4px);
 }
 
@@ -1861,17 +2145,24 @@ section,
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 24px;
-  background: var(--bg-card);
-  border: 1px solid var(--gold-border);
   border-radius: var(--radius-lg);
   padding: 34px 28px;
   text-align: center;
+  position: relative;
+  overflow: visible;
+  transition: var(--transition-smooth);
+}
+
+.metrics-row:hover {
+  transform: translateY(-2px);
 }
 
 .metric-card {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  position: relative;
+  z-index: 2;
 }
 
 .m-val {
@@ -1905,26 +2196,26 @@ section,
 }
 
 .quote-form-card {
-  background: var(--bg-card);
-  border: 1px solid var(--gold-border);
   border-radius: var(--radius-lg);
   padding: 36px 32px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: visible;
+  transition: var(--transition-smooth);
 }
 
 /* Quick Mode Switcher (Custom Print vs Sample Kit) */
 .quote-mode-switcher {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   background: rgba(0, 0, 0, 0.45);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 4px;
-  gap: 6px;
+  padding: 5px;
+  gap: 8px;
   margin-bottom: 22px;
 }
 
 .mode-tab {
-  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1936,9 +2227,11 @@ section,
   font-family: var(--font-sans);
   font-size: 0.88rem;
   font-weight: 600;
-  padding: 10px 14px;
+  padding: 11px 12px;
   cursor: pointer;
   transition: var(--transition-smooth);
+  min-width: 0;
+  text-align: center;
 }
 
 .mode-tab:hover {
@@ -1953,6 +2246,12 @@ section,
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
+.mode-tab .tab-text {
+  min-width: 0;
+  white-space: normal;
+  line-height: 1.25;
+}
+
 .tab-badge {
   background: #25d366;
   color: #0b0f17;
@@ -1962,6 +2261,7 @@ section,
   letter-spacing: 0.05em;
   padding: 2px 7px;
   border-radius: 999px;
+  white-space: nowrap;
 }
 
 /* Sample Kit Information Highlight Box */
@@ -1969,12 +2269,13 @@ section,
   display: flex;
   align-items: flex-start;
   gap: 14px;
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.12), rgba(11, 15, 23, 0.9));
-  border: 1px solid var(--gold-border);
   border-radius: var(--radius-sm);
   padding: 14px 18px;
   margin-bottom: 22px;
   animation: fadeIn 0.3s ease;
+  position: relative;
+  overflow: visible;
+  transition: var(--transition-smooth);
 }
 
 .sample-kit-icon {
@@ -2203,11 +2504,11 @@ select.form-control {
 }
 
 .summary-card {
-  background: var(--bg-card);
-  border: 1px solid var(--gold-border);
   border-radius: var(--radius-md);
   padding: 24px 22px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: visible;
+  transition: var(--transition-smooth);
 }
 
 .summary-header {
@@ -2236,19 +2537,34 @@ select.form-control {
 .summary-row {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   font-size: 0.88rem;
   gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.summary-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
 .s-k {
   color: var(--text-muted);
   flex-shrink: 0;
+  max-width: 45%;
+  font-size: 0.82rem;
 }
 
 .s-v {
   color: var(--text-primary);
   font-weight: 600;
   text-align: right;
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.4;
 }
 
 .s-v.gold {
@@ -2267,10 +2583,11 @@ select.form-control {
 
 /* Studio Direct Card */
 .studio-direct-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 28px 24px;
+  position: relative;
+  overflow: visible;
+  transition: var(--transition-smooth);
 }
 
 .studio-badge-sm {
@@ -2696,7 +3013,7 @@ select.form-control {
 
 @media (max-width: 768px) {
   :root {
-    --header-height: 104px;
+    --header-height: 88px;
   }
 
   body {
@@ -2738,9 +3055,9 @@ select.form-control {
     padding: 0 4px;
   }
 
-  /* 2. Top Announcement Bar */
+  /* 2. Top Announcement / Contact Bar (Left-Right Aligned) */
   .top-bar {
-    padding: 6px 0;
+    padding: 5px 0;
     font-size: 0.74rem;
     width: 100%;
     max-width: 100vw;
@@ -2749,24 +3066,17 @@ select.form-control {
   }
 
   .top-bar-inner {
-    flex-direction: column;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    text-align: center;
-    gap: 4px;
-    padding: 0 12px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 16px;
   }
 
-  .top-bar-left,
-  .top-bar-right {
-    justify-content: center;
-    flex-wrap: wrap;
-    text-align: center;
-    gap: 6px;
-  }
-
-  .top-bar-left span,
-  .top-bar-right a {
-    font-size: 0.72rem;
+  .top-bar-link {
+    font-size: 0.73rem;
+    gap: 5px;
   }
 
   /* 3. Header & Navigation Fixes */
@@ -3045,18 +3355,19 @@ select.form-control {
 
   .products-marquee-strip {
     flex-direction: column;
-    align-items: flex-start;
-    padding: 8px 0;
-    gap: 8px;
+    align-items: center;
+    padding: 10px 0 8px;
+    gap: 10px;
     width: 100%;
     max-width: 100vw;
     box-sizing: border-box;
   }
 
   .marquee-badge-pill {
-    margin-left: 12px;
-    padding: 4px 10px;
-    font-size: 0.68rem;
+    margin: 0 auto;
+    align-self: center;
+    padding: 5px 14px;
+    font-size: 0.72rem;
   }
 
   .marquee-item {
@@ -3155,6 +3466,15 @@ select.form-control {
     box-sizing: border-box;
   }
 
+  .why-card {
+    text-align: center;
+    padding: 28px 20px;
+  }
+
+  .why-icon-wrap {
+    margin: 0 auto 18px auto;
+  }
+
   .portfolio-filters {
     gap: 8px;
     margin-bottom: 30px;
@@ -3233,24 +3553,47 @@ select.form-control {
 
   /* Compact Mode Switcher on Mobile */
   .quote-mode-switcher {
-    margin-bottom: 14px;
-    gap: 4px;
-    padding: 3px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 16px;
+    gap: 6px;
+    padding: 4px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .mode-tab {
-    padding: 8px 6px;
-    font-size: 0.78rem;
-    gap: 5px;
+    padding: 10px 6px;
+    font-size: 0.77rem;
+    gap: 4px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+    white-space: normal;
+    word-break: normal;
   }
 
   .mode-tab .tab-icon {
-    font-size: 0.82rem;
+    font-size: 1.05rem;
+  }
+
+  .mode-tab .tab-text {
+    display: block;
+    text-align: center;
+    line-height: 1.25;
+    font-size: 0.76rem;
+    overflow: visible;
   }
 
   .tab-badge {
-    display: none;
-    /* Hide badge on tiny screens to avoid wrapping */
+    display: inline-block;
+    font-size: 0.58rem;
+    padding: 2px 6px;
+    margin-top: 2px;
   }
 
   /* Compact Sample Kit Banner */
@@ -3348,14 +3691,26 @@ select.form-control {
   }
 
   .btn-unified-submit {
-    padding: 12px 14px;
-    font-size: 0.86rem;
-    gap: 7px;
+    padding: 13px 12px;
+    font-size: 0.85rem;
+    gap: 8px;
+    white-space: normal;
+    line-height: 1.35;
+    text-align: center;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn-unified-submit span {
+    white-space: normal;
+    word-break: normal;
+    text-align: center;
   }
 
   .btn-unified-submit svg {
     width: 17px;
     height: 17px;
+    flex-shrink: 0;
   }
 
   .unified-submit-note {
@@ -3375,10 +3730,54 @@ select.form-control {
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
+    overflow: visible;
+  }
+
+  .summary-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 
   .summary-row {
-    font-size: 0.82rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 3px;
+    padding-bottom: 9px;
+    margin-bottom: 0;
+    border-bottom: 1px dashed rgba(212, 175, 55, 0.15);
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .summary-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .s-k {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gold-light);
+    opacity: 0.88;
+    width: 100%;
+    text-align: left;
+  }
+
+  .s-v {
+    font-size: 0.86rem;
+    font-weight: 600;
+    text-align: left;
+    color: var(--text-primary);
+    width: 100%;
+    box-sizing: border-box;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    line-height: 1.45;
   }
 
   .studio-actions {
