@@ -68,8 +68,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initMobileNav();
   initPortfolioFilters();
   initQuoteCalculator();
-  initHeroTilt();
-  initHeroCounters();
+  initHeroGSAPReveal();
+  initHero3DTilt();
+  initHeroSlider();
   initScrollSpy();
   initSmoothScroll();
 });
@@ -526,29 +527,331 @@ function showToast(text) {
 }
 
 /* ==========================================================================
-   07. SUBTLE HERO 3D TILT EFFECT
+   07. HERO 3D TILT WITH LERP SMOOTHING & PARALLAX FOIL SWEEP
    ========================================================================== */
-function initHeroTilt() {
-  const card = document.querySelector('.mockup-stage-card');
-  if (!card || window.innerWidth < 1024) return;
+function initHero3DTilt() {
+  const card = document.getElementById('heroGoldCard');
+  const stage = document.getElementById('heroStage3d');
+  const foilSweep = document.getElementById('foilLightSweep');
+  if (!card || !stage) return;
 
-  card.addEventListener('mousemove', (e) => {
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return;
+
+  let targetX = 0;
+  let targetY = 0;
+  let currentX = 0;
+  let currentY = 0;
+  let targetFoilX = 50;
+  let targetFoilY = 50;
+  let currentFoilX = 50;
+  let currentFoilY = 50;
+  let isHovered = false;
+
+  // On touch devices / screens < 992px: gentle continuous ambient floating motion
+  if (window.innerWidth < 992 || 'ontouchstart' in window) {
+    let floatAngle = 0;
+    function floatLoop() {
+      floatAngle += 0.02;
+      const fX = Math.sin(floatAngle) * 2.5;
+      const fY = Math.cos(floatAngle * 0.8) * 2.5;
+      card.style.transform = `perspective(1400px) rotateX(${fX.toFixed(2)}deg) rotateY(${fY.toFixed(2)}deg)`;
+      requestAnimationFrame(floatLoop);
+    }
+    requestAnimationFrame(floatLoop);
+    return;
+  }
+
+  function onMouseMove(e) {
     const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
+    const normX = (x / rect.width) * 2 - 1; // -1 to 1
+    const normY = (y / rect.height) * 2 - 1; // -1 to 1
 
-    const rotateX = ((y - centerY) / centerY) * -6;
-    const rotateY = ((x - centerX) / centerX) * 6;
+    // Strict clamp: max ±8 degrees
+    targetX = Math.max(-8, Math.min(8, -normY * 7.5));
+    targetY = Math.max(-8, Math.min(8, normX * 7.5));
 
-    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    targetFoilX = (x / rect.width) * 100;
+    targetFoilY = (y / rect.height) * 100;
+  }
+
+  function update() {
+    // Lerp damping (0.08 factor for silky smooth motion)
+    currentX += (targetX - currentX) * 0.08;
+    currentY += (targetY - currentY) * 0.08;
+    currentFoilX += (targetFoilX - currentFoilX) * 0.08;
+    currentFoilY += (targetFoilY - currentFoilY) * 0.08;
+
+    card.style.transform = `perspective(1400px) rotateX(${currentX.toFixed(2)}deg) rotateY(${currentY.toFixed(2)}deg)`;
+
+    if (foilSweep && isHovered) {
+      foilSweep.style.background = `radial-gradient(circle at ${currentFoilX.toFixed(1)}% ${currentFoilY.toFixed(1)}%, rgba(245, 230, 168, 0.28) 0%, transparent 60%)`;
+    }
+
+    requestAnimationFrame(update);
+  }
+
+  stage.addEventListener('mouseenter', () => {
+    isHovered = true;
   });
 
-  card.addEventListener('mouseleave', () => {
-    card.style.transform = 'perspective(1000px) rotateY(-4deg) rotateX(2deg)';
+  stage.addEventListener('mousemove', onMouseMove);
+
+  stage.addEventListener('mouseleave', () => {
+    isHovered = false;
+    targetX = 0;
+    targetY = 0;
+    targetFoilX = 50;
+    targetFoilY = 50;
   });
+
+  requestAnimationFrame(update);
+}
+
+/* ==========================================================================
+   07B. HERO LUXURY PHOTO SHOWCASE SLIDER (3D DEPTH TRANSITIONS & FULL METRICS)
+   ========================================================================== */
+const HERO_SLIDES_DATA = [
+  {
+    badge: '✦ SIGNATURE DUAL FINISH',
+    title: 'Metallic Gold Foil & Spot UV',
+    specs: '24K Heated Brass Stamping • Raised Gloss Droplets • 600 GSM Cotton'
+  },
+  {
+    badge: '✦ 3D TACTILE COATING',
+    title: 'Raised Spot UV & 3D Gloss',
+    specs: 'AccurioShine Dimensional Polymer • 50µm Tactile Raise • Matte Black'
+  },
+  {
+    badge: '✦ PRISMATIC FOIL',
+    title: 'Holographic Rainbow Foil',
+    specs: 'Multi-Angle Iridescent Shimmer • Micro-Foil Detailing • Deep Contrast'
+  },
+  {
+    badge: '✦ ARTISANAL CARDS',
+    title: '24K Gold Edge Gilding & Deboss',
+    specs: 'Mirror Foil Side Profile • Blind Letterpress Relief • 700 GSM Wild Cotton'
+  },
+  {
+    badge: '✦ BESPOKE PACKAGING',
+    title: 'Luxury Rigid Boxes & Packaging',
+    specs: 'Magnetic Closure & Drawer • Velvet Soft-Touch • 1200 GSM Kappa Board'
+  }
+];
+
+function initHeroSlider() {
+  const viewport = document.getElementById('showcaseViewport');
+  const slides = document.querySelectorAll('#showcaseDeck .showcase-slide');
+  const dashes = document.querySelectorAll('#heroSliderDots .dash-btn');
+  const prevBtn = document.getElementById('heroPrevBtn');
+  const nextBtn = document.getElementById('heroNextBtn');
+  const currentNumEl = document.getElementById('slideCurrentNum');
+  const badgePill = document.getElementById('slideBadgePill');
+  const finishTitle = document.getElementById('slideFinishTitle');
+  const specsLine = document.getElementById('slideSpecsLine');
+  const glassBar = document.getElementById('showcaseGlassBar');
+
+  if (!viewport || slides.length === 0) return;
+
+  let currentIndex = 0;
+  let autoplayTimer = null;
+  const AUTOPLAY_INTERVAL = 5000;
+  let isPaused = false;
+  let isTransitioning = false;
+
+  function goToSlide(newIndex) {
+    if (newIndex === currentIndex || isTransitioning) return;
+
+    if (newIndex < 0) {
+      newIndex = slides.length - 1;
+    } else if (newIndex >= slides.length) {
+      newIndex = 0;
+    }
+
+    isTransitioning = true;
+    const oldSlide = slides[currentIndex];
+    const newSlide = slides[newIndex];
+    const data = HERO_SLIDES_DATA[newIndex];
+
+    // 1. 3D Slide Transition: Exit Old Slide with -25deg Rotation
+    if (oldSlide) {
+      oldSlide.classList.remove('active');
+      oldSlide.classList.add('exit-3d');
+      setTimeout(() => {
+        oldSlide.classList.remove('exit-3d');
+      }, 750);
+    }
+
+    // 2. Enter New Slide with 0deg Rotation
+    if (newSlide) {
+      newSlide.classList.add('active');
+    }
+
+    currentIndex = newIndex;
+
+    // 3. Update Numerical Counter
+    if (currentNumEl) {
+      currentNumEl.textContent = String(currentIndex + 1).padStart(2, '0');
+    }
+
+    // 4. Update Badge Pill with subtle micro-fade
+    if (badgePill && data) {
+      badgePill.style.opacity = '0.4';
+      badgePill.style.transform = 'translateY(-2px)';
+      setTimeout(() => {
+        badgePill.textContent = data.badge;
+        badgePill.style.opacity = '1';
+        badgePill.style.transform = 'translateY(0)';
+      }, 150);
+    }
+
+    // 5. Update Glass Caption Bar with smooth fade
+    if (glassBar && data) {
+      glassBar.style.opacity = '0.5';
+      setTimeout(() => {
+        if (finishTitle) finishTitle.textContent = data.title;
+        if (specsLine) specsLine.textContent = data.specs;
+        glassBar.style.opacity = '1';
+      }, 150);
+    }
+
+    // 6. Update Progress Dashes & restart timer fill
+    dashes.forEach((dash, idx) => {
+      if (idx === currentIndex) {
+        dash.classList.add('active');
+        const fill = dash.querySelector('.dash-fill');
+        if (fill) {
+          fill.style.animation = 'none';
+          void fill.offsetWidth; // Reflow
+          fill.style.animation = `dashProgress ${AUTOPLAY_INTERVAL}ms linear forwards`;
+        }
+      } else {
+        dash.classList.remove('active');
+        const fill = dash.querySelector('.dash-fill');
+        if (fill) {
+          fill.style.animation = 'none';
+        }
+      }
+    });
+
+    setTimeout(() => {
+      isTransitioning = false;
+    }, 600);
+
+    resetAutoplay();
+  }
+
+  function resetAutoplay() {
+    if (autoplayTimer) {
+      clearTimeout(autoplayTimer);
+      autoplayTimer = null;
+    }
+    if (!isPaused) {
+      autoplayTimer = setTimeout(() => {
+        goToSlide(currentIndex + 1);
+      }, AUTOPLAY_INTERVAL);
+    }
+  }
+
+  function pauseAutoplay() {
+    isPaused = true;
+    if (autoplayTimer) {
+      clearTimeout(autoplayTimer);
+      autoplayTimer = null;
+    }
+  }
+
+  function resumeAutoplay() {
+    isPaused = false;
+    resetAutoplay();
+  }
+
+  // Navigation Arrow Handlers
+  if (prevBtn) {
+    prevBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      goToSlide(currentIndex - 1);
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      goToSlide(currentIndex + 1);
+    });
+  }
+
+  // Progress Dash Buttons Click
+  dashes.forEach((dash, idx) => {
+    dash.addEventListener('click', (e) => {
+      e.stopPropagation();
+      goToSlide(idx);
+    });
+  });
+
+  // Hover & Focus Pause
+  viewport.addEventListener('mouseenter', pauseAutoplay);
+  viewport.addEventListener('mouseleave', resumeAutoplay);
+  viewport.addEventListener('focusin', pauseAutoplay);
+  viewport.addEventListener('focusout', resumeAutoplay);
+
+  // Keyboard Arrow Navigation
+  window.addEventListener('keydown', (e) => {
+    const heroEl = document.getElementById('hero');
+    if (!heroEl) return;
+    const rect = heroEl.getBoundingClientRect();
+    const isInView = rect.top < window.innerHeight && rect.bottom > 0;
+    if (!isInView) return;
+
+    if (e.key === 'ArrowLeft') {
+      goToSlide(currentIndex - 1);
+    } else if (e.key === 'ArrowRight') {
+      goToSlide(currentIndex + 1);
+    }
+  });
+
+  // Touch Swipe Support
+  let touchStartX = 0;
+  let touchEndX = 0;
+  viewport.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  viewport.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchEndX - touchStartX;
+    if (Math.abs(diff) > 40) {
+      if (diff < 0) {
+        goToSlide(currentIndex + 1);
+      } else {
+        goToSlide(currentIndex - 1);
+      }
+    }
+  }, { passive: true });
+
+  // Tab Visibility Change: pause when tab hidden
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      pauseAutoplay();
+    } else {
+      resumeAutoplay();
+    }
+  });
+
+  // Initialize initial dash animation
+  const initialDash = dashes[0];
+  if (initialDash) {
+    initialDash.classList.add('active');
+    const fill = initialDash.querySelector('.dash-fill');
+    if (fill) {
+      fill.style.animation = `dashProgress ${AUTOPLAY_INTERVAL}ms linear forwards`;
+    }
+  }
+
+  resetAutoplay();
 }
 
 /* ==========================================================================
@@ -629,79 +932,137 @@ function initSmoothScroll() {
 }
 
 /* ==========================================================================
-   10. HERO COUNTERS MOTION GRAPHICS ENGINE
+   10. GSAP ENTRANCE TIMELINE, SVG STROKE DRAWINGS & NUMBER COUNTERS
    ========================================================================== */
-function initHeroCounters() {
-  const specsList = document.getElementById('heroSpecsList');
-  if (!specsList) return;
+function initHeroGSAPReveal() {
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const pantoneRing = document.getElementById('pantoneRing');
+  const clockArc = document.getElementById('clockArc');
+  const statGsm = document.getElementById('statGsm');
+  const statPantone = document.getElementById('statPantone');
+  const statRush = document.getElementById('statRush');
 
-  const cntGsm = document.getElementById('cntGsm');
-  const cntPantone = document.getElementById('cntPantone');
-  const cntRush = document.getElementById('cntRush');
+  function triggerSvgStrokes() {
+    if (pantoneRing) pantoneRing.style.strokeDashoffset = '0';
+    if (clockArc) clockArc.style.strokeDashoffset = '0';
+  }
 
-  let hasAnimated = false;
-
-  function runCounters() {
-    if (hasAnimated) return;
-    hasAnimated = true;
-
-    const duration = 1600; // ms
+  function runCounterInterpolation() {
+    const duration = 1400; // ms
     const startTime = performance.now();
 
-    function easeOutCubic(t) {
-      return 1 - Math.pow(1 - t, 3);
+    function easeOutExpo(t) {
+      return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
     }
 
-    function update(now) {
+    function updateCounters(now) {
       const elapsed = now - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      const eased = easeOutCubic(progress);
+      const eased = easeOutExpo(progress);
 
-      // GSM 0 to 600
-      if (cntGsm) {
-        const val = Math.floor(eased * 600);
-        cntGsm.textContent = val;
+      if (statGsm) {
+        statGsm.textContent = Math.floor(eased * 600);
       }
-
-      // Pantone 0 to 100
-      if (cntPantone) {
-        const val = Math.floor(eased * 100);
-        cntPantone.textContent = val;
+      if (statPantone) {
+        statPantone.textContent = Math.floor(eased * 100);
       }
-
-      // Rush 0-0 to 24-48
-      if (cntRush) {
-        const val1 = Math.floor(eased * 24);
-        const val2 = Math.floor(eased * 48);
-        cntRush.textContent = `${val1}-${val2}`;
+      if (statRush) {
+        const v1 = Math.floor(eased * 24);
+        const v2 = Math.floor(eased * 48);
+        statRush.textContent = `${v1}-${v2}`;
       }
 
       if (progress < 1) {
-        requestAnimationFrame(update);
+        requestAnimationFrame(updateCounters);
       } else {
-        // Mark all spec items as counted to trigger periodic light sheen
-        document.querySelectorAll('.spec-item').forEach(item => {
-          item.classList.add('counted');
-        });
+        if (statGsm) statGsm.textContent = '600';
+        if (statPantone) statPantone.textContent = '100';
+        if (statRush) statRush.textContent = '24-48';
       }
     }
 
-    requestAnimationFrame(update);
+    requestAnimationFrame(updateCounters);
   }
 
-  // Trigger via IntersectionObserver or directly if already visible
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          runCounters();
-          observer.disconnect();
+  if (prefersReduced) {
+    if (statGsm) statGsm.textContent = '600';
+    if (statPantone) statPantone.textContent = '100';
+    if (statRush) statRush.textContent = '24-48';
+    triggerSvgStrokes();
+    return;
+  }
+
+  // Check if GSAP is available
+  if (typeof gsap !== 'undefined') {
+    const tl = gsap.timeline({
+      defaults: { ease: 'power3.out' },
+      onStart: () => {
+        setTimeout(triggerSvgStrokes, 250);
+        setTimeout(runCounterInterpolation, 300);
+      }
+    });
+
+    tl.from('#heroBadge', {
+      opacity: 0,
+      y: -12,
+      duration: 0.3
+    })
+    .from('.title-line', {
+      y: '100%',
+      opacity: 0,
+      duration: 0.5,
+      stagger: 0.08
+    }, '-=0.15')
+    .from('#heroDesc', {
+      opacity: 0,
+      y: 12,
+      duration: 0.35
+    }, '-=0.25')
+    .from('#heroCta', {
+      opacity: 0,
+      y: 12,
+      duration: 0.35
+    }, '-=0.2')
+    .from('#heroInfographics', {
+      opacity: 0,
+      y: 14,
+      duration: 0.35
+    }, '-=0.2')
+    .from('#heroGoldCard', {
+      opacity: 0,
+      y: 25,
+      scale: 0.96,
+      duration: 0.55
+    }, '-=0.4');
+
+    // Subtle scroll parallax
+    if (typeof ScrollTrigger !== 'undefined' && window.innerWidth > 991) {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.to('#heroVisualCol', {
+        y: 35,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '#hero',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 0.5
         }
       });
-    }, { threshold: 0.2 });
-    observer.observe(specsList);
+      gsap.to('#heroContent', {
+        y: 18,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '#hero',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 0.5
+        }
+      });
+    }
   } else {
-    runCounters();
+    // Graceful fallback without GSAP
+    triggerSvgStrokes();
+    runCounterInterpolation();
   }
 }
 
@@ -755,44 +1116,44 @@ function initLuxuryBackgroundAnimation() {
       const rand = Math.random();
       if (rand < 0.12) {
         this.type = 'registration';
-        this.radius = 7 + Math.random() * 6;
-        this.baseAlpha = 0.12 + Math.random() * 0.22;
-        this.speedY = 0.18 + Math.random() * 0.3;
-        this.speedX = (Math.random() - 0.5) * 0.25;
+        this.radius = 6 + Math.random() * 5;
+        this.baseAlpha = 0.08 + Math.random() * 0.14;
+        this.speedY = 0.15 + Math.random() * 0.25;
+        this.speedX = (Math.random() - 0.5) * 0.2;
         this.rotation = Math.random() * Math.PI * 2;
         this.rotSpeed = (Math.random() - 0.5) * 0.008;
       } else if (rand < 0.24) {
         this.type = 'paper';
-        this.cardW = 12 + Math.random() * 8;
-        this.cardH = 16 + Math.random() * 10;
+        this.cardW = 10 + Math.random() * 7;
+        this.cardH = 14 + Math.random() * 8;
         this.radius = Math.max(this.cardW, this.cardH);
-        this.baseAlpha = 0.10 + Math.random() * 0.18;
-        this.speedY = 0.22 + Math.random() * 0.35;
-        this.speedX = (Math.random() - 0.5) * 0.3;
+        this.baseAlpha = 0.06 + Math.random() * 0.12;
+        this.speedY = 0.18 + Math.random() * 0.3;
+        this.speedX = (Math.random() - 0.5) * 0.25;
         this.rotation = Math.random() * Math.PI * 2;
         this.rotSpeed = (Math.random() - 0.5) * 0.01;
         this.flipAngle = Math.random() * Math.PI * 2;
         this.flipSpeed = 0.012 + Math.random() * 0.015;
       } else if (rand < 0.32) {
         this.type = 'cropmark';
-        this.radius = 6 + Math.random() * 4;
-        this.baseAlpha = 0.14 + Math.random() * 0.24;
-        this.speedY = 0.2 + Math.random() * 0.35;
-        this.speedX = (Math.random() - 0.5) * 0.25;
+        this.radius = 5 + Math.random() * 4;
+        this.baseAlpha = 0.08 + Math.random() * 0.14;
+        this.speedY = 0.16 + Math.random() * 0.3;
+        this.speedX = (Math.random() - 0.5) * 0.2;
         this.rotation = Math.random() * Math.PI * 2;
         this.rotSpeed = (Math.random() - 0.5) * 0.006;
       } else if (rand < 0.40) {
         this.type = 'bokeh';
-        this.radius = 16 + Math.random() * 26;
-        this.baseAlpha = 0.02 + Math.random() * 0.04;
-        this.speedY = 0.15 + Math.random() * 0.25;
-        this.speedX = (Math.random() - 0.5) * 0.2;
+        this.radius = 14 + Math.random() * 22;
+        this.baseAlpha = 0.015 + Math.random() * 0.03;
+        this.speedY = 0.12 + Math.random() * 0.2;
+        this.speedX = (Math.random() - 0.5) * 0.18;
       } else {
         this.type = 'goldDust';
-        this.radius = 0.7 + Math.random() * 2.2;
-        this.baseAlpha = 0.15 + Math.random() * 0.55;
-        this.speedY = 0.25 + Math.random() * 0.65;
-        this.speedX = (Math.random() - 0.5) * 0.35;
+        this.radius = 0.6 + Math.random() * 1.8;
+        this.baseAlpha = 0.10 + Math.random() * 0.35;
+        this.speedY = 0.2 + Math.random() * 0.5;
+        this.speedX = (Math.random() - 0.5) * 0.3;
       }
 
       this.color = goldColors[Math.floor(Math.random() * goldColors.length)];
@@ -935,8 +1296,8 @@ function initLuxuryBackgroundAnimation() {
     canvas.height = height * dpr;
     ctx.scale(dpr, dpr);
 
-    // Responsive density: ~32 on mobile for smooth 60fps and low battery use, ~65 on desktop
-    const targetCount = width < 768 ? 32 : 65;
+    // Refined luxury density: reduced by 50% for optimal contrast (16 on mobile, 32 on desktop)
+    const targetCount = width < 768 ? 16 : 32;
     particles = [];
     for (let i = 0; i < targetCount; i++) {
       particles.push(new Particle());
