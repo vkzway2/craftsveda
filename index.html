@@ -14,7 +14,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
+  <!-- Preload Hero LCP Image -->
+  <link rel="preload" as="image" href="assets/hero-card.jpg" fetchpriority="high">
+  
   <link rel="stylesheet" href="styles.css">
+
+  <!-- GSAP & ScrollTrigger Core (Local High Performance) -->
+  <script src="gsap.min.js"></script>
+  <script src="ScrollTrigger.min.js"></script>
 </head>
 <body>
 
@@ -87,177 +94,244 @@
     <!-- 01 — HERO SECTION -->
     <!-- ================================================================ -->
     <section class="hero-section" id="hero">
-      <div class="hero-ambient-glow"></div>
-      <div class="container hero-grid">
-        
-        <!-- Left Hero Copy -->
-        <div class="hero-content">
-          <div class="studio-badge">
-            <span class="badge-icon">✦</span>
-            <span class="badge-text">BESPOKE PRINT FINISHING &amp; LUXURY PACKAGING</span>
-          </div>
-
-          <h1 class="hero-title">
-            Premium Printing.<br>
-            <span class="text-gold-gradient">Made to Be Remembered.</span>
-          </h1>
-
-          <p class="hero-description">
-            From business cards to luxury packaging — we turn your ideas into beautifully finished prints.
-          </p>
-
-          <div class="hero-cta-group">
-            <a href="#our-work" class="btn btn-gold btn-lg">
-              <span>View Our Work</span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </a>
-            <a href="#quote-generator" class="btn btn-outline-white btn-lg">
-              <span>Get a Quote</span>
-            </a>
-          </div>
-
-          <!-- Production Capability Highlights with Motion Graphics & Counter Engine -->
-          <div class="hero-specs-list" id="heroSpecsList">
-            <div class="spec-item" data-counter="600" data-suffix="+" data-label="GSM Imported Stocks">
-              <div class="spec-number-wrap">
-                <span class="spec-number"><span class="counter-val" id="cntGsm">0</span><span class="counter-symbol">+</span></span>
-                <span class="spec-shimmer-sweep"></span>
-              </div>
-              <span class="spec-label">GSM Imported Stocks</span>
-            </div>
-            <div class="spec-item-divider"></div>
-            <div class="spec-item" data-counter="100" data-suffix="%" data-label="Pantone Color Match">
-              <div class="spec-number-wrap">
-                <span class="spec-number"><span class="counter-val" id="cntPantone">0</span><span class="counter-symbol">%</span></span>
-                <span class="spec-shimmer-sweep"></span>
-              </div>
-              <span class="spec-label">Pantone Color Match</span>
-            </div>
-            <div class="spec-item-divider"></div>
-            <div class="spec-item" data-counter-range="24-48" data-suffix="h" data-label="Mumbai Rush Turnaround">
-              <div class="spec-number-wrap">
-                <span class="spec-number"><span class="counter-val" id="cntRush">0-0</span><span class="counter-symbol">h</span></span>
-                <span class="spec-shimmer-sweep"></span>
-              </div>
-              <span class="spec-label">Mumbai Rush Turnaround</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right Hero Visuals: High-Quality Real Studio Mockup -->
-        <div class="hero-visual-col">
-          <div class="mockup-stage-card">
-            <!-- Glare and sheen overlay -->
-            <div class="mockup-shimmer"></div>
+      <div class="hero-ambient-glow" aria-hidden="true"></div>
+      
+      <!-- Center Main Grid Framed Within 100svh -->
+      <div class="container hero-container">
+        <div class="hero-grid">
+          
+          <!-- Left Column: Copy, Masked Headline, CTAs, Infographics -->
+          <div class="hero-content" id="heroContent">
             
-            <div class="image-wrapper">
-              <img src="assets/hero-mockup.jpg" alt="CraftsVeda Luxury Printing Mockups - Business Cards, Rigid Packaging, Deckle Edge Invitations, and Spot UV Brochures" class="hero-mockup-img" id="heroMockupImg">
+            <div class="studio-badge" id="heroBadge">
+              <span class="badge-icon">✦</span>
+              <span class="badge-text">BESPOKE PRINT FINISHING &amp; LUXURY PACKAGING</span>
             </div>
 
-            <!-- Floating luxury badges highlighting real finishes -->
-            <div class="floating-tag tag-top-right">
-              <div class="tag-dot gold"></div>
-              <div>
-                <strong>Hot Foil & Edge Gilding</strong>
-                <span>600 GSM Cotton Stock</span>
+            <h1 class="hero-title" id="heroTitle">
+              <span class="title-line-mask"><span class="title-line">Premium Printing.</span></span>
+              <span class="title-line-mask"><span class="title-line">Made to Be</span></span>
+              <span class="title-line-mask"><span class="title-line text-gold-shimmer">Remembered.</span></span>
+            </h1>
+
+            <p class="hero-description" id="heroDesc">
+              From business cards to luxury packaging — we turn your ideas into beautifully finished prints.
+            </p>
+
+            <div class="hero-cta-group" id="heroCta">
+              <a href="#our-work" class="btn btn-gold btn-lg">
+                <span>View Our Work</span>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </a>
+              <a href="#quote-generator" class="btn btn-outline-white btn-lg">
+                <span>Get a Quote</span>
+              </a>
+            </div>
+
+            <!-- Precision SVG Infographics Strip -->
+            <div class="hero-infographics-strip" id="heroInfographics">
+              <!-- Stat 1: 600+ GSM with Paper Thickness Layers -->
+              <div class="info-stat-block" data-stat="gsm">
+                <div class="stat-visual-row">
+                  <svg width="24" height="17" viewBox="0 0 26 18" fill="none" class="stat-svg-layers" aria-hidden="true">
+                    <rect x="1" y="2" width="20" height="3" rx="1" stroke="#d4af37" stroke-width="1.2" fill="rgba(212,175,55,0.15)"/>
+                    <rect x="3" y="7" width="20" height="3" rx="1" stroke="#d4af37" stroke-width="1.2" fill="rgba(212,175,55,0.3)"/>
+                    <rect x="5" y="12" width="20" height="3" rx="1" stroke="#f5e6a8" stroke-width="1.2" fill="rgba(245,230,168,0.5)"/>
+                  </svg>
+                  <span class="stat-number"><span class="counter-num" id="statGsm">0</span><span class="stat-symbol">+</span></span>
+                </div>
+                <span class="stat-label">GSM IMPORTED STOCKS</span>
+              </div>
+
+              <div class="stat-hairline-sep"></div>
+
+              <!-- Stat 2: 100% Pantone with Drawing Ring -->
+              <div class="info-stat-block" data-stat="pantone">
+                <div class="stat-visual-row">
+                  <svg width="20" height="20" viewBox="0 0 24 24" class="stat-svg-ring" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9" stroke="rgba(212,175,55,0.2)" stroke-width="2" fill="none"/>
+                    <circle id="pantoneRing" cx="12" cy="12" r="9" stroke="url(#goldRingGrad)" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="56.54" stroke-dashoffset="56.54" transform="rotate(-90 12 12)"/>
+                    <circle cx="12" cy="3" r="1.6" fill="#d4af37" class="ring-dot"/>
+                    <defs>
+                      <linearGradient id="goldRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#F5E6A8"/>
+                        <stop offset="100%" stop-color="#D4AF37"/>
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <span class="stat-number"><span class="counter-num" id="statPantone">0</span><span class="stat-symbol">%</span></span>
+                </div>
+                <span class="stat-label">PANTONE COLOR MATCH</span>
+              </div>
+
+              <div class="stat-hairline-sep"></div>
+
+              <!-- Stat 3: 24-48h Mumbai Rush with Clock Arc -->
+              <div class="info-stat-block" data-stat="rush">
+                <div class="stat-visual-row">
+                  <svg width="20" height="20" viewBox="0 0 24 24" class="stat-svg-clock" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9" stroke="rgba(212,175,55,0.2)" stroke-width="1.8" fill="none"/>
+                    <path id="clockArc" d="M 12 3 A 9 9 0 1 1 3 12" stroke="#d4af37" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-dasharray="42.4" stroke-dashoffset="42.4"/>
+                    <line x1="12" y1="12" x2="12" y2="7" stroke="#f5e6a8" stroke-width="1.4" stroke-linecap="round"/>
+                    <line x1="12" y1="12" x2="16" y2="12" stroke="#d4af37" stroke-width="1.4" stroke-linecap="round"/>
+                    <circle cx="12" cy="12" r="1.4" fill="#f5e6a8"/>
+                  </svg>
+                  <span class="stat-number"><span class="counter-num" id="statRush">0-0</span><span class="stat-symbol">h</span></span>
+                </div>
+                <span class="stat-label">MUMBAI RUSH TURNAROUND</span>
               </div>
             </div>
 
-            <div class="floating-tag tag-bottom-left">
-              <div class="tag-dot green"></div>
-              <div>
-                <strong>Rigid Packaging & Spot UV</strong>
-                <span>Magnetic Closure Boxes</span>
-              </div>
-            </div>
+          </div>
 
-            <div class="floating-tag tag-deckle">
-              <div class="tag-dot burgundy"></div>
-              <div>
-                <strong>Deckle Edge & Wax Seal</strong>
-                <span>Bespoke Royal Stationery</span>
+          <!-- Right Column: 3D Luxury Showcase Stage -->
+          <div class="hero-visual-col" id="heroVisualCol">
+            <div class="hero-stage-3d" id="heroStage3d">
+              <div class="hero-gold-stage-card" id="heroGoldCard">
+                
+                <!-- Parallax Gold Foil Light Sweep -->
+                <div class="foil-light-sweep" id="foilLightSweep" aria-hidden="true"></div>
+
+                <!-- 3D Slide Viewport -->
+                <div class="showcase-viewport" id="showcaseViewport">
+                  <div class="showcase-slides-deck" id="showcaseDeck">
+                    
+                    <!-- Slide 0: hero-card -->
+                    <div class="showcase-slide active" data-slide-index="0">
+                      <img src="assets/hero-card.jpg" width="1200" height="900" alt="Occulta Obscura - 24K Hot Gold Foil Stamping with Raised Spot UV Gloss Droplets on 600 GSM Cotton Card" class="showcase-img" loading="eager" fetchpriority="high">
+                      <div class="slide-subtle-vignette"></div>
+                    </div>
+
+                    <!-- Slide 1: finish-raised-uv -->
+                    <div class="showcase-slide" data-slide-index="1">
+                      <img src="assets/finish-raised-uv.jpg" width="1200" height="896" alt="AccurioShine 3D UV Tactile Gloss - Dimensional Polymer Coating on Matte Black Stock" class="showcase-img" loading="lazy">
+                      <div class="slide-subtle-vignette"></div>
+                    </div>
+
+                    <!-- Slide 2: finish-digital-foil -->
+                    <div class="showcase-slide" data-slide-index="2">
+                      <img src="assets/finish-digital-foil.jpg" width="1200" height="896" alt="Elevate 2024 - Prismatic Holographic Digital Rainbow Foil Stamping on Black Card" class="showcase-img" loading="lazy">
+                      <div class="slide-subtle-vignette"></div>
+                    </div>
+
+                    <!-- Slide 3: cards-mockup -->
+                    <div class="showcase-slide" data-slide-index="3">
+                      <img src="assets/cards-mockup.jpg" width="1200" height="896" alt="Arthur Blake - 24K Mirror Gold Edge Gilding and Blind Letterpress Debossing on 700 GSM Cotton" class="showcase-img" loading="lazy">
+                      <div class="slide-subtle-vignette"></div>
+                    </div>
+
+                    <!-- Slide 4: cat-03-packaging -->
+                    <div class="showcase-slide" data-slide-index="4">
+                      <img src="assets/cat-03-packaging.jpg" width="1376" height="768" alt="CraftsVeda Luxury Rigid Packaging Boxes, Magnetic Flap Gift Box and Matte Black Ribbon Bags" class="showcase-img" loading="lazy">
+                      <div class="slide-subtle-vignette"></div>
+                    </div>
+
+                  </div>
+
+                  <!-- Inside Top Row: Counter & Category Badge -->
+                  <div class="showcase-top-row">
+                    <div class="slide-counter-pill" id="slideCounterPill">
+                      <span class="c-curr" id="slideCurrentNum">01</span>
+                      <span class="c-sep">/</span>
+                      <span class="c-tot">05</span>
+                    </div>
+                    <div class="slide-badge-pill" id="slideBadgePill">✦ SIGNATURE DUAL FINISH</div>
+                  </div>
+
+                  <!-- Inside Bottom Bar: Glass-Blur Caption Deck -->
+                  <div class="showcase-glass-bar" id="showcaseGlassBar">
+                    <div class="glass-bar-info">
+                      <h3 class="glass-bar-title" id="slideFinishTitle">Metallic Gold Foil &amp; Spot UV</h3>
+                      <p class="glass-bar-specs" id="slideSpecsLine">24K Heated Brass Stamping • Raised Gloss Droplets • 600 GSM Cotton</p>
+                    </div>
+                    <div class="glass-bar-nav">
+                      <button type="button" class="glass-arrow-btn" id="heroPrevBtn" aria-label="Previous Slide">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                      </button>
+                      <div class="glass-progress-dashes" id="heroSliderDots">
+                        <button type="button" class="dash-btn active" data-index="0" aria-label="Slide 1"><span class="dash-fill"></span></button>
+                        <button type="button" class="dash-btn" data-index="1" aria-label="Slide 2"><span class="dash-fill"></span></button>
+                        <button type="button" class="dash-btn" data-index="2" aria-label="Slide 3"><span class="dash-fill"></span></button>
+                        <button type="button" class="dash-btn" data-index="3" aria-label="Slide 4"><span class="dash-fill"></span></button>
+                        <button type="button" class="dash-btn" data-index="4" aria-label="Slide 5"><span class="dash-fill"></span></button>
+                      </div>
+                      <button type="button" class="glass-arrow-btn" id="heroNextBtn" aria-label="Next Slide">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+
+                <!-- Ground Shadow Beneath Stage -->
+                <div class="card-ground-shadow" aria-hidden="true"></div>
               </div>
             </div>
           </div>
-        </div>
 
+        </div>
       </div>
 
-      <!-- ================================================================ -->
-      <!-- REDESIGNED HERO BOTTOM DECK: TRUST PILLARS + CONTACT + MOTION GRAPHICS BANNER -->
-      <!-- ================================================================ -->
-      <div class="hero-bottom-deck">
-        <!-- Upper Strip: Trust Pillars & Quick Contact Links -->
-        <div class="trust-contact-strip">
-          <div class="container trust-strip-inner">
-            <div class="trust-pillars">
-              <span class="pillar-item"><span class="pillar-bullet">✦</span> Premium Quality</span>
-              <span class="pillar-sep">•</span>
-              <span class="pillar-item"><span class="pillar-bullet">✦</span> Custom Printing</span>
-              <span class="pillar-sep">•</span>
-              <span class="pillar-item"><span class="pillar-bullet">✦</span> Professional Finishing</span>
-            </div>
-
-            <div class="strip-divider"></div>
-
-            <div class="contact-quick-links">
-              <a href="tel:8840035249" class="quick-contact-pill" title="Call CraftsVeda Studio">
-                <span class="pill-pulse-dot"></span>
-                <span class="pill-icon">📞</span>
-                <span class="pill-val">8840035249</span>
-              </a>
-              <a href="mailto:vkzway2@gmail.com" class="quick-contact-pill" title="Email CraftsVeda Studio">
-                <span class="pill-icon">✉</span>
-                <span class="pill-val">vkzway2@gmail.com</span>
-              </a>
-            </div>
+      <!-- Slim Pinned Trust Bar Within 100svh Hero Boundary -->
+      <div class="hero-trust-bar">
+        <div class="container hero-trust-inner">
+          <div class="trust-pillars">
+            <span class="pillar-item"><span class="pillar-bullet">✦</span> Premium Quality</span>
+            <span class="pillar-sep">•</span>
+            <span class="pillar-item"><span class="pillar-bullet">✦</span> Custom Printing</span>
+            <span class="pillar-sep">•</span>
+            <span class="pillar-item"><span class="pillar-bullet">✦</span> Professional Finishing</span>
           </div>
         </div>
+      </div>
+    </section>
 
-        <!-- Lower Strip: Continuous Motion Graphics Animated Products Marquee Ribbon -->
-        <div class="products-marquee-strip" aria-label="CraftsVeda Printing Products">
-          <div class="marquee-badge-pill">
-            <span class="badge-sparkle">✦</span>
-            <span class="badge-text">PRINT SOLUTIONS</span>
-          </div>
-          <div class="marquee-viewport">
-            <div class="marquee-track" id="productsMarqueeTrack">
-              <!-- First Sequence -->
-              <div class="marquee-content">
-                <a href="#what-we-print" class="marquee-item"><span class="m-text">LABELS</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item"><span class="m-text">STICKERS</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item"><span class="m-text">PACKAGING</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item"><span class="m-text">ENVELOPES</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item"><span class="m-text">NCR</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item"><span class="m-text">LETTERHEADS</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item"><span class="m-text">PAPER BAGS</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item"><span class="m-text">BROCHURES</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item"><span class="m-text">BUSINESS CARDS</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item"><span class="m-text">HANG TAGS</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item highlight-item"><span class="m-star">✦</span><span class="m-text">Luxury Business Cards</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item highlight-item"><span class="m-star">✦</span><span class="m-text">Rigid Packaging</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item highlight-item"><span class="m-star">✦</span><span class="m-text">Wedding Invitations</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item"><span class="m-text">Lookbooks</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item highlight-item"><span class="m-star">✦</span><span class="m-text">Premium Corporate Gifting</span><span class="m-arrow">→</span></a>
-              </div>
-              <!-- Seamless Cloned Sequence for Gapless Loop -->
-              <div class="marquee-content" aria-hidden="true">
-                <a href="#what-we-print" class="marquee-item"><span class="m-text">LABELS</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item"><span class="m-text">STICKERS</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item"><span class="m-text">PACKAGING</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item"><span class="m-text">ENVELOPES</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item"><span class="m-text">NCR</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item"><span class="m-text">LETTERHEADS</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item"><span class="m-text">PAPER BAGS</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item"><span class="m-text">BROCHURES</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item"><span class="m-text">BUSINESS CARDS</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item"><span class="m-text">HANG TAGS</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item highlight-item"><span class="m-star">✦</span><span class="m-text">Luxury Business Cards</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item highlight-item"><span class="m-star">✦</span><span class="m-text">Rigid Packaging</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item highlight-item"><span class="m-star">✦</span><span class="m-text">Wedding Invitations</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item"><span class="m-text">Lookbooks</span><span class="m-arrow">→</span></a>
-                <a href="#what-we-print" class="marquee-item highlight-item"><span class="m-star">✦</span><span class="m-text">Premium Corporate Gifting</span><span class="m-arrow">→</span></a>
-              </div>
+    <!-- ================================================================ -->
+    <!-- 01B — CONTINUOUS MOTION GRAPHICS ANIMATED PRODUCTS MARQUEE SECTION -->
+    <!-- ================================================================ -->
+    <section class="products-marquee-section" aria-label="CraftsVeda Printing Products">
+      <div class="products-marquee-strip">
+        <div class="marquee-badge-pill">
+          <span class="badge-sparkle">✦</span>
+          <span class="badge-text">PRINT SOLUTIONS</span>
+        </div>
+        <div class="marquee-viewport">
+          <div class="marquee-track" id="productsMarqueeTrack">
+            <!-- First Sequence -->
+            <div class="marquee-content">
+              <a href="#what-we-print" class="marquee-item"><span class="m-text">LABELS</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item"><span class="m-text">STICKERS</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item"><span class="m-text">PACKAGING</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item"><span class="m-text">ENVELOPES</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item"><span class="m-text">NCR</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item"><span class="m-text">LETTERHEADS</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item"><span class="m-text">PAPER BAGS</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item"><span class="m-text">BROCHURES</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item"><span class="m-text">BUSINESS CARDS</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item"><span class="m-text">HANG TAGS</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item highlight-item"><span class="m-star">✦</span><span class="m-text">Luxury Business Cards</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item highlight-item"><span class="m-star">✦</span><span class="m-text">Rigid Packaging</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item highlight-item"><span class="m-star">✦</span><span class="m-text">Wedding Invitations</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item"><span class="m-text">Lookbooks</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item highlight-item"><span class="m-star">✦</span><span class="m-text">Premium Corporate Gifting</span><span class="m-arrow">→</span></a>
+            </div>
+            <!-- Seamless Cloned Sequence for Gapless Loop -->
+            <div class="marquee-content" aria-hidden="true">
+              <a href="#what-we-print" class="marquee-item"><span class="m-text">LABELS</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item"><span class="m-text">STICKERS</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item"><span class="m-text">PACKAGING</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item"><span class="m-text">ENVELOPES</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item"><span class="m-text">NCR</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item"><span class="m-text">LETTERHEADS</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item"><span class="m-text">PAPER BAGS</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item"><span class="m-text">BROCHURES</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item"><span class="m-text">BUSINESS CARDS</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item"><span class="m-text">HANG TAGS</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item highlight-item"><span class="m-star">✦</span><span class="m-text">Luxury Business Cards</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item highlight-item"><span class="m-star">✦</span><span class="m-text">Rigid Packaging</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item highlight-item"><span class="m-star">✦</span><span class="m-text">Wedding Invitations</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item"><span class="m-text">Lookbooks</span><span class="m-arrow">→</span></a>
+              <a href="#what-we-print" class="marquee-item highlight-item"><span class="m-star">✦</span><span class="m-text">Premium Corporate Gifting</span><span class="m-arrow">→</span></a>
             </div>
           </div>
         </div>
