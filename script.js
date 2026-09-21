@@ -1002,38 +1002,38 @@ function initHeroGSAPReveal() {
       }
     });
 
-    tl.from('#heroBadge', {
+    tl.from('#heroGoldCard', {
       opacity: 0,
-      y: -12,
+      y: 16,
+      scale: 0.98,
+      duration: 0.45
+    }, 0)
+    .from('#heroBadge', {
+      opacity: 0,
+      y: -10,
       duration: 0.3
-    })
+    }, 0.05)
     .from('.title-line', {
       y: '100%',
       opacity: 0,
-      duration: 0.5,
+      duration: 0.45,
       stagger: 0.08
-    }, '-=0.15')
+    }, 0.1)
     .from('#heroDesc', {
       opacity: 0,
-      y: 12,
-      duration: 0.35
-    }, '-=0.25')
+      y: 10,
+      duration: 0.3
+    }, 0.25)
     .from('#heroCta', {
       opacity: 0,
-      y: 12,
-      duration: 0.35
-    }, '-=0.2')
+      y: 10,
+      duration: 0.3
+    }, 0.35)
     .from('#heroInfographics', {
       opacity: 0,
-      y: 14,
+      y: 12,
       duration: 0.35
-    }, '-=0.2')
-    .from('#heroGoldCard', {
-      opacity: 0,
-      y: 25,
-      scale: 0.96,
-      duration: 0.55
-    }, '-=0.4');
+    }, 0.4);
 
     // Subtle scroll parallax
     if (typeof ScrollTrigger !== 'undefined' && window.innerWidth > 991) {
@@ -1344,51 +1344,49 @@ function initLuxuryBackgroundAnimation() {
     pointer.active = false;
   }, { passive: true });
 
-  // Battery saving: auto-pause animation loop when tab is in background
+  // Battery & CPU saving: auto-pause animation loop when tab is in background
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       isPaused = true;
-      if (animFrameId) cancelAnimationFrame(animFrameId);
+      if (animFrameId) {
+        cancelAnimationFrame(animFrameId);
+        animFrameId = null;
+      }
     } else {
-      isPaused = false;
-      animFrameId = requestAnimationFrame(animate);
+      if (isHeroInView) {
+        isPaused = false;
+        if (!animFrameId) animFrameId = requestAnimationFrame(animate);
+      }
     }
   });
+
+  // Performance: Pause particle loop when hero section is scrolled out of viewport
+  let isHeroInView = true;
+  const heroSectionEl = document.getElementById('hero');
+  if (heroSectionEl && 'IntersectionObserver' in window) {
+    const heroObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        isHeroInView = entry.isIntersecting;
+        if (!isHeroInView) {
+          isPaused = true;
+          if (animFrameId) {
+            cancelAnimationFrame(animFrameId);
+            animFrameId = null;
+          }
+        } else if (!document.hidden) {
+          isPaused = false;
+          if (!animFrameId) {
+            animFrameId = requestAnimationFrame(animate);
+          }
+        }
+      });
+    }, { threshold: 0.02 });
+    heroObserver.observe(heroSectionEl);
+  }
 
   resize();
   animFrameId = requestAnimationFrame(animate);
 }
-
-/* ==========================================================================
-   SYNCHRONIZED RGB ANGLE ROTATOR ENGINE
-   Ensures 100% fluid 60fps rotation across all browsers and devices
-   ========================================================================== */
-(function initRgbAngleEngine() {
-  let rgbAngle = 0;
-  let lastTime = performance.now();
-  let rgbAnimId = null;
-
-  function stepRgb(currentTime) {
-    const delta = (currentTime - lastTime) / 1000;
-    lastTime = currentTime;
-    // Smooth 3.5s full rotation cycle (~102.85 deg/sec)
-    rgbAngle = (rgbAngle + delta * 102.85) % 360;
-    document.documentElement.style.setProperty('--rgb-angle', rgbAngle.toFixed(1) + 'deg');
-    rgbAnimId = requestAnimationFrame(stepRgb);
-  }
-
-  // Auto-pause when tab is hidden to conserve GPU/battery
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-      if (rgbAnimId) cancelAnimationFrame(rgbAnimId);
-    } else {
-      lastTime = performance.now();
-      rgbAnimId = requestAnimationFrame(stepRgb);
-    }
-  });
-
-  rgbAnimId = requestAnimationFrame(stepRgb);
-})();
 
 
 
