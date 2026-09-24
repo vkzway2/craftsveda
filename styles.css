@@ -481,8 +481,7 @@ section,
 .quote-form-card,
 .summary-card,
 .studio-direct-card,
-.sample-kit-banner,
-.rgb-glow-box {
+.sample-kit-banner {
   position: relative !important;
   isolation: isolate; /* Creates local stacking context: keeps outer glow behind card surface but ABOVE section backgrounds */
   background: transparent !important;
@@ -539,8 +538,7 @@ section,
 .quote-form-card::after,
 .summary-card::after,
 .studio-direct-card::after,
-.sample-kit-banner::after,
-.rgb-glow-box::after {
+.sample-kit-banner::after {
   content: '';
   position: absolute;
   inset: -3px;
@@ -574,8 +572,7 @@ section,
 .quote-form-card::before,
 .summary-card::before,
 .studio-direct-card::before,
-.sample-kit-banner::before,
-.rgb-glow-box::before {
+.sample-kit-banner::before {
   content: '';
   position: absolute;
   inset: -1.5px;
@@ -614,7 +611,6 @@ section,
 .summary-card:hover::after,
 .studio-direct-card:hover::after,
 .sample-kit-banner:hover::after,
-.rgb-glow-box:hover::after,
 .category-card:active::after,
 .custom-print-banner:active::after,
 .finish-detail-box:active::after,
