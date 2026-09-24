@@ -392,6 +392,16 @@ section,
   box-shadow: 0 6px 20px rgba(37, 211, 102, 0.45);
 }
 
+.btn:active,
+.btn-gold:active,
+.btn-outline-gold:active,
+.btn-outline-white:active,
+.btn-whatsapp:active {
+  transform: translateY(1px) scale(0.985);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  transition-duration: 0.08s;
+}
+
 /* ==========================================================================
    RGB / LUMINOUS BORDER & RADIANT GLOW SYSTEM (ZERO FILL, FLAWLESS GLOW)
    - Inside Card / Content Area: 100% solid dark interior (#0e1422), ZERO RGB fill!
@@ -1662,7 +1672,18 @@ section,
 }
 
 .category-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px -8px rgba(0, 0, 0, 0.7), 0 0 22px rgba(212, 175, 55, 0.14);
+}
+
+.category-card:active {
+  transform: translateY(-2px) scale(0.99);
+  transition-duration: 0.1s;
+}
+
+.category-card:hover .cat-num-label {
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(245, 230, 168, 0.4);
 }
 
 /* Card Top Numeric/Category Label */
@@ -1873,6 +1894,12 @@ section,
   color: #090c12;
   border-color: var(--gold-primary);
   font-weight: 600;
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.28);
+}
+
+.filter-btn:active {
+  transform: scale(0.95);
+  transition-duration: 0.08s;
 }
 
 .portfolio-grid {
@@ -1892,7 +1919,18 @@ section,
 }
 
 .portfolio-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.75), 0 0 22px rgba(212, 175, 55, 0.15);
+}
+
+.portfolio-card:active {
+  transform: translateY(-2px) scale(0.99);
+  transition-duration: 0.1s;
+}
+
+.portfolio-card:hover .p-title {
+  color: var(--gold-light);
+  transition: color 0.3s ease;
 }
 
 .portfolio-media {
@@ -2724,6 +2762,11 @@ select.form-control {
 
 .finish-chip:hover .chip-inner {
   border-color: rgba(212, 175, 55, 0.4);
+}
+
+.finish-chip:active .chip-inner {
+  transform: scale(0.96);
+  transition-duration: 0.08s;
 }
 
 .finish-chip input:checked~.chip-inner {
@@ -4122,6 +4165,162 @@ select.form-control {
 
   .floating-whatsapp .wa-tooltip {
     display: none;
+  }
+}
+
+/* ==========================================================================
+   MOBILE VIEWPORT FINE-TUNING (< 480px & < 380px)
+   ========================================================================== */
+@media (max-width: 480px) {
+  html, body {
+    width: 100%;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .top-bar-inner {
+    padding: 0 12px;
+  }
+
+  .top-bar-link {
+    font-size: 0.69rem;
+    gap: 4px;
+  }
+
+  .brand-name {
+    font-size: 1.12rem;
+  }
+
+  .brand-tag {
+    font-size: 0.52rem;
+    letter-spacing: 0.1em;
+  }
+
+  .logo-mark {
+    width: 34px;
+    height: 34px;
+  }
+
+  .hero-section {
+    padding-top: 14px;
+  }
+
+  .hero-title {
+    font-size: clamp(1.75rem, 8vw, 2.15rem);
+    letter-spacing: -0.01em;
+  }
+
+  .hero-infographics-strip {
+    padding: 8px 10px;
+    gap: 6px;
+    border-radius: var(--radius-sm);
+  }
+
+  .stat-number {
+    font-size: 1.05rem;
+  }
+
+  .stat-label {
+    font-size: 0.50rem;
+    letter-spacing: 0.02em;
+  }
+
+  .stat-hairline-sep {
+    height: 22px;
+  }
+
+  /* Horizontal swipeable filter pill bar */
+  .portfolio-filters {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 8px;
+    padding: 4px 4px 12px;
+    margin-bottom: 22px;
+    justify-content: flex-start;
+  }
+
+  .portfolio-filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 7px 15px;
+    font-size: 0.78rem;
+  }
+
+  .chip-inner {
+    min-height: 42px;
+    padding: 8px 10px;
+  }
+
+  .form-control {
+    font-size: 14px; /* Prevents auto-zoom on iOS safari */
+  }
+
+  .testimonial-card {
+    padding: 22px 16px;
+  }
+
+  .floating-whatsapp {
+    bottom: 14px;
+    right: 14px;
+  }
+
+  .floating-whatsapp .wa-icon-wrapper {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+@media (max-width: 380px) {
+  .top-bar-inner {
+    flex-direction: column;
+    gap: 3px;
+    padding: 2px 8px;
+    text-align: center;
+  }
+
+  .top-bar-left,
+  .top-bar-right {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .brand-logo {
+    max-width: calc(100% - 46px);
+    gap: 7px;
+  }
+
+  .brand-name {
+    font-size: 1.02rem;
+  }
+
+  .brand-tag {
+    display: none;
+  }
+
+  .hero-infographics-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    padding: 8px 4px;
+  }
+
+  .stat-hairline-sep {
+    display: none;
+  }
+
+  .mode-tab {
+    padding: 8px 4px;
+    font-size: 0.72rem;
+  }
+
+  .finishes-chips-grid {
+    grid-template-columns: 1fr !important;
   }
 }
 
