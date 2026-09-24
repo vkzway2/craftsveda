@@ -84,9 +84,10 @@ function initMobileNav() {
 
   if (!toggleBtn || !nav) return;
 
-  toggleBtn.addEventListener('click', () => {
-    nav.classList.toggle('open');
-    toggleBtn.classList.toggle('active');
+  toggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = nav.classList.toggle('open');
+    toggleBtn.classList.toggle('active', isOpen);
   });
 
   // Close nav when clicking any link
@@ -95,6 +96,14 @@ function initMobileNav() {
       nav.classList.remove('open');
       toggleBtn.classList.remove('active');
     });
+  });
+
+  // Close nav when clicking outside on mobile
+  document.addEventListener('click', (e) => {
+    if (nav.classList.contains('open') && !nav.contains(e.target) && !toggleBtn.contains(e.target)) {
+      nav.classList.remove('open');
+      toggleBtn.classList.remove('active');
+    }
   });
 }
 
@@ -152,12 +161,22 @@ function initPortfolioFilters() {
 
       cards.forEach(card => {
         const cat = card.getAttribute('data-cat');
-        if (filterValue === 'all' || cat === filterValue) {
+        const matches = (filterValue === 'all' || cat === filterValue);
+
+        if (matches) {
           card.style.display = 'flex';
-          setTimeout(() => { card.style.opacity = '1'; }, 20);
+          requestAnimationFrame(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0) scale(1)';
+          });
         } else {
           card.style.opacity = '0';
-          setTimeout(() => { card.style.display = 'none'; }, 250);
+          card.style.transform = 'translateY(8px) scale(0.98)';
+          setTimeout(() => {
+            if (card.style.opacity === '0') {
+              card.style.display = 'none';
+            }
+          }, 240);
         }
       });
     });
