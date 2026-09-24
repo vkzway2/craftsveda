@@ -69,6 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initPortfolioFilters();
   initPortfolioCard3DTilt();
   initInteractiveCardSpotlights();
+  initScrollDrivenTimeline();
+  initTestimonialsMobileSwipe();
   initQuoteCalculator();
   initHeroGSAPReveal();
   initHero3DTilt();
@@ -1466,7 +1468,7 @@ function initInteractiveCardSpotlights() {
   if (window.innerWidth < 992 || 'ontouchstart' in window) return;
 
   const targetCards = document.querySelectorAll(
-    '.portfolio-card, .finish-detail-box, .custom-print-banner, .gold-frame, .summary-card'
+    '.portfolio-card, .finish-detail-box, .custom-print-banner, .gold-frame, .summary-card, .category-card'
   );
 
   targetCards.forEach(card => {
@@ -1525,4 +1527,57 @@ function initPortfolioCard3DTilt() {
       }
     }, { passive: true });
   });
+}
+
+/**
+ * 4. Scroll-Driven Timeline Progress Line (#how-it-works)
+ * Smoothly scales the gold line across the 5 process steps on scroll
+ */
+function initScrollDrivenTimeline() {
+  const line = document.getElementById('timelineProgressLine');
+  const section = document.getElementById('how-it-works');
+  if (!line || !section) return;
+
+  function updateTimeline() {
+    const rect = section.getBoundingClientRect();
+    const windowH = window.innerHeight;
+    const totalDist = rect.height + windowH * 0.4;
+    const currentPos = windowH * 0.8 - rect.top;
+    let progress = currentPos / totalDist;
+    progress = Math.max(0, Math.min(1, progress));
+    line.style.width = `${(progress * 100).toFixed(1)}%`;
+  }
+
+  window.addEventListener('scroll', updateTimeline, { passive: true });
+  updateTimeline();
+}
+
+/**
+ * 5. Testimonials Mobile Swipe Support (#testimonials)
+ * Touch events enable smooth horizontal swipe on mobile screens
+ */
+function initTestimonialsMobileSwipe() {
+  const grid = document.querySelector('.testimonials-grid');
+  if (!grid) return;
+
+  let startX = 0;
+  let scrollLeft = 0;
+  let isDown = false;
+
+  grid.addEventListener('touchstart', (e) => {
+    isDown = true;
+    startX = e.touches[0].pageX - grid.offsetLeft;
+    scrollLeft = grid.scrollLeft;
+  }, { passive: true });
+
+  grid.addEventListener('touchmove', (e) => {
+    if (!isDown) return;
+    const x = e.touches[0].pageX - grid.offsetLeft;
+    const walk = (x - startX) * 1.5;
+    grid.scrollLeft = scrollLeft - walk;
+  }, { passive: true });
+
+  grid.addEventListener('touchend', () => {
+    isDown = false;
+  }, { passive: true });
 }

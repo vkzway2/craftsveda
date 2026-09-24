@@ -655,11 +655,12 @@ section,
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.65), 0 0 16px rgba(212, 175, 55, 0.18);
 }
 
-/* Phase 2: Dynamic Cursor Spotlight Shimmer Following Mouse */
+/* Phase 2 & 3: Dynamic Cursor Spotlight Shimmer Following Mouse */
 .portfolio-card:hover::after,
 .finish-detail-box:hover::after,
 .custom-print-banner:hover::after,
-.gold-frame:hover::after {
+.gold-frame:hover::after,
+.category-card:hover::after {
   background: radial-gradient(
     circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
     rgba(212, 175, 55, 0.36) 0%,
@@ -1720,14 +1721,15 @@ section,
   overflow: visible;
   display: flex;
   flex-direction: column;
+  height: 100%;
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 0.35s ease;
   position: relative;
 }
 
 .category-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 18px 40px -8px rgba(0, 0, 0, 0.7), 0 0 22px rgba(212, 175, 55, 0.14);
+  transform: translateY(-7px);
+  box-shadow: 0 20px 42px -8px rgba(0, 0, 0, 0.75), 0 0 24px rgba(212, 175, 55, 0.18);
 }
 
 .category-card:active {
@@ -1738,6 +1740,49 @@ section,
 .category-card:hover .cat-num-label {
   color: #ffffff;
   text-shadow: 0 0 10px rgba(245, 230, 168, 0.4);
+}
+
+/* Printer Crop Marks on Card Corners */
+.card-crop-mark {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0.38;
+  transition: opacity 0.3s ease, border-color 0.3s ease;
+}
+
+.category-card:hover .card-crop-mark {
+  opacity: 0.9;
+}
+
+.crop-tl {
+  top: 6px;
+  left: 6px;
+  border-top: 1.5px solid var(--gold-primary);
+  border-left: 1.5px solid var(--gold-primary);
+}
+
+.crop-tr {
+  top: 6px;
+  right: 6px;
+  border-top: 1.5px solid var(--gold-primary);
+  border-right: 1.5px solid var(--gold-primary);
+}
+
+.crop-bl {
+  bottom: 6px;
+  left: 6px;
+  border-bottom: 1.5px solid var(--gold-primary);
+  border-left: 1.5px solid var(--gold-primary);
+}
+
+.crop-br {
+  bottom: 6px;
+  right: 6px;
+  border-bottom: 1.5px solid var(--gold-primary);
+  border-right: 1.5px solid var(--gold-primary);
 }
 
 /* Card Top Numeric/Category Label */
@@ -1760,7 +1805,7 @@ section,
   text-transform: uppercase;
 }
 
-/* 16:9 Product Image */
+/* 16:9 Product Image with Light-Sweep Sheen */
 .card-media {
   position: relative;
   z-index: 2;
@@ -1775,14 +1820,38 @@ section,
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .category-card:hover .card-media img {
-  transform: scale(1.03);
+  transform: scale(1.04);
 }
 
-/* Card Body */
+.card-media::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -130%;
+  width: 65%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(245, 230, 168, 0.2) 50%,
+    transparent 100%
+  );
+  transform: skewX(-25deg);
+  pointer-events: none;
+  z-index: 3;
+  transition: none;
+}
+
+.category-card:hover .card-media::after {
+  left: 190%;
+  transition: left 0.85s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Card Body (Consistent Proportion Distribution) */
 .card-body {
   background: #0e1422 !important;
   position: relative;
@@ -1790,6 +1859,7 @@ section,
   padding: 24px 22px 20px;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   flex-grow: 1;
   border-bottom-left-radius: calc(var(--radius-md) - 1.5px);
   border-bottom-right-radius: calc(var(--radius-md) - 1.5px);
@@ -2352,6 +2422,29 @@ section,
   align-items: center;
   justify-content: center;
   margin: 0 auto 22px auto;
+  position: relative;
+}
+
+/* Thin vertical gold rhythm line */
+.why-icon-wrap::before {
+  content: '';
+  position: absolute;
+  top: -14px;
+  bottom: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  background: linear-gradient(180deg, transparent 0%, var(--gold-primary) 30%, var(--gold-light) 50%, var(--gold-primary) 70%, transparent 100%);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: -1;
+  transition: opacity 0.3s ease, top 0.3s ease, bottom 0.3s ease;
+}
+
+.why-card:hover .why-icon-wrap::before {
+  opacity: 0.95;
+  top: -20px;
+  bottom: -20px;
 }
 
 .why-title {
@@ -2379,6 +2472,30 @@ section,
   position: relative;
 }
 
+/* Scroll-Driven Timeline Progress Track & Line */
+.process-timeline-bar {
+  position: absolute;
+  top: 48px;
+  left: 8%;
+  right: 8%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 1px;
+  z-index: 1;
+}
+
+.timeline-progress-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background: var(--gold-gradient);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.65);
+  border-radius: 1px;
+  transition: width 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
 .process-step {
   flex: 1;
   border-radius: var(--radius-md);
@@ -2387,6 +2504,7 @@ section,
   text-align: center;
   transition: var(--transition-smooth);
   overflow: visible;
+  z-index: 2;
 }
 
 .process-step:hover {
@@ -2467,9 +2585,21 @@ section,
 
 .stars {
   color: var(--gold-primary);
-  font-size: 1.1rem;
-  letter-spacing: 2px;
-  margin-bottom: 16px;
+  font-size: 1.15rem;
+  letter-spacing: 4px;
+  text-shadow: 0 0 8px rgba(212, 175, 55, 0.45);
+  margin-bottom: 12px;
+}
+
+.serif-quote-mark {
+  font-family: var(--font-serif);
+  font-size: 3.4rem;
+  color: var(--gold-primary);
+  opacity: 0.35;
+  line-height: 0.8;
+  display: block;
+  margin-bottom: 4px;
+  user-select: none;
 }
 
 .quote-text {
@@ -2638,15 +2768,29 @@ section,
 }
 
 .tab-badge {
-  background: #25d366;
-  color: #0b0f17;
+  background: rgba(212, 175, 55, 0.12) !important;
+  color: var(--gold-light) !important;
+  border: 1px solid var(--gold-border) !important;
   font-size: 0.65rem;
-  font-weight: 800;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding: 2px 7px;
   border-radius: 999px;
   white-space: nowrap;
+}
+
+.tab-icon svg,
+.chip-icon svg {
+  display: inline-block;
+  vertical-align: middle;
+  stroke: var(--gold-light);
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.finish-chip input:checked ~ .chip-inner .chip-icon svg {
+  stroke: var(--gold-tint);
+  filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.6));
 }
 
 /* Sample Kit Information Highlight Box */
@@ -2971,79 +3115,62 @@ select.form-control {
   color: #25d366;
 }
 
-/* Studio Direct Card */
-.studio-direct-card {
+/* Quick Contact Row (Baat karni hai?) */
+.direct-quick-contact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 24px;
+  background: #0e1422 !important;
   border-radius: var(--radius-md);
-  padding: 28px 24px;
-  position: relative;
-  overflow: visible;
-  transition: var(--transition-smooth);
+  margin-top: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
-.studio-badge-sm {
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  color: var(--gold-primary);
-  margin-bottom: 6px;
-}
-
-.studio-title {
+.quick-contact-title {
   font-family: var(--font-serif);
-  font-size: 1.45rem;
-  color: #fff;
-  margin-bottom: 20px;
-}
-
-.studio-item {
-  display: flex;
-  gap: 14px;
-  margin-bottom: 18px;
-}
-
-.item-icon {
-  font-size: 1.25rem;
-  flex-shrink: 0;
-  padding-top: 2px;
-}
-
-.item-content {
-  display: flex;
-  flex-direction: column;
-}
-
-.item-label {
-  font-size: 0.74rem;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-}
-
-.item-val {
-  font-size: 0.96rem;
-  color: #fff;
+  font-size: 1.15rem;
   font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
 }
 
-.link-gold {
-  color: var(--gold-light);
-}
-
-.link-gold:hover {
-  text-decoration: underline;
-}
-
-.item-sub {
-  font-size: 0.74rem;
-  color: var(--text-secondary);
-  margin-top: 2px;
-}
-
-.studio-actions {
+.quick-contact-actions {
   display: flex;
-  gap: 10px;
-  margin-top: 24px;
-  border-top: 1px solid var(--border-subtle);
-  padding-top: 18px;
+  align-items: center;
+  gap: 12px;
+}
+
+.quick-btn-call {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.btn-whatsapp-direct {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #25D366 !important;
+  color: #ffffff !important;
+  border: 1px solid #20BA5A !important;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: var(--transition-smooth);
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.28);
+}
+
+.btn-whatsapp-direct:hover {
+  background: #20BA5A !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(37, 211, 102, 0.4);
 }
 
 /* ==========================================================================
@@ -3052,7 +3179,31 @@ select.form-control {
 .site-footer {
   background: #05070a;
   border-top: 1px solid var(--border-subtle);
-  padding: 80px 0 30px;
+  padding: 40px 0 30px;
+}
+
+/* Footer Registration Divider */
+.footer-registration-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 0 0 40px;
+  opacity: 0.5;
+  color: var(--gold-primary);
+}
+
+.reg-divider-line {
+  flex: 1;
+  max-width: 300px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+}
+
+.reg-divider-crosshair {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .footer-top {
@@ -3070,20 +3221,42 @@ select.form-control {
   font-size: 0.88rem;
   color: var(--text-secondary);
   line-height: 1.6;
-  margin-bottom: 22px;
+  margin-bottom: 18px;
   max-width: 320px;
 }
 
-.footer-contacts {
+.footer-contacts-block {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  font-size: 0.86rem;
-  color: var(--gold-light);
+  gap: 10px;
+  padding: 14px 18px;
+  background: rgba(14, 20, 34, 0.6);
+  border-radius: var(--radius-sm);
+  margin-top: 16px;
+  max-width: 320px;
 }
 
-.footer-contacts a:hover {
-  text-decoration: underline;
+.footer-contacts-block .fc-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.footer-contacts-block .fc-item svg {
+  color: var(--gold-light);
+  flex-shrink: 0;
+}
+
+.footer-contacts-block .fc-item a {
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-contacts-block .fc-item a:hover {
+  color: var(--gold-light);
 }
 
 .footer-heading {
