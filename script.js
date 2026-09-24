@@ -67,6 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initLuxuryBackgroundAnimation();
   initMobileNav();
   initPortfolioFilters();
+  initPortfolioCard3DTilt();
+  initInteractiveCardSpotlights();
   initQuoteCalculator();
   initHeroGSAPReveal();
   initHero3DTilt();
@@ -142,6 +144,16 @@ function switchFinish(finishKey) {
     sheen.style.animation = 'none';
     sheen.offsetHeight; /* trigger reflow */
     sheen.style.animation = 'light-sheen 4s ease-in-out';
+  }
+
+  // Subtle tactile pulse on finish box
+  const detailBox = document.getElementById('finishDetailBox');
+  if (detailBox) {
+    detailBox.style.transition = 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)';
+    detailBox.style.transform = 'scale(0.99)';
+    setTimeout(() => {
+      detailBox.style.transform = '';
+    }, 200);
   }
 }
 
@@ -1407,5 +1419,110 @@ function initLuxuryBackgroundAnimation() {
   animFrameId = requestAnimationFrame(animate);
 }
 
+/* ==========================================================================
+   PHASE 2: SYNCHRONIZED GOLD CONIC ROTATOR & 3D INTERACTIVE CARD ARCHITECTURE
+   ========================================================================== */
 
+/**
+ * 1. Synchronized Gold Conic Angle Engine
+ * Provides fluid 60fps fallback rotation for browsers lacking CSS @property support
+ */
+(function initGoldConicFallbackEngine() {
+  if (window.CSS && CSS.registerProperty) return;
 
+  let angle = 0;
+  let lastTime = performance.now();
+  let rafId = null;
+
+  function step(currentTime) {
+    const delta = (currentTime - lastTime) / 1000;
+    lastTime = currentTime;
+    // 60 deg/sec = 6 seconds for a full luxury rotation
+    angle = (angle + delta * 60) % 360;
+    document.documentElement.style.setProperty('--gold-conic-angle', angle.toFixed(1) + 'deg');
+    rafId = requestAnimationFrame(step);
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+    } else {
+      lastTime = performance.now();
+      if (!rafId) rafId = requestAnimationFrame(step);
+    }
+  });
+
+  rafId = requestAnimationFrame(step);
+})();
+
+/**
+ * 2. Dynamic Cursor Spotlight Shimmer
+ * Tracks cursor position across luxury cards and translates ambient gold radiance
+ */
+function initInteractiveCardSpotlights() {
+  if (window.innerWidth < 992 || 'ontouchstart' in window) return;
+
+  const targetCards = document.querySelectorAll(
+    '.portfolio-card, .finish-detail-box, .custom-print-banner, .gold-frame, .summary-card'
+  );
+
+  targetCards.forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      card.style.setProperty('--mouse-x', `${x.toFixed(1)}%`);
+      card.style.setProperty('--mouse-y', `${y.toFixed(1)}%`);
+    }, { passive: true });
+  });
+}
+
+/**
+ * 3. Portfolio Card 3D Perspective Tilt
+ * Adds smooth tactile 3D depth to showcase cards on desktop
+ */
+function initPortfolioCard3DTilt() {
+  if (window.innerWidth < 992 || 'ontouchstart' in window) return;
+
+  const cards = document.querySelectorAll('.portfolio-card');
+  cards.forEach(card => {
+    let rafId = null;
+    let targetRx = 0;
+    let targetRy = 0;
+    let curRx = 0;
+    let curRy = 0;
+
+    function updateTilt() {
+      curRx += (targetRx - curRx) * 0.12;
+      curRy += (targetRy - curRy) * 0.12;
+      card.style.transform = `perspective(1000px) rotateX(${curRx.toFixed(2)}deg) rotateY(${curRy.toFixed(2)}deg) translateY(-6px)`;
+      if (Math.abs(targetRx - curRx) > 0.04 || Math.abs(targetRy - curRy) > 0.04) {
+        rafId = requestAnimationFrame(updateTilt);
+      } else {
+        rafId = null;
+      }
+    }
+
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const normX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      const normY = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+      targetRx = -normY * 5; // clamp to max ±5 deg
+      targetRy = normX * 5;
+      if (!rafId) rafId = requestAnimationFrame(updateTilt);
+    }, { passive: true });
+
+    card.addEventListener('mouseleave', () => {
+      targetRx = 0;
+      targetRy = 0;
+      card.style.transform = '';
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+    }, { passive: true });
+  });
+}
