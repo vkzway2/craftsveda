@@ -3,18 +3,18 @@
    Saki Naka, Mumbai
    ========================================================================== */
 
-@property --rgb-angle {
+@property --gold-conic-angle {
   syntax: '<angle>';
   initial-value: 0deg;
   inherits: false;
 }
 
-@keyframes rgbBorderSpin {
+@keyframes goldConicSpin {
   0% {
-    --rgb-angle: 0deg;
+    --gold-conic-angle: 0deg;
   }
   100% {
-    --rgb-angle: 360deg;
+    --gold-conic-angle: 360deg;
   }
 }
 
@@ -278,11 +278,68 @@ section,
   border: var(--hairline-gold) !important;
 }
 
-/* Gold Frame Placeholder (Phase 1 placeholder — refined in Phase 2 with 1px rotating conic border & subtle shadow) */
+/* ==========================================================================
+   PHASE 2: REFINED LUXURY GOLD FRAME ARCHITECTURE
+   ========================================================================== */
 .gold-frame {
-  border: 1px solid rgba(212, 175, 55, 0.35);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
-  position: relative;
+  position: relative !important;
+  isolation: isolate;
+  background: #0e1422 !important;
+  border-radius: var(--radius-md);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65), 0 0 24px rgba(212, 175, 55, 0.12);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+}
+
+.gold-frame::before {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: inherit;
+  box-sizing: border-box;
+  background: 
+    linear-gradient(#0e1422, #0e1422) padding-box,
+    conic-gradient(
+      from var(--gold-conic-angle, 0deg),
+      rgba(212, 175, 55, 0.15) 0%,
+      rgba(245, 230, 168, 0.85) 25%,
+      rgba(212, 175, 55, 0.25) 50%,
+      #d4af37 75%,
+      rgba(212, 175, 55, 0.15) 100%
+    ) border-box;
+  border: 1.5px solid transparent;
+  pointer-events: none;
+  z-index: 1;
+  animation: goldConicSpin 6s linear infinite;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+}
+
+.gold-frame::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(212, 175, 55, 0.2) 0%,
+    rgba(245, 230, 168, 0.06) 50%,
+    transparent 75%
+  );
+  filter: blur(18px);
+  -webkit-filter: blur(18px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.55;
+  transition: opacity 0.35s ease, filter 0.35s ease;
+}
+
+.gold-frame:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.75), 0 0 32px rgba(212, 175, 55, 0.22);
+}
+
+.gold-frame:hover::after {
+  opacity: 0.95;
+  filter: blur(24px);
 }
 
 /* Tabular numerals for stats and figures */
@@ -468,7 +525,7 @@ section,
   z-index: 2;
 }
 
-/* 3. Layer 1 (z-index: 0): Radiant Outer Neon Glow Bloom Radiating into Background
+/* 3. Layer 1 (z-index: 0): Radiant Outer 24K Gold Ambient Halo Bloom
       Unmasked Gaussian blur diffuses with 100% smooth natural falloff into canvas */
 .category-card::after,
 .custom-print-banner::after,
@@ -488,29 +545,23 @@ section,
   position: absolute;
   inset: -3px;
   border-radius: inherit;
-  background: conic-gradient(
-    from var(--rgb-angle, 0deg),
-    #00f0ff 0%,
-    #0066ff 14%,
-    #7928ca 28%,
-    #ff0080 42%,
-    #ff2200 56%,
-    #ffb700 70%,
-    #00ff66 84%,
-    #00f0ff 100%
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(212, 175, 55, 0.22) 0%,
+    rgba(245, 230, 168, 0.08) 50%,
+    transparent 75%
   );
   filter: blur(18px);
   -webkit-filter: blur(18px);
   pointer-events: none;
   z-index: 0;
-  opacity: 0.55; /* Always beautifully luminous in resting state */
+  opacity: 0.55;
   transition: opacity 0.35s ease, filter 0.35s ease;
-  animation: rgbBorderSpin 3.5s linear infinite;
 }
 
-/* 4. Layer 2 (z-index: 1): Razor-Sharp 1.5px Laser Border Line + 100% Solid Dark Interior Shield
+/* 4. Layer 2 (z-index: 1): Razor-Sharp 1.5px 24K Gold Conic Border + 100% Solid Dark Interior Shield
       Padding-box is 100% solid dark #0e1422, completely sealing the interior!
-      Border-box lets the 1.5px continuous rotating RGB laser line shine around perimeter */
+      Border-box lets the 1.5px continuous rotating gold laser line shine around perimeter */
 .category-card::before,
 .custom-print-banner::before,
 .finish-detail-box::before,
@@ -533,25 +584,23 @@ section,
   background: 
     linear-gradient(#0e1422, #0e1422) padding-box,
     conic-gradient(
-      from var(--rgb-angle, 0deg),
-      #00f0ff 0%,
-      #0066ff 14%,
-      #7928ca 28%,
-      #ff0080 42%,
-      #ff2200 56%,
-      #ffb700 70%,
-      #00ff66 84%,
-      #00f0ff 100%
+      from var(--gold-conic-angle, 0deg),
+      rgba(212, 175, 55, 0.12) 0%,
+      rgba(245, 230, 168, 0.85) 20%,
+      rgba(212, 175, 55, 0.22) 45%,
+      #d4af37 60%,
+      rgba(140, 107, 31, 0.3) 80%,
+      rgba(212, 175, 55, 0.12) 100%
     ) border-box;
   border: 1.5px solid transparent;
   pointer-events: none;
   z-index: 1;
-  animation: rgbBorderSpin 3.5s linear infinite;
+  animation: goldConicSpin 6s linear infinite;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
   transition: box-shadow 0.35s ease;
 }
 
-/* 5. ON HOVER & ACTIVE: Radiant outer neon glow intensifies and expands */
+/* 5. ON HOVER & ACTIVE: Radiant outer gold halo intensifies and expands */
 .category-card:hover::after,
 .custom-print-banner:hover::after,
 .finish-detail-box:hover::after,
@@ -579,7 +628,13 @@ section,
 .summary-card:active::after,
 .studio-direct-card:active::after,
 .sample-kit-banner:active::after {
-  opacity: 0.92 !important;
+  opacity: 0.95 !important;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(212, 175, 55, 0.32) 0%,
+    rgba(245, 230, 168, 0.14) 50%,
+    transparent 80%
+  ) !important;
   filter: blur(24px) !important;
   -webkit-filter: blur(24px) !important;
 }
@@ -596,8 +651,22 @@ section,
 .quote-form-card:hover::before,
 .summary-card:hover::before,
 .studio-direct-card:hover::before,
-.sample-kit-banner:hover::before {
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.6);
+.sample-kit-banner:hover::before,
+.gold-frame:hover::before {
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.65), 0 0 16px rgba(212, 175, 55, 0.18);
+}
+
+/* Phase 2: Dynamic Cursor Spotlight Shimmer Following Mouse */
+.portfolio-card:hover::after,
+.finish-detail-box:hover::after,
+.custom-print-banner:hover::after,
+.gold-frame:hover::after {
+  background: radial-gradient(
+    circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(212, 175, 55, 0.36) 0%,
+    rgba(245, 230, 168, 0.12) 40%,
+    transparent 75%
+  ) !important;
 }
 
 /* ==========================================================================
@@ -809,20 +878,6 @@ section,
 /* ==========================================================================
    01 — HERO SECTION (100svh High-Precision Luxury Framed Layout)
    ========================================================================== */
-@property --gold-conic-angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
-}
-
-@keyframes goldConicSpin {
-  0% {
-    --gold-conic-angle: 0deg;
-  }
-  100% {
-    --gold-conic-angle: 360deg;
-  }
-}
 
 @keyframes goldShimmerMove {
   0% {
