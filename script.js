@@ -565,6 +565,47 @@ function showToast(text) {
   }, 5000);
 }
 
+/**
+ * Cross-Browser Email Copy with Clipboard API, execCommand, and mailto fallback
+ */
+function copyEmailToClipboard(email, e) {
+  if (e && typeof e.preventDefault === 'function') e.preventDefault();
+
+  if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+    navigator.clipboard.writeText(email)
+      .then(() => {
+        showToast('✉ Email copied to clipboard!');
+      })
+      .catch(() => {
+        copyViaExecCommand(email);
+      });
+  } else {
+    copyViaExecCommand(email);
+  }
+}
+
+function copyViaExecCommand(text) {
+  try {
+    const tempInput = document.createElement('textarea');
+    tempInput.value = text;
+    tempInput.setAttribute('readonly', '');
+    tempInput.style.position = 'fixed';
+    tempInput.style.opacity = '0';
+    tempInput.style.left = '-9999px';
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    tempInput.setSelectionRange(0, 99999);
+    const successful = document.execCommand('copy');
+    document.body.removeChild(tempInput);
+    if (successful) {
+      showToast('✉ Email copied to clipboard!');
+      return;
+    }
+  } catch (_) {}
+  // Final fallback to native mailto link
+  window.location.href = 'mailto:' + text;
+}
+
 /* ==========================================================================
    07. HERO 3D TILT WITH LERP SMOOTHING & PARALLAX FOIL SWEEP
    ========================================================================== */
@@ -574,7 +615,7 @@ function initHero3DTilt() {
   const foilSweep = document.getElementById('foilLightSweep');
   if (!card || !stage) return;
 
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReduced) return;
 
   let targetX = 0;
@@ -1003,7 +1044,7 @@ function initSmoothScroll() {
    10. GSAP ENTRANCE TIMELINE, SVG STROKE DRAWINGS & NUMBER COUNTERS
    ========================================================================== */
 function initHeroGSAPReveal() {
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const pantoneRing = document.getElementById('pantoneRing');
   const clockArc = document.getElementById('clockArc');
   const statGsm = document.getElementById('statGsm');
@@ -1645,7 +1686,7 @@ function initTestimonialsMobileSwipe() {
  * Thin gold bar at the top of the page showing reading progress
  */
 function initScrollProgressBar() {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const bar = document.createElement('div');
   bar.className = 'scroll-progress-bar';
@@ -1669,7 +1710,8 @@ function initScrollProgressBar() {
  * Also handles stagger-reveal for grid children with sequential delays.
  */
 function initScrollReveal() {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!('IntersectionObserver' in window)) return;
 
   // Tag section headers for reveal
   document.querySelectorAll('.section-header').forEach(h => {
@@ -1723,7 +1765,7 @@ function initScrollReveal() {
  */
 function initMagneticButtons() {
   if (window.innerWidth < 992 || 'ontouchstart' in window) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const buttons = document.querySelectorAll(
     '.hero-cta-button, .cta-primary, .btn-submit-quote'
@@ -1752,7 +1794,7 @@ function initMagneticButtons() {
  * Material-style expanding ripple on CTA button clicks
  */
 function initButtonRipple() {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const buttons = document.querySelectorAll(
     '.hero-cta-button, .cta-primary, .btn-submit-quote, .lead-tab, .finish-nav-item'
@@ -1783,7 +1825,8 @@ function initButtonRipple() {
  * Animated gold underline appears under section titles as they enter viewport
  */
 function initSectionTitleLineWipe() {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced || !('IntersectionObserver' in window)) {
     document.querySelectorAll('.section-title').forEach(t => t.classList.add('line-wipe-active'));
     return;
   }
