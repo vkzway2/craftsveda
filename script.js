@@ -77,6 +77,12 @@ document.addEventListener('DOMContentLoaded', () => {
   initHeroSlider();
   initScrollSpy();
   initSmoothScroll();
+  // Phase 4: Micro-interactions
+  initScrollProgressBar();
+  initScrollReveal();
+  initMagneticButtons();
+  initButtonRipple();
+  initSectionTitleLineWipe();
 });
 
 /* ==========================================================================
@@ -267,7 +273,7 @@ function setLeadMode(mode) {
     if (sampleBanner) sampleBanner.style.display = 'flex';
 
     if (productSelect) {
-      productSelect.value = '📦 Physical Sample Kit (₹499 / Studio Swatch Deck)';
+      productSelect.value = 'Physical Sample Kit (₹499 / Studio Swatch Deck)';
     }
     if (paperStock) {
       paperStock.value = 'Curated Swatch Deck (15+ Luxury Papers & Foil Catalog)';
@@ -282,7 +288,7 @@ function setLeadMode(mode) {
       summaryModeLabel.textContent = 'PHYSICAL SAMPLE KIT REQUEST';
     }
     if (summaryTipText) {
-      summaryTipText.textContent = '📦 ₹499 fee is 100% credited back toward your first production order!';
+      summaryTipText.innerHTML = '<span class="tip-sparkle">✦</span> ₹499 fee is 100% credited back toward your first production order!';
     }
     if (leadTypeHidden) leadTypeHidden.value = 'Physical Sample Kit Request (₹499)';
     if (web3Subject) web3Subject.value = 'Sample Kit Request (₹499) — CraftsVeda Studio';
@@ -315,7 +321,7 @@ function setLeadMode(mode) {
       summaryModeLabel.textContent = 'LIVE INQUIRY SPECIFICATION';
     }
     if (summaryTipText) {
-      summaryTipText.textContent = '💡 Instant 30-minute response guaranteed during studio hours.';
+      summaryTipText.innerHTML = '<span class="tip-sparkle">✦</span> Instant 30-minute response guaranteed during studio hours.';
     }
     if (leadTypeHidden) leadTypeHidden.value = 'Custom Print Quote';
     if (web3Subject) web3Subject.value = 'New Print Quote Inquiry — CraftsVeda Studio';
@@ -677,6 +683,7 @@ const HERO_SLIDES_DATA = [
 
 function initHeroSlider() {
   const viewport = document.getElementById('showcaseViewport');
+  const deck = document.getElementById('showcaseDeck');
   const slides = document.querySelectorAll('#showcaseDeck .showcase-slide');
   const dashes = document.querySelectorAll('#heroSliderDots .dash-btn');
   const prevBtn = document.getElementById('heroPrevBtn');
@@ -689,11 +696,34 @@ function initHeroSlider() {
 
   if (!viewport || slides.length === 0) return;
 
+  if (deck) {
+    deck.classList.add('showcase-deck-ready');
+  }
+
   let currentIndex = 0;
   let autoplayTimer = null;
   const AUTOPLAY_INTERVAL = 5000;
   let isPaused = false;
   let isTransitioning = false;
+
+  function ensureSlideLoaded(slideEl) {
+    if (!slideEl) return;
+    const img = slideEl.querySelector('img[data-src]');
+    if (img) {
+      img.src = img.getAttribute('data-src');
+      img.removeAttribute('data-src');
+    }
+  }
+
+  // Preload remaining slides lazily during idle time
+  const preloadRemaining = () => {
+    slides.forEach(ensureSlideLoaded);
+  };
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(preloadRemaining, { timeout: 2000 });
+  } else {
+    setTimeout(preloadRemaining, 1200);
+  }
 
   function goToSlide(newIndex) {
     if (newIndex === currentIndex || isTransitioning) return;
@@ -708,6 +738,11 @@ function initHeroSlider() {
     const oldSlide = slides[currentIndex];
     const newSlide = slides[newIndex];
     const data = HERO_SLIDES_DATA[newIndex];
+
+    // Ensure new slide image is loaded
+    if (newSlide) {
+      ensureSlideLoaded(newSlide);
+    }
 
     // 1. 3D Slide Transition: Exit Old Slide with -25deg Rotation
     if (oldSlide) {
@@ -1035,13 +1070,7 @@ function initHeroGSAPReveal() {
       }
     });
 
-    tl.from('#heroGoldCard', {
-      opacity: 0,
-      y: 16,
-      scale: 0.98,
-      duration: 0.45
-    }, 0)
-    .from('#heroBadge', {
+    tl.from('#heroBadge', {
       opacity: 0,
       y: -10,
       duration: 0.3
@@ -1532,23 +1561,48 @@ function initPortfolioCard3DTilt() {
 /**
  * 4. Scroll-Driven Timeline Progress Line (#how-it-works)
  * Smoothly scales the gold line across the 5 process steps on scroll
+ * Supports horizontal progression on desktop and vertical progression on mobile
  */
 function initScrollDrivenTimeline() {
   const line = document.getElementById('timelineProgressLine');
   const section = document.getElementById('how-it-works');
   if (!line || !section) return;
 
+  const steps = section.querySelectorAll('.process-step');
+
   function updateTimeline() {
     const rect = section.getBoundingClientRect();
     const windowH = window.innerHeight;
-    const totalDist = rect.height + windowH * 0.4;
-    const currentPos = windowH * 0.8 - rect.top;
+    const startOffset = windowH * 0.85;
+    const endOffset = windowH * 0.15;
+    const totalDist = rect.height + startOffset - endOffset;
+    const currentPos = startOffset - rect.top;
     let progress = currentPos / totalDist;
     progress = Math.max(0, Math.min(1, progress));
-    line.style.width = `${(progress * 100).toFixed(1)}%`;
+
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+      line.style.width = '100%';
+      line.style.height = `${(progress * 100).toFixed(1)}%`;
+    } else {
+      line.style.height = '100%';
+      line.style.width = `${(progress * 100).toFixed(1)}%`;
+    }
+
+    // Step milestone activations as the line reaches each step
+    const thresholds = [0.05, 0.25, 0.50, 0.75, 0.95];
+    steps.forEach((step, idx) => {
+      const milestone = thresholds[idx] !== undefined ? thresholds[idx] : idx / (steps.length - 1);
+      if (progress >= milestone) {
+        step.classList.add('is-active');
+      } else {
+        step.classList.remove('is-active');
+      }
+    });
   }
 
   window.addEventListener('scroll', updateTimeline, { passive: true });
+  window.addEventListener('resize', updateTimeline, { passive: true });
   updateTimeline();
 }
 
@@ -1580,4 +1634,170 @@ function initTestimonialsMobileSwipe() {
   grid.addEventListener('touchend', () => {
     isDown = false;
   }, { passive: true });
+}
+
+/* ==========================================================================
+   PHASE 4: MICRO-INTERACTION ENGINES
+   ========================================================================== */
+
+/**
+ * P4-1. Scroll Progress Bar
+ * Thin gold bar at the top of the page showing reading progress
+ */
+function initScrollProgressBar() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const bar = document.createElement('div');
+  bar.className = 'scroll-progress-bar';
+  bar.setAttribute('aria-hidden', 'true');
+  document.body.prepend(bar);
+
+  function updateProgress() {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    bar.style.width = progress.toFixed(1) + '%';
+  }
+
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+}
+
+/**
+ * P4-2. Scroll-Reveal Animation System
+ * IntersectionObserver-based reveal for section headers and content blocks.
+ * Also handles stagger-reveal for grid children with sequential delays.
+ */
+function initScrollReveal() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  // Tag section headers for reveal
+  document.querySelectorAll('.section-header').forEach(h => {
+    if (!h.closest('.hero-section')) h.classList.add('scroll-reveal');
+  });
+
+  // Tag key content containers
+  document.querySelectorAll(
+    '.finishes-explorer, .quote-main-wrapper, .custom-print-banner, .finish-detail-box'
+  ).forEach(el => el.classList.add('scroll-reveal'));
+
+  // Tag grid items for stagger
+  const staggerContainers = document.querySelectorAll(
+    '.categories-grid, .portfolio-filter-grid, .features-grid, .testimonials-grid'
+  );
+  staggerContainers.forEach(grid => {
+    Array.from(grid.children).forEach((child, i) => {
+      child.classList.add('stagger-child');
+      child.style.transitionDelay = `${i * 80}ms`;
+    });
+  });
+
+  // Observe scroll-reveal elements
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+
+  document.querySelectorAll('.scroll-reveal').forEach(el => revealObserver.observe(el));
+
+  // Observe stagger children
+  const staggerObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        staggerObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.stagger-child').forEach(el => staggerObserver.observe(el));
+}
+
+/**
+ * P4-3. Magnetic Button Effect
+ * CTA buttons subtly pull toward cursor on hover (desktop only)
+ */
+function initMagneticButtons() {
+  if (window.innerWidth < 992 || 'ontouchstart' in window) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const buttons = document.querySelectorAll(
+    '.hero-cta-button, .cta-primary, .btn-submit-quote'
+  );
+
+  buttons.forEach(btn => {
+    btn.classList.add('magnetic-btn');
+
+    btn.addEventListener('mousemove', (e) => {
+      const rect = btn.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = (e.clientX - cx) * 0.2;
+      const dy = (e.clientY - cy) * 0.2;
+      btn.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px)`;
+    }, { passive: true });
+
+    btn.addEventListener('mouseleave', () => {
+      btn.style.transform = '';
+    }, { passive: true });
+  });
+}
+
+/**
+ * P4-4. Button Click Ripple
+ * Material-style expanding ripple on CTA button clicks
+ */
+function initButtonRipple() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const buttons = document.querySelectorAll(
+    '.hero-cta-button, .cta-primary, .btn-submit-quote, .lead-tab, .finish-nav-item'
+  );
+
+  buttons.forEach(btn => {
+    btn.style.position = btn.style.position || 'relative';
+    btn.style.overflow = 'hidden';
+
+    btn.addEventListener('click', (e) => {
+      const ripple = document.createElement('span');
+      ripple.className = 'btn-ripple';
+
+      const rect = btn.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      ripple.style.width = ripple.style.height = size + 'px';
+      ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+      ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+
+      btn.appendChild(ripple);
+      ripple.addEventListener('animationend', () => ripple.remove());
+    });
+  });
+}
+
+/**
+ * P4-5. Section Title Gold Line Wipe
+ * Animated gold underline appears under section titles as they enter viewport
+ */
+function initSectionTitleLineWipe() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('.section-title').forEach(t => t.classList.add('line-wipe-active'));
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('line-wipe-active');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5, rootMargin: '0px 0px -30px 0px' });
+
+  document.querySelectorAll('.section-title').forEach(title => {
+    observer.observe(title);
+  });
 }
