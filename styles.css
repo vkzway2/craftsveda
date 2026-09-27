@@ -261,6 +261,18 @@ section,
   position: relative;
 }
 
+/* Below-fold sections: skip layout/paint until near viewport — cuts initial layout cost */
+.section-what-we-print,
+.section-special-finishes,
+.section-why,
+.section-how-it-works,
+.section-our-work,
+.section-testimonials,
+.section-quote {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 800px;
+}
+
 /* Ensure Hero section preserves fit height without section padding */
 .hero-section {
   padding: 0 !important;
@@ -1227,9 +1239,6 @@ section,
   transform: rotateY(25deg) translateZ(-60px) scale(0.96);
   transform-style: preserve-3d;
   backface-visibility: hidden;
-  transition: opacity 0.65s cubic-bezier(0.25, 1, 0.5, 1),
-              transform 0.75s cubic-bezier(0.25, 1, 0.5, 1),
-              visibility 0.75s;
   pointer-events: none;
 }
 
@@ -1239,6 +1248,13 @@ section,
   transform: rotateY(0deg) translateZ(0) scale(1);
   pointer-events: auto;
   z-index: 2;
+}
+
+/* Enable smooth 3D transitions after slider is initialized */
+.showcase-deck-ready .showcase-slide {
+  transition: opacity 0.65s cubic-bezier(0.25, 1, 0.5, 1),
+              transform 0.75s cubic-bezier(0.25, 1, 0.5, 1),
+              visibility 0.75s;
 }
 
 .showcase-slide.exit-3d {
@@ -1421,34 +1437,53 @@ section,
 
 .dash-btn {
   position: relative;
-  width: 16px;
-  height: 3.5px;
+  width: 24px;
+  height: 28px;
   border-radius: 3px;
-  background: rgba(255, 255, 255, 0.2);
+  background: transparent;
   border: none;
-  padding: 0;
+  padding: 12px 0;
   cursor: pointer;
-  overflow: hidden;
-  transition: width 0.25s ease, background 0.25s ease;
+  display: flex;
+  align-items: center;
+  transition: width 0.25s ease;
+  box-sizing: border-box;
 }
 
-.dash-btn:hover {
+.dash-btn::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 12px;
+  height: 4px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  transition: background 0.25s ease;
+  pointer-events: none;
+}
+
+.dash-btn:hover::before {
   background: rgba(255, 255, 255, 0.4);
 }
 
 .dash-btn.active {
-  width: 28px;
+  width: 32px;
+}
+
+.dash-btn.active::before {
   background: rgba(212, 175, 55, 0.3);
 }
 
 .dash-fill {
   position: absolute;
-  top: 0;
+  top: 12px;
   left: 0;
-  height: 100%;
+  height: 4px;
   width: 0;
   background: var(--gold-gradient);
-  border-radius: inherit;
+  border-radius: 3px;
+  pointer-events: none;
 }
 
 .dash-btn.active .dash-fill {
@@ -2421,30 +2456,54 @@ section,
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 22px auto;
+  margin: 14px auto 22px auto;
   position: relative;
+  z-index: 1;
 }
 
-/* Thin vertical gold rhythm line */
+/* Thin vertical gold rhythm line extending above and below the icon box */
 .why-icon-wrap::before {
   content: '';
   position: absolute;
-  top: -14px;
-  bottom: -14px;
+  top: -16px;
   left: 50%;
   transform: translateX(-50%);
-  width: 1px;
-  background: linear-gradient(180deg, transparent 0%, var(--gold-primary) 30%, var(--gold-light) 50%, var(--gold-primary) 70%, transparent 100%);
-  opacity: 0.5;
+  width: 1.5px;
+  height: 16px;
+  background: linear-gradient(180deg, transparent 0%, var(--gold-primary) 100%);
+  opacity: 0.8;
   pointer-events: none;
-  z-index: -1;
-  transition: opacity 0.3s ease, top 0.3s ease, bottom 0.3s ease;
+  transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.why-icon-wrap::after {
+  content: '';
+  position: absolute;
+  bottom: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1.5px;
+  height: 16px;
+  background: linear-gradient(180deg, var(--gold-primary) 0%, transparent 100%);
+  opacity: 0.8;
+  pointer-events: none;
+  transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .why-card:hover .why-icon-wrap::before {
-  opacity: 0.95;
-  top: -20px;
-  bottom: -20px;
+  opacity: 1;
+  top: -22px;
+  height: 22px;
+  background: linear-gradient(180deg, transparent 0%, var(--gold-light) 100%);
+  box-shadow: 0 0 6px rgba(212, 175, 55, 0.7);
+}
+
+.why-card:hover .why-icon-wrap::after {
+  opacity: 1;
+  bottom: -22px;
+  height: 22px;
+  background: linear-gradient(180deg, var(--gold-light) 0%, transparent 100%);
+  box-shadow: 0 0 6px rgba(212, 175, 55, 0.7);
 }
 
 .why-title {
@@ -2465,23 +2524,25 @@ section,
    06 — HOW IT WORKS (5-STEP FLOW)
    ========================================================================== */
 .process-flow {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
   position: relative;
+  align-items: stretch;
+  margin-top: 24px;
 }
 
 /* Scroll-Driven Timeline Progress Track & Line */
 .process-timeline-bar {
   position: absolute;
-  top: 48px;
-  left: 8%;
-  right: 8%;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 1px;
+  top: 73px;
+  left: 9%;
+  right: 9%;
+  height: 3px;
+  background: rgba(212, 175, 55, 0.15);
+  border-radius: 3px;
   z-index: 1;
+  pointer-events: none;
 }
 
 .timeline-progress-line {
@@ -2490,25 +2551,49 @@ section,
   left: 0;
   height: 100%;
   width: 0%;
-  background: var(--gold-gradient);
-  box-shadow: 0 0 10px rgba(212, 175, 55, 0.65);
-  border-radius: 1px;
-  transition: width 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  background: linear-gradient(90deg, #aa8022 0%, #d4af37 60%, #fff 100%);
+  box-shadow: 0 0 14px rgba(212, 175, 55, 0.9), 0 0 5px #fff;
+  border-radius: 3px;
+  transition: width 0.1s linear;
+}
+
+.timeline-progress-line::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -5px;
+  transform: translateY(-50%);
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1.5px solid var(--gold-primary);
+  box-shadow: 0 0 12px 2px rgba(212, 175, 55, 0.95), 0 0 6px #fff;
 }
 
 .process-step {
-  flex: 1;
+  background: rgba(14, 18, 27, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 28px 20px;
+  padding: 34px 18px 24px;
   position: relative;
   text-align: center;
-  transition: var(--transition-smooth);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
   overflow: visible;
   z-index: 2;
 }
 
-.process-step:hover {
-  transform: translateY(-5px);
+.process-step:hover,
+.process-step.is-active {
+  transform: translateY(-6px);
+  border-color: var(--gold-border);
+  background: rgba(18, 24, 37, 0.9);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45), 0 0 24px rgba(212, 175, 55, 0.18);
 }
 
 .step-badge {
@@ -2516,43 +2601,83 @@ section,
   top: -14px;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--gold-gradient);
-  color: #090c12;
-  font-size: 0.76rem;
+  background: #090d15 !important;
+  color: #fce8a6 !important;
+  border: 1.5px solid var(--gold-primary) !important;
+  font-size: 0.8rem;
   font-weight: 800;
-  padding: 3px 12px;
-  border-radius: 100px;
-  letter-spacing: 0.05em;
-  z-index: 3;
+  font-family: var(--font-sans);
+  padding: 3px 14px;
+  border-radius: 999px;
+  letter-spacing: 0.08em;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7), 0 0 10px rgba(212, 175, 55, 0.3);
+  z-index: 4;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.step-icon {
-  font-size: 2rem;
-  margin-top: 10px;
-  margin-bottom: 14px;
+.process-step:hover .step-badge,
+.process-step.is-active .step-badge {
+  background: #111827 !important;
+  color: #ffffff !important;
+  border-color: #ffd700 !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.8), 0 0 16px rgba(212, 175, 55, 0.65);
+  transform: translateX(-50%) scale(1.08);
+}
+
+.step-icon-wrap {
+  width: 58px;
+  height: 58px;
+  border-radius: var(--radius-sm);
+  background: #0d121c;
+  border: 1px solid var(--gold-border);
+  color: var(--gold-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px auto 18px auto;
+  position: relative;
+  z-index: 3;
+  transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+
+.step-icon-wrap svg {
+  display: block;
+  stroke: var(--gold-light);
+  color: var(--gold-light);
+  transition: all 0.3s ease;
+}
+
+.process-step:hover .step-icon-wrap,
+.process-step.is-active .step-icon-wrap {
+  background: rgba(212, 175, 55, 0.2);
+  border-color: var(--gold-primary);
+  color: #fff;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.45);
+  transform: scale(1.08);
+}
+
+.process-step:hover .step-icon-wrap svg,
+.process-step.is-active .step-icon-wrap svg {
+  stroke: #ffffff;
+  color: #ffffff;
+  filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.85));
 }
 
 .step-title {
   font-family: var(--font-serif);
-  font-size: 1.15rem;
+  font-size: 1.12rem;
   font-weight: 600;
   color: #fff;
   margin-bottom: 10px;
+  line-height: 1.35;
 }
 
 .step-desc {
   font-size: 0.82rem;
   color: var(--text-secondary);
   line-height: 1.55;
-}
-
-.process-connector {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-top: 60px;
-  color: var(--gold-primary);
-  opacity: 0.6;
+  margin: 0;
 }
 
 /* ==========================================================================
@@ -2768,29 +2893,53 @@ section,
 }
 
 .tab-badge {
-  background: rgba(212, 175, 55, 0.12) !important;
-  color: var(--gold-light) !important;
-  border: 1px solid var(--gold-border) !important;
+  background: transparent !important;
+  color: var(--gold-light, #f7e096) !important;
+  border: 1px solid var(--gold-hairline, rgba(212, 175, 55, 0.4)) !important;
   font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding: 2px 7px;
+  padding: 2px 8px;
   border-radius: 999px;
   white-space: nowrap;
+  box-shadow: none !important;
 }
 
-.tab-icon svg,
-.chip-icon svg {
+.tab-icon svg {
   display: inline-block;
   vertical-align: middle;
-  stroke: var(--gold-light);
+  stroke: var(--gold-light, #f7e096) !important;
+  color: var(--gold-light, #f7e096) !important;
   transition: transform 0.2s ease, filter 0.2s ease;
 }
 
+.chip-icon {
+  font-size: 0.92rem;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold-light, #f7e096) !important;
+}
+
+.chip-icon svg {
+  display: inline-block;
+  vertical-align: middle;
+  stroke: var(--gold-light, #f7e096) !important;
+  color: var(--gold-light, #f7e096) !important;
+  fill: none;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.finish-chip:hover .chip-inner .chip-icon svg {
+  stroke: #ffffff !important;
+  filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.7));
+}
+
 .finish-chip input:checked ~ .chip-inner .chip-icon svg {
-  stroke: var(--gold-tint);
-  filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.6));
+  stroke: #ffffff !important;
+  filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.85));
 }
 
 /* Sample Kit Information Highlight Box */
@@ -3113,6 +3262,14 @@ select.form-control {
 .summary-tip {
   font-size: 0.78rem;
   color: #25d366;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tip-sparkle {
+  color: var(--gold-light, #f7e096);
+  font-size: 0.85rem;
 }
 
 /* Quick Contact Row (Baat karni hai?) */
@@ -3150,6 +3307,23 @@ select.form-control {
   border-radius: var(--radius-sm);
   font-weight: 600;
   font-size: 0.85rem;
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid var(--gold-border, rgba(212, 175, 55, 0.4));
+  color: var(--gold-light, #f7e096) !important;
+  text-decoration: none;
+  transition: var(--transition-smooth);
+}
+
+.quick-btn-call:hover {
+  background: rgba(212, 175, 55, 0.2);
+  border-color: var(--gold-primary);
+  color: #ffffff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.3);
+}
+
+.quick-btn-call svg {
+  stroke: currentColor;
 }
 
 .btn-whatsapp-direct {
@@ -3157,18 +3331,24 @@ select.form-control {
   align-items: center;
   gap: 7px;
   background: #25D366 !important;
-  color: #ffffff !important;
-  border: 1px solid #20BA5A !important;
+  color: #051a0e !important;
+  border: 1px solid #1fb755 !important;
   padding: 8px 16px;
   border-radius: var(--radius-sm);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.85rem;
+  text-decoration: none;
   transition: var(--transition-smooth);
   box-shadow: 0 4px 14px rgba(37, 211, 102, 0.28);
 }
 
+.btn-whatsapp-direct svg {
+  fill: #051a0e !important;
+}
+
 .btn-whatsapp-direct:hover {
   background: #20BA5A !important;
+  color: #000000 !important;
   transform: translateY(-2px);
   box-shadow: 0 6px 18px rgba(37, 211, 102, 0.4);
 }
@@ -3178,32 +3358,54 @@ select.form-control {
    ========================================================================== */
 .site-footer {
   background: #05070a;
-  border-top: 1px solid var(--border-subtle);
-  padding: 40px 0 30px;
+  position: relative;
+  padding: 0 0 35px;
+  border-top: none;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
 }
 
-/* Footer Registration Divider */
+/* Print Registration Top Divider */
 .footer-registration-divider {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 20px;
-  padding: 0 0 40px;
-  opacity: 0.5;
-  color: var(--gold-primary);
+  gap: 16px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto 52px auto;
+  padding-top: 32px;
+  position: relative;
 }
 
 .reg-divider-line {
   flex: 1;
-  max-width: 300px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.25) 25%, rgba(212, 175, 55, 0.7) 50%, rgba(212, 175, 55, 0.25) 75%, transparent 100%);
+}
+
+.reg-crop-corner {
+  color: rgba(212, 175, 55, 0.75);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .reg-divider-crosshair {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  color: var(--gold-light, #f7e096);
+  padding: 0 6px;
+  position: relative;
+  filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.45));
+  transition: transform 0.5s ease, color 0.4s ease;
+  cursor: default;
+}
+
+.reg-divider-crosshair:hover {
+  transform: rotate(90deg);
+  color: #fff;
 }
 
 .footer-top {
@@ -3579,17 +3781,20 @@ select.form-control {
   }
 
   .process-flow {
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .process-connector {
-    display: none;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
   }
 
   .process-step {
-    width: 100%;
-    padding: 30px 24px;
+    padding: 28px 10px 18px;
+  }
+
+  .step-title {
+    font-size: 0.98rem;
+  }
+
+  .step-desc {
+    font-size: 0.76rem;
   }
 
   .quote-container-grid {
@@ -4088,20 +4293,78 @@ select.form-control {
     gap: 12px;
   }
 
-  /* 8. Process Flow */
+  /* 8. Process Flow — Mobile Vertical Timeline */
   .process-flow {
+    display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 22px;
+    position: relative;
+    padding-left: 54px;
+    margin-top: 10px;
   }
 
-  .process-connector {
-    display: none;
+  .process-timeline-bar {
+    position: absolute;
+    top: 36px;
+    bottom: 36px;
+    left: 20px;
+    right: auto;
+    width: 2px;
+    height: calc(100% - 72px);
+    background: rgba(212, 175, 55, 0.15);
+  }
+
+  .timeline-progress-line {
+    width: 100% !important;
+    height: 0%;
+    background: linear-gradient(180deg, #aa8022 0%, #d4af37 50%, #fef3c7 100%);
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.85);
+    transition: height 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
   .process-step {
     width: 100%;
     box-sizing: border-box;
-    padding: 28px 18px;
+    padding: 20px 18px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .process-step .step-badge {
+    left: -53px;
+    top: 20px;
+    transform: none;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 0.76rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), 0 0 8px rgba(212, 175, 55, 0.4);
+  }
+
+  .process-step:hover .step-badge,
+  .process-step.is-active .step-badge {
+    transform: scale(1.12);
+  }
+
+  .process-step .step-icon-wrap {
+    margin: 0 0 12px 0;
+    width: 44px;
+    height: 44px;
+  }
+
+  .process-step .step-title {
+    font-size: 1.05rem;
+    margin-bottom: 6px;
+  }
+
+  .process-step .step-desc {
+    font-size: 0.82rem;
   }
 
   /* 9. Quote Form & Sidebar (Ultra-Compact Mobile Controls) */
@@ -4585,4 +4848,223 @@ select.form-control {
     transform: none !important;
     opacity: 1 !important;
   }
+
+  /* Phase 4: Disable all micro-interactions for reduced motion */
+  .scroll-reveal,
+  .stagger-child {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .scroll-progress-bar,
+  .btn-ripple {
+    display: none !important;
+  }
+}
+
+/* ==========================================================================
+   PHASE 4: MICRO-INTERACTIONS & POLISH
+   ========================================================================== */
+
+/* --- 1. Scroll Progress Bar (thin gold bar at page top) --- */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--gold-primary), var(--gold-light), var(--gold-primary));
+  z-index: 10001;
+  pointer-events: none;
+  transition: none;
+  will-change: width;
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+}
+
+/* --- 2. Scroll-Reveal Animation System --- */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.scroll-reveal.reveal-left {
+  transform: translateX(-40px);
+}
+.scroll-reveal.reveal-right {
+  transform: translateX(40px);
+}
+.scroll-reveal.reveal-scale {
+  transform: scale(0.92);
+}
+.scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0) translateX(0) scale(1);
+}
+
+/* Stagger delay for grid children */
+.stagger-child {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.stagger-child.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- 3. Section Title Gold Line Wipe --- */
+.section-title {
+  position: relative;
+  display: inline-block;
+}
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold-primary), var(--gold-light));
+  transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  border-radius: 1px;
+}
+.section-title.line-wipe-active::after {
+  width: 60px;
+}
+
+/* --- 4. Card Shimmer Effect (What We Print / Category Cards) --- */
+.category-card::before,
+.portfolio-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(212, 175, 55, 0.06) 40%,
+    rgba(245, 230, 168, 0.12) 50%,
+    rgba(212, 175, 55, 0.06) 60%,
+    transparent 100%
+  );
+  transition: left 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 1;
+  pointer-events: none;
+}
+.category-card:hover::before,
+.portfolio-card:hover::before {
+  left: 130%;
+}
+
+/* --- 5. Button Ripple Effect --- */
+.btn-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(245, 230, 168, 0.35);
+  transform: scale(0);
+  animation: rippleExpand 0.55s ease-out forwards;
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes rippleExpand {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* --- 6. Magnetic Button Cursor Pull --- */
+.magnetic-btn {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+/* --- 7. Quote Form Field Focus Glow --- */
+.quote-field select:focus,
+.quote-field input:focus,
+.quantity-input:focus {
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.25),
+              0 0 16px rgba(212, 175, 55, 0.12);
+  border-color: var(--gold-primary) !important;
+  transition: box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+/* --- 8. Nav Link Hover Underline Wipe --- */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 1.5px;
+  background: var(--gold-primary);
+  transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1), left 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  border-radius: 1px;
+}
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+  left: 0;
+}
+
+/* --- 9. Finish Nav Tab Active Pulse --- */
+.finish-nav-item.active {
+  animation: tabPulse 0.4s ease-out;
+}
+@keyframes tabPulse {
+  0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+  100% { box-shadow: 0 0 0 8px rgba(212, 175, 55, 0); }
+}
+
+/* --- 10. Testimonial Card Hover Lift --- */
+.testimonial-card {
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.testimonial-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3),
+              0 0 30px rgba(212, 175, 55, 0.08);
+}
+
+/* --- 11. Why CraftsVeda Feature Card Icon Bounce --- */
+.feature-card:hover .feature-icon {
+  animation: iconBounce 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes iconBounce {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.18); }
+  70% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+/* --- 12. Process Step Hover Glow --- */
+.process-step {
+  transition: transform 0.35s ease;
+}
+.process-step:hover {
+  transform: translateY(-4px);
+}
+.process-step:hover .step-icon-circle {
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.3),
+              0 0 40px rgba(212, 175, 55, 0.1);
+}
+
+/* --- 13. CTA Button Glow Pulse on Hover --- */
+.hero-cta-button:hover,
+.cta-primary:hover {
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.4),
+              0 4px 16px rgba(212, 175, 55, 0.2);
+}
+
+/* --- 14. Quote Tab Hover Scale --- */
+.lead-tab:hover {
+  transform: scale(1.03);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
