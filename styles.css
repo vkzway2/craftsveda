@@ -247,7 +247,6 @@ textarea {
 
 section,
 .section,
-.trust-contact-strip,
 .site-header,
 .site-footer {
   width: 100%;
@@ -360,21 +359,11 @@ section,
 /* Tabular numerals for stats and figures */
 .stat-number,
 .counter,
-.spec-counter,
-.s-v,
-.hero-stat-num {
+.s-v {
   font-variant-numeric: tabular-nums;
 }
 
 /* Typography Utilities */
-.text-gold-gradient {
-  background: var(--gold-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  display: inline-block;
-}
-
 .text-center {
   text-align: center;
 }
@@ -443,6 +432,7 @@ section,
   color: var(--text-primary);
   border-color: var(--border-subtle);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .btn-outline-white:hover {
@@ -482,8 +472,6 @@ section,
    ========================================================================== */
 
 /* 1. Base properties for all target cards & boxes */
-.hero-specs-list,
-.mockup-stage-card,
 .category-card,
 .custom-print-banner,
 .finish-detail-box,
@@ -495,7 +483,6 @@ section,
 .metrics-row,
 .quote-form-card,
 .summary-card,
-.studio-direct-card,
 .sample-kit-banner {
   position: relative !important;
   isolation: isolate; /* Creates local stacking context: keeps outer glow behind card surface but ABOVE section backgrounds */
@@ -510,7 +497,6 @@ section,
 /* Individual card border radius specifications */
 .finish-detail-box,
 .quote-form-card,
-.mockup-stage-card,
 .metrics-row {
   border-radius: var(--radius-lg) !important;
 }
@@ -520,8 +506,6 @@ section,
 }
 
 /* 2. Ensure all child content inside cards stays pristine, readable and on top */
-.hero-specs-list > *,
-.mockup-stage-card > *,
 .category-card > *,
 .custom-print-banner > *,
 .finish-detail-box > *,
@@ -533,7 +517,6 @@ section,
 .metrics-row > *,
 .quote-form-card > *,
 .summary-card > *,
-.studio-direct-card > *,
 .sample-kit-banner > * {
   position: relative;
   z-index: 2;
@@ -552,7 +535,6 @@ section,
 .metrics-row::after,
 .quote-form-card::after,
 .summary-card::after,
-.studio-direct-card::after,
 .sample-kit-banner::after {
   content: '';
   position: absolute;
@@ -586,7 +568,6 @@ section,
 .metrics-row::before,
 .quote-form-card::before,
 .summary-card::before,
-.studio-direct-card::before,
 .sample-kit-banner::before {
   content: '';
   position: absolute;
@@ -624,7 +605,6 @@ section,
 .metrics-row:hover::after,
 .quote-form-card:hover::after,
 .summary-card:hover::after,
-.studio-direct-card:hover::after,
 .sample-kit-banner:hover::after,
 .category-card:active::after,
 .custom-print-banner:active::after,
@@ -637,7 +617,6 @@ section,
 .metrics-row:active::after,
 .quote-form-card:active::after,
 .summary-card:active::after,
-.studio-direct-card:active::after,
 .sample-kit-banner:active::after {
   opacity: 0.95 !important;
   background: radial-gradient(
@@ -661,7 +640,6 @@ section,
 .metrics-row:hover::before,
 .quote-form-card:hover::before,
 .summary-card:hover::before,
-.studio-direct-card:hover::before,
 .sample-kit-banner:hover::before,
 .gold-frame:hover::before {
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.65), 0 0 16px rgba(212, 175, 55, 0.18);
@@ -2981,26 +2959,6 @@ section,
   color: #fff;
 }
 
-.form-title {
-  font-family: var(--font-serif);
-  font-size: 1.7rem;
-  color: #fff;
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.form-icon {
-  font-size: 1.3rem;
-}
-
-.form-desc {
-  font-size: 0.92rem;
-  color: var(--text-secondary);
-  margin-bottom: 28px;
-}
-
 .form-group {
   margin-bottom: 20px;
 }
@@ -3595,6 +3553,7 @@ select.form-control {
   inset: 0;
   background: rgba(5, 8, 14, 0.88);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .lightbox-content {
@@ -4453,10 +4412,6 @@ select.form-control {
     line-height: 1.45;
   }
 
-  .form-title {
-    font-size: 1.35rem;
-  }
-
   .form-group {
     margin-bottom: 12px;
   }
@@ -4561,8 +4516,7 @@ select.form-control {
     gap: 16px;
   }
 
-  .summary-card,
-  .studio-direct-card {
+  .summary-card {
     padding: 18px 14px;
     width: 100%;
     max-width: 100%;
@@ -4615,18 +4569,6 @@ select.form-control {
     word-break: break-word;
     overflow-wrap: anywhere;
     line-height: 1.45;
-  }
-
-  .studio-actions {
-    flex-direction: column;
-    gap: 8px;
-    width: 100%;
-  }
-
-  .studio-actions .btn {
-    width: 100%;
-    text-align: center;
-    box-sizing: border-box;
   }
 
   /* 10. Metrics & Footer */
@@ -4887,18 +4829,9 @@ select.form-control {
   transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
               transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.scroll-reveal.reveal-left {
-  transform: translateX(-40px);
-}
-.scroll-reveal.reveal-right {
-  transform: translateX(40px);
-}
-.scroll-reveal.reveal-scale {
-  transform: scale(0.92);
-}
 .scroll-reveal.is-visible {
   opacity: 1;
-  transform: translateY(0) translateX(0) scale(1);
+  transform: translateY(0);
 }
 
 /* Stagger delay for grid children */
@@ -4983,9 +4916,7 @@ select.form-control {
 }
 
 /* --- 7. Quote Form Field Focus Glow --- */
-.quote-field select:focus,
-.quote-field input:focus,
-.quantity-input:focus {
+.form-control:focus {
   box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.25),
               0 0 16px rgba(212, 175, 55, 0.12);
   border-color: var(--gold-primary) !important;
@@ -5033,8 +4964,8 @@ select.form-control {
               0 0 30px rgba(212, 175, 55, 0.08);
 }
 
-/* --- 11. Why CraftsVeda Feature Card Icon Bounce --- */
-.feature-card:hover .feature-icon {
+/* --- 11. Why CraftsVeda Card Icon Bounce --- */
+.why-card:hover .why-icon-wrap {
   animation: iconBounce 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 @keyframes iconBounce {
@@ -5051,7 +4982,7 @@ select.form-control {
 .process-step:hover {
   transform: translateY(-4px);
 }
-.process-step:hover .step-icon-circle {
+.process-step:hover .step-icon-wrap {
   box-shadow: 0 0 20px rgba(212, 175, 55, 0.3),
               0 0 40px rgba(212, 175, 55, 0.1);
 }
@@ -5067,4 +4998,145 @@ select.form-control {
 .lead-tab:hover {
   transform: scale(1.03);
   transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ==========================================================================
+   PRINT STYLESHEET
+   ========================================================================== */
+@media print {
+  /* Reset dark theme to printer-friendly */
+  *,
+  *::before,
+  *::after {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+    font-size: 11pt;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Hide non-printable elements */
+  .site-header,
+  .scroll-progress-bar,
+  .floating-whatsapp,
+  .toast-notification,
+  #luxuryBgCanvas,
+  .mesh-orb,
+  .hero-cta-button,
+  .cta-primary,
+  .btn-submit-quote,
+  .direct-quick-contact,
+  .finishes-nav,
+  .portfolio-filters,
+  .quote-mode-switcher,
+  .products-marquee-section,
+  .foil-light-sweep,
+  .slide-subtle-vignette,
+  .glass-bar-nav,
+  .glass-progress-dashes,
+  .hero-infographics {
+    display: none !important;
+  }
+
+  /* Show all content (undo content-visibility) */
+  .section-what-we-print,
+  .section-special-finishes,
+  .section-why,
+  .section-how-it-works,
+  .section-our-work,
+  .section-testimonials,
+  .section-quote,
+  .site-footer {
+    content-visibility: visible !important;
+    contain-intrinsic-size: auto !important;
+  }
+
+  /* Make scroll-reveal items visible */
+  .scroll-reveal,
+  .stagger-child {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Page breaks */
+  .section,
+  .hero-section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    padding: 20pt 0 !important;
+  }
+
+  h2, h3, h4 {
+    page-break-after: avoid;
+  }
+
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+
+  /* Show URL after external links */
+  a[href^="http"]::after,
+  a[href^="https"]::after {
+    content: " (" attr(href) ")";
+    font-size: 8pt;
+    font-weight: normal;
+    color: #555 !important;
+    word-break: break-all;
+  }
+
+  /* Don't show URL for internal anchors, tel, mailto */
+  a[href^="#"]::after,
+  a[href^="tel"]::after,
+  a[href^="mailto"]::after {
+    content: none;
+  }
+
+  /* Gold text becomes dark for readability */
+  .section-eyebrow,
+  .brand-name,
+  .brand-tag {
+    color: #333 !important;
+    font-weight: 700;
+  }
+
+  /* Grid layouts: single column for print */
+  .categories-grid,
+  .portfolio-filter-grid,
+  .features-grid,
+  .testimonials-grid {
+    display: block !important;
+  }
+
+  .categories-grid > *,
+  .portfolio-filter-grid > *,
+  .features-grid > *,
+  .testimonials-grid > * {
+    margin-bottom: 12pt;
+  }
+
+  /* Footer: simple layout */
+  .footer-inner {
+    display: block !important;
+  }
+
+  .footer-top {
+    display: block !important;
+  }
+
+  .footer-nav-col {
+    display: inline-block;
+    vertical-align: top;
+    width: 30%;
+    margin-bottom: 12pt;
+  }
 }
