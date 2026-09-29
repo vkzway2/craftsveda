@@ -7,63 +7,63 @@
 // Finish Data Matrix for Interactive Finishes Explorer
 const FINISH_DATA = {
   foil: {
-    badge: 'HOT FOIL STAMPING',
-    title: '24K Metallic Foil Stamping',
-    desc: 'Using precision heated brass dies, metallic pigment is transferred directly under extreme pressure into the fibers of the card stock. Creates an unmissable mirror-like reflection that never chips or dulls over time.',
-    val1: 'Gold, Rose Gold, Silver, Copper, Hologram',
-    val2: 'Soft-Touch Velvet, 600 GSM Cotton, Black Board',
-    val3: '100 pieces (Custom Dies included)',
-    img: 'assets/finishes-mockup.jpg'
+    badge: "HOT FOIL STAMPING",
+    title: "24K Metallic Foil Stamping",
+    desc: "Using precision heated brass dies, metallic pigment is transferred directly under extreme pressure into the fibers of the card stock. Creates an unmissable mirror-like reflection that never chips or dulls over time.",
+    val1: "Gold, Rose Gold, Silver, Copper, Hologram",
+    val2: "Soft-Touch Velvet, 600 GSM Cotton, Black Board",
+    val3: "100 pieces (Custom Dies included)",
+    img: "assets/finishes-mockup.jpg",
   },
   spotuv: {
-    badge: 'DIMENSIONAL COATING',
-    title: 'Raised 3D Spot UV Varnish',
-    desc: 'An ultra-glossy, high-viscosity liquid polymer applied selectively to logotypes, patterns, or typography. When cured under UV light, it forms a tangible 3D raised tactile glaze contrasting dramatically with a matte backdrop.',
-    val1: 'High-Gloss Clear Polymer (Up to 50 microns raise)',
-    val2: 'Velvet Soft-Touch & Ultra-Matte Lamination',
-    val3: '250 pieces',
-    img: 'assets/hero-mockup.jpg'
+    badge: "DIMENSIONAL COATING",
+    title: "Raised 3D Spot UV Varnish",
+    desc: "An ultra-glossy, high-viscosity liquid polymer applied selectively to logotypes, patterns, or typography. When cured under UV light, it forms a tangible 3D raised tactile glaze contrasting dramatically with a matte backdrop.",
+    val1: "High-Gloss Clear Polymer (Up to 50 microns raise)",
+    val2: "Velvet Soft-Touch & Ultra-Matte Lamination",
+    val3: "250 pieces",
+    img: "assets/hero-mockup.jpg",
   },
   emboss: {
-    badge: 'TACTILE IMPRESSION',
-    title: 'Blind Embossing & Sculpted Debossing',
-    desc: 'Deep multi-level sculptural relief stamped directly into heavyweight fibrous papers without ink. Gives a subtle, royal architectural presence where light and shadow create the brand imprint.',
-    val1: 'Single-level, Multi-level & Sculpted 3D Brass Dies',
-    val2: '500+ GSM Heavyweight Cotton & Textured Linen',
-    val3: '100 pieces',
-    img: 'assets/cards-mockup.jpg'
+    badge: "TACTILE IMPRESSION",
+    title: "Blind Embossing & Sculpted Debossing",
+    desc: "Deep multi-level sculptural relief stamped directly into heavyweight fibrous papers without ink. Gives a subtle, royal architectural presence where light and shadow create the brand imprint.",
+    val1: "Single-level, Multi-level & Sculpted 3D Brass Dies",
+    val2: "500+ GSM Heavyweight Cotton & Textured Linen",
+    val3: "100 pieces",
+    img: "assets/cards-mockup.jpg",
   },
   velvet: {
-    badge: 'SURFACE PROTECTION',
-    title: 'Velvet Soft-Touch Lamination',
-    desc: 'An ultra-matte biaxially oriented film that imparts an irresistible, velvety peach-skin feel upon first touch. Highly fingerprint-resistant and protects packaging boxes from scuffs and abrasions during transit.',
-    val1: 'Matte Velvet Soft-Touch & Anti-Scratch Finish',
-    val2: 'Rigid Boxes, Pocket Folders, Book Covers & Cards',
-    val3: '100 pieces',
-    img: 'assets/packaging-mockup.jpg'
+    badge: "SURFACE PROTECTION",
+    title: "Velvet Soft-Touch Lamination",
+    desc: "An ultra-matte biaxially oriented film that imparts an irresistible, velvety peach-skin feel upon first touch. Highly fingerprint-resistant and protects packaging boxes from scuffs and abrasions during transit.",
+    val1: "Matte Velvet Soft-Touch & Anti-Scratch Finish",
+    val2: "Rigid Boxes, Pocket Folders, Book Covers & Cards",
+    val3: "100 pieces",
+    img: "assets/packaging-mockup.jpg",
   },
   gilding: {
-    badge: 'ARTISANAL DETAIL',
-    title: 'Edge Gilding & Painted Edges',
-    desc: 'The thick edges of stacked business cards and royal invitation cards are beveled, burnished, and foiled with genuine metallic foil or custom mixed Pantone pigments for an unmistakable luxury side-profile.',
-    val1: 'Mirror Gold, Rose Gold, Silver, Black Gloss & Custom Ink',
-    val2: '600 to 900 GSM Triplex Sandwich & Cotton Boards',
-    val3: '100 pieces',
-    img: 'assets/cards-mockup.jpg'
+    badge: "ARTISANAL DETAIL",
+    title: "Edge Gilding & Painted Edges",
+    desc: "The thick edges of stacked business cards and royal invitation cards are beveled, burnished, and foiled with genuine metallic foil or custom mixed Pantone pigments for an unmistakable luxury side-profile.",
+    val1: "Mirror Gold, Rose Gold, Silver, Black Gloss & Custom Ink",
+    val2: "600 to 900 GSM Triplex Sandwich & Cotton Boards",
+    val3: "100 pieces",
+    img: "assets/cards-mockup.jpg",
   },
   diecut: {
-    badge: 'CUSTOM SILHOUETTES',
-    title: 'Precision Laser & Steel Rule Die-Cutting',
-    desc: 'Custom steel rule dies or high-speed lasers cut intricate custom curves, viewing windows, interlocking tabs, and irregular brand contours into packaging and bespoke presentation pieces.',
-    val1: 'Complex Contours, Window Cutouts & Perforations',
-    val2: 'Stickers, Rigid Sleeves, Hangtags & Folders',
-    val3: '200 pieces',
-    img: 'assets/invitation-mockup.jpg'
-  }
+    badge: "CUSTOM SILHOUETTES",
+    title: "Precision Laser & Steel Rule Die-Cutting",
+    desc: "Custom steel rule dies or high-speed lasers cut intricate custom curves, viewing windows, interlocking tabs, and irregular brand contours into packaging and bespoke presentation pieces.",
+    val1: "Complex Contours, Window Cutouts & Perforations",
+    val2: "Stickers, Rigid Sleeves, Hangtags & Folders",
+    val3: "200 pieces",
+    img: "assets/invitation-mockup.jpg",
+  },
 };
 
 // Initialize on DOM Ready
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   initLuxuryBackgroundAnimation();
   initMobileNav();
   initPortfolioFilters();
@@ -89,30 +89,34 @@ document.addEventListener('DOMContentLoaded', () => {
    01. MOBILE NAVIGATION
    ========================================================================== */
 function initMobileNav() {
-  const toggleBtn = document.getElementById('mobileToggle');
-  const nav = document.getElementById('mainNav');
+  const toggleBtn = document.getElementById("mobileToggle");
+  const nav = document.getElementById("mainNav");
 
   if (!toggleBtn || !nav) return;
 
-  toggleBtn.addEventListener('click', (e) => {
+  toggleBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    const isOpen = nav.classList.toggle('open');
-    toggleBtn.classList.toggle('active', isOpen);
+    const isOpen = nav.classList.toggle("open");
+    toggleBtn.classList.toggle("active", isOpen);
   });
 
   // Close nav when clicking any link
-  nav.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-      nav.classList.remove('open');
-      toggleBtn.classList.remove('active');
+  nav.querySelectorAll(".nav-link").forEach((link) => {
+    link.addEventListener("click", () => {
+      nav.classList.remove("open");
+      toggleBtn.classList.remove("active");
     });
   });
 
   // Close nav when clicking outside on mobile
-  document.addEventListener('click', (e) => {
-    if (nav.classList.contains('open') && !nav.contains(e.target) && !toggleBtn.contains(e.target)) {
-      nav.classList.remove('open');
-      toggleBtn.classList.remove('active');
+  document.addEventListener("click", (e) => {
+    if (
+      nav.classList.contains("open") &&
+      !nav.contains(e.target) &&
+      !toggleBtn.contains(e.target)
+    ) {
+      nav.classList.remove("open");
+      toggleBtn.classList.remove("active");
     }
   });
 }
@@ -125,19 +129,19 @@ function switchFinish(finishKey) {
   if (!data) return;
 
   // Update Nav Buttons
-  document.querySelectorAll('.finish-nav-item').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.finish === finishKey);
+  document.querySelectorAll(".finish-nav-item").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.finish === finishKey);
   });
 
   // Update Details with smooth transition
-  const badge = document.getElementById('finishBadge');
-  const title = document.getElementById('finishTitle');
-  const desc = document.getElementById('finishDesc');
-  const val1 = document.getElementById('finishVal1');
-  const val2 = document.getElementById('finishVal2');
-  const val3 = document.getElementById('finishVal3');
-  const img = document.getElementById('finishImg');
-  const sheen = document.getElementById('finishSheen');
+  const badge = document.getElementById("finishBadge");
+  const title = document.getElementById("finishTitle");
+  const desc = document.getElementById("finishDesc");
+  const val1 = document.getElementById("finishVal1");
+  const val2 = document.getElementById("finishVal2");
+  const val3 = document.getElementById("finishVal3");
+  const img = document.getElementById("finishImg");
+  const sheen = document.getElementById("finishSheen");
 
   if (badge) badge.textContent = data.badge;
   if (title) title.textContent = data.title;
@@ -149,18 +153,19 @@ function switchFinish(finishKey) {
 
   // Retrigger sheen animation
   if (sheen) {
-    sheen.style.animation = 'none';
+    sheen.style.animation = "none";
     sheen.offsetHeight; /* trigger reflow */
-    sheen.style.animation = 'light-sheen 4s ease-in-out';
+    sheen.style.animation = "light-sheen 4s ease-in-out";
   }
 
   // Subtle tactile pulse on finish box
-  const detailBox = document.getElementById('finishDetailBox');
+  const detailBox = document.getElementById("finishDetailBox");
   if (detailBox) {
-    detailBox.style.transition = 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)';
-    detailBox.style.transform = 'scale(0.99)';
+    detailBox.style.transition =
+      "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)";
+    detailBox.style.transform = "scale(0.99)";
     setTimeout(() => {
-      detailBox.style.transform = '';
+      detailBox.style.transform = "";
     }, 200);
   }
 }
@@ -169,32 +174,32 @@ function switchFinish(finishKey) {
    03. PORTFOLIO FILTERING
    ========================================================================== */
 function initPortfolioFilters() {
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  const cards = document.querySelectorAll('.portfolio-card');
+  const filterBtns = document.querySelectorAll(".filter-btn");
+  const cards = document.querySelectorAll(".portfolio-card");
 
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+  filterBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      filterBtns.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
 
-      const filterValue = btn.getAttribute('data-filter');
+      const filterValue = btn.getAttribute("data-filter");
 
-      cards.forEach(card => {
-        const cat = card.getAttribute('data-cat');
-        const matches = (filterValue === 'all' || cat === filterValue);
+      cards.forEach((card) => {
+        const cat = card.getAttribute("data-cat");
+        const matches = filterValue === "all" || cat === filterValue;
 
         if (matches) {
-          card.style.display = 'flex';
+          card.style.display = "flex";
           requestAnimationFrame(() => {
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0) scale(1)';
+            card.style.opacity = "1";
+            card.style.transform = "translateY(0) scale(1)";
           });
         } else {
-          card.style.opacity = '0';
-          card.style.transform = 'translateY(8px) scale(0.98)';
+          card.style.opacity = "0";
+          card.style.transform = "translateY(8px) scale(0.98)";
           setTimeout(() => {
-            if (card.style.opacity === '0') {
-              card.style.display = 'none';
+            if (card.style.opacity === "0") {
+              card.style.display = "none";
             }
           }, 240);
         }
@@ -207,10 +212,10 @@ function initPortfolioFilters() {
    04. LIGHTBOX MODAL
    ========================================================================== */
 function openLightbox(imgSrc, title, desc) {
-  const modal = document.getElementById('lightboxModal');
-  const lbImg = document.getElementById('lightboxImg');
-  const lbTitle = document.getElementById('lightboxTitle');
-  const lbDesc = document.getElementById('lightboxDesc');
+  const modal = document.getElementById("lightboxModal");
+  const lbImg = document.getElementById("lightboxImg");
+  const lbTitle = document.getElementById("lightboxTitle");
+  const lbDesc = document.getElementById("lightboxDesc");
 
   if (!modal) return;
 
@@ -218,21 +223,21 @@ function openLightbox(imgSrc, title, desc) {
   lbTitle.textContent = title;
   lbDesc.textContent = desc;
 
-  modal.classList.add('active');
-  document.body.style.overflow = 'hidden';
+  modal.classList.add("active");
+  document.body.style.overflow = "hidden";
 }
 
 function closeLightbox() {
-  const modal = document.getElementById('lightboxModal');
+  const modal = document.getElementById("lightboxModal");
   if (!modal) return;
 
-  modal.classList.remove('active');
-  document.body.style.overflow = '';
+  modal.classList.remove("active");
+  document.body.style.overflow = "";
 }
 
 // ESC Key listener for Lightbox
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
     closeLightbox();
   }
 });
@@ -240,7 +245,7 @@ document.addEventListener('keydown', (e) => {
 /* ==========================================================================
    05. INTERACTIVE QUOTE BUILDER & LIVE SUMMARY
    ========================================================================== */
-let currentLeadMode = 'custom'; // 'custom' or 'sample'
+let currentLeadMode = "custom"; // 'custom' or 'sample'
 
 function initQuoteCalculator() {
   updateQuoteSummary();
@@ -249,114 +254,119 @@ function initQuoteCalculator() {
 // Quick Switcher: Custom Print Quote vs Sample Kit
 function setLeadMode(mode) {
   currentLeadMode = mode;
-  const tabCustom = document.getElementById('tabCustomQuote');
-  const tabSample = document.getElementById('tabSampleKit');
-  const sampleBanner = document.getElementById('sampleKitBanner');
-  const productSelect = document.getElementById('productSelect');
-  const paperStock = document.getElementById('paperStock');
-  const qtySelect = document.getElementById('qtySelect');
-  const submitBtnLabel = document.getElementById('submitBtnLabel');
-  const summaryModeLabel = document.getElementById('summaryModeLabel');
-  const summaryTipText = document.getElementById('summaryTipText');
-  const leadTypeHidden = document.getElementById('leadTypeHidden');
-  const web3Subject = document.getElementById('web3Subject');
+  const tabCustom = document.getElementById("tabCustomQuote");
+  const tabSample = document.getElementById("tabSampleKit");
+  const sampleBanner = document.getElementById("sampleKitBanner");
+  const productSelect = document.getElementById("productSelect");
+  const paperStock = document.getElementById("paperStock");
+  const qtySelect = document.getElementById("qtySelect");
+  const submitBtnLabel = document.getElementById("submitBtnLabel");
+  const summaryModeLabel = document.getElementById("summaryModeLabel");
+  const summaryTipText = document.getElementById("summaryTipText");
+  const leadTypeHidden = document.getElementById("leadTypeHidden");
+  const web3Subject = document.getElementById("web3Subject");
 
-  if (mode === 'sample') {
+  if (mode === "sample") {
     if (tabCustom) {
-      tabCustom.classList.remove('active');
-      tabCustom.setAttribute('aria-selected', 'false');
+      tabCustom.classList.remove("active");
+      tabCustom.setAttribute("aria-selected", "false");
     }
     if (tabSample) {
-      tabSample.classList.add('active');
-      tabSample.setAttribute('aria-selected', 'true');
+      tabSample.classList.add("active");
+      tabSample.setAttribute("aria-selected", "true");
     }
-    if (sampleBanner) sampleBanner.style.display = 'flex';
+    if (sampleBanner) sampleBanner.style.display = "flex";
 
     if (productSelect) {
-      productSelect.value = 'Physical Sample Kit (₹499 / Studio Swatch Deck)';
+      productSelect.value = "Physical Sample Kit (₹499 / Studio Swatch Deck)";
     }
     if (paperStock) {
-      paperStock.value = 'Curated Swatch Deck (15+ Luxury Papers & Foil Catalog)';
+      paperStock.value =
+        "Curated Swatch Deck (15+ Luxury Papers & Foil Catalog)";
     }
     if (qtySelect) {
-      qtySelect.value = '1 Sample Kit (₹499)';
+      qtySelect.value = "1 Sample Kit (₹499)";
     }
     if (submitBtnLabel) {
-      submitBtnLabel.textContent = 'Order Sample Kit (₹499)';
+      submitBtnLabel.textContent = "Order Sample Kit (₹499)";
     }
     if (summaryModeLabel) {
-      summaryModeLabel.textContent = 'PHYSICAL SAMPLE KIT REQUEST';
+      summaryModeLabel.textContent = "PHYSICAL SAMPLE KIT REQUEST";
     }
     if (summaryTipText) {
-      summaryTipText.innerHTML = '<span class="tip-sparkle">✦</span> ₹499 fee is 100% credited back toward your first production order!';
+      summaryTipText.innerHTML =
+        '<span class="tip-sparkle">✦</span> ₹499 fee is 100% credited back toward your first production order!';
     }
-    if (leadTypeHidden) leadTypeHidden.value = 'Physical Sample Kit Request (₹499)';
-    if (web3Subject) web3Subject.value = 'Sample Kit Request (₹499) — CraftsVeda Studio';
-
+    if (leadTypeHidden)
+      leadTypeHidden.value = "Physical Sample Kit Request (₹499)";
+    if (web3Subject)
+      web3Subject.value = "Sample Kit Request (₹499) — CraftsVeda Studio";
   } else {
     // Custom Print Quote mode
     if (tabCustom) {
-      tabCustom.classList.add('active');
-      tabCustom.setAttribute('aria-selected', 'true');
+      tabCustom.classList.add("active");
+      tabCustom.setAttribute("aria-selected", "true");
     }
     if (tabSample) {
-      tabSample.classList.remove('active');
-      tabSample.setAttribute('aria-selected', 'false');
+      tabSample.classList.remove("active");
+      tabSample.setAttribute("aria-selected", "false");
     }
-    if (sampleBanner) sampleBanner.style.display = 'none';
+    if (sampleBanner) sampleBanner.style.display = "none";
 
-    if (productSelect && productSelect.value.includes('Sample Kit')) {
-      productSelect.value = 'Luxury Business Cards';
+    if (productSelect && productSelect.value.includes("Sample Kit")) {
+      productSelect.value = "Luxury Business Cards";
     }
-    if (paperStock && paperStock.value.includes('Curated Swatch')) {
-      paperStock.value = '600 GSM Natural Cotton Stock';
+    if (paperStock && paperStock.value.includes("Curated Swatch")) {
+      paperStock.value = "600 GSM Natural Cotton Stock";
     }
-    if (qtySelect && qtySelect.value.includes('Sample Kit')) {
-      qtySelect.value = '500 pcs';
+    if (qtySelect && qtySelect.value.includes("Sample Kit")) {
+      qtySelect.value = "500 pcs";
     }
     if (submitBtnLabel) {
-      submitBtnLabel.textContent = 'Get Instant Quote';
+      submitBtnLabel.textContent = "Get Instant Quote";
     }
     if (summaryModeLabel) {
-      summaryModeLabel.textContent = 'LIVE INQUIRY SPECIFICATION';
+      summaryModeLabel.textContent = "LIVE INQUIRY SPECIFICATION";
     }
     if (summaryTipText) {
-      summaryTipText.innerHTML = '<span class="tip-sparkle">✦</span> Instant 30-minute response guaranteed during studio hours.';
+      summaryTipText.innerHTML =
+        '<span class="tip-sparkle">✦</span> Instant 30-minute response guaranteed during studio hours.';
     }
-    if (leadTypeHidden) leadTypeHidden.value = 'Custom Print Quote';
-    if (web3Subject) web3Subject.value = 'New Print Quote Inquiry — CraftsVeda Studio';
+    if (leadTypeHidden) leadTypeHidden.value = "Custom Print Quote";
+    if (web3Subject)
+      web3Subject.value = "New Print Quote Inquiry — CraftsVeda Studio";
   }
 
   updateQuoteSummary();
 }
 
 function onProductChange() {
-  const productSelect = document.getElementById('productSelect');
+  const productSelect = document.getElementById("productSelect");
   if (!productSelect) return;
 
-  if (productSelect.value.includes('Sample Kit')) {
-    setLeadMode('sample');
-  } else if (currentLeadMode === 'sample') {
-    setLeadMode('custom');
+  if (productSelect.value.includes("Sample Kit")) {
+    setLeadMode("sample");
+  } else if (currentLeadMode === "sample") {
+    setLeadMode("custom");
   } else {
     updateQuoteSummary();
   }
 }
 
 function updateQuoteSummary() {
-  const productSelect = document.getElementById('productSelect');
-  const paperStock = document.getElementById('paperStock');
-  const qtySelect = document.getElementById('qtySelect');
-  const turnaround = document.getElementById('turnaround');
-  const clientCity = document.getElementById('clientCity');
+  const productSelect = document.getElementById("productSelect");
+  const paperStock = document.getElementById("paperStock");
+  const qtySelect = document.getElementById("qtySelect");
+  const turnaround = document.getElementById("turnaround");
+  const clientCity = document.getElementById("clientCity");
 
-  const sumProduct = document.getElementById('sumProduct');
-  const sumStock = document.getElementById('sumStock');
-  const sumFinishes = document.getElementById('sumFinishes');
-  const sumQty = document.getElementById('sumQty');
-  const sumTurnaround = document.getElementById('sumTurnaround');
-  const sumCity = document.getElementById('sumCity');
-  const sumCityRow = document.getElementById('sumCityRow');
+  const sumProduct = document.getElementById("sumProduct");
+  const sumStock = document.getElementById("sumStock");
+  const sumFinishes = document.getElementById("sumFinishes");
+  const sumQty = document.getElementById("sumQty");
+  const sumTurnaround = document.getElementById("sumTurnaround");
+  const sumCity = document.getElementById("sumCity");
+  const sumCityRow = document.getElementById("sumCityRow");
 
   if (productSelect && sumProduct) {
     sumProduct.textContent = productSelect.value;
@@ -377,36 +387,36 @@ function updateQuoteSummary() {
   if (clientCity && sumCity && sumCityRow) {
     if (clientCity.value.trim().length > 0) {
       sumCity.textContent = clientCity.value.trim();
-      sumCityRow.style.display = 'flex';
+      sumCityRow.style.display = "flex";
     } else {
-      sumCityRow.style.display = 'none';
+      sumCityRow.style.display = "none";
     }
   }
 
   // Selected Finishes Chips
   const selectedFinishes = [];
-  document.querySelectorAll('input[name="finish"]:checked').forEach(cb => {
+  document.querySelectorAll('input[name="finish"]:checked').forEach((cb) => {
     selectedFinishes.push(cb.value);
   });
 
   if (sumFinishes) {
     if (selectedFinishes.length > 0) {
-      sumFinishes.textContent = selectedFinishes.join(', ');
+      sumFinishes.textContent = selectedFinishes.join(", ");
     } else {
-      sumFinishes.textContent = 'Standard Print (No Specialty Finish)';
+      sumFinishes.textContent = "Standard Print (No Specialty Finish)";
     }
   }
 }
 
 // Preselection helpers from What We Print & Finishes sections
 function preselectQuoteProduct(productName) {
-  const select = document.getElementById('productSelect');
+  const select = document.getElementById("productSelect");
   if (!select) return;
 
-  if (productName.includes('Sample Kit')) {
-    setLeadMode('sample');
+  if (productName.includes("Sample Kit")) {
+    setLeadMode("sample");
   } else {
-    setLeadMode('custom');
+    setLeadMode("custom");
     const targetNorm = productName.toLowerCase();
     for (let i = 0; i < select.options.length; i++) {
       const optNorm = select.options[i].value.toLowerCase();
@@ -418,32 +428,32 @@ function preselectQuoteProduct(productName) {
   }
 
   updateQuoteSummary();
-  const quoteTarget = document.getElementById('quote-generator');
+  const quoteTarget = document.getElementById("quote-generator");
   if (quoteTarget) {
     scrollToTarget(quoteTarget);
   }
 }
 
 function preselectQuoteFinish(finishName) {
-  setLeadMode('custom');
+  setLeadMode("custom");
 
   // Check corresponding checkbox
-  const foilCb = document.getElementById('checkFoil');
-  const uvCb = document.getElementById('checkSpotUV');
-  const embossCb = document.getElementById('checkEmboss');
-  const velvetCb = document.getElementById('checkVelvet');
-  const gildCb = document.getElementById('checkGilding');
-  const dieCb = document.getElementById('checkDieCut');
+  const foilCb = document.getElementById("checkFoil");
+  const uvCb = document.getElementById("checkSpotUV");
+  const embossCb = document.getElementById("checkEmboss");
+  const velvetCb = document.getElementById("checkVelvet");
+  const gildCb = document.getElementById("checkGilding");
+  const dieCb = document.getElementById("checkDieCut");
 
-  if (finishName.includes('Foil') && foilCb) foilCb.checked = true;
-  if (finishName.includes('Spot UV') && uvCb) uvCb.checked = true;
-  if (finishName.includes('Emboss') && embossCb) embossCb.checked = true;
-  if (finishName.includes('Velvet') && velvetCb) velvetCb.checked = true;
-  if (finishName.includes('Gild') && gildCb) gildCb.checked = true;
-  if (finishName.includes('Die') && dieCb) dieCb.checked = true;
+  if (finishName.includes("Foil") && foilCb) foilCb.checked = true;
+  if (finishName.includes("Spot UV") && uvCb) uvCb.checked = true;
+  if (finishName.includes("Emboss") && embossCb) embossCb.checked = true;
+  if (finishName.includes("Velvet") && velvetCb) velvetCb.checked = true;
+  if (finishName.includes("Gild") && gildCb) gildCb.checked = true;
+  if (finishName.includes("Die") && dieCb) dieCb.checked = true;
 
   updateQuoteSummary();
-  const quoteTarget = document.getElementById('quote-generator');
+  const quoteTarget = document.getElementById("quote-generator");
   if (quoteTarget) {
     scrollToTarget(quoteTarget);
   }
@@ -455,56 +465,58 @@ function preselectQuoteFinish(finishName) {
 function handleUnifiedLeadSubmit(e) {
   e.preventDefault();
 
-  const clientName = document.getElementById('clientName')?.value.trim();
-  const clientPhone = document.getElementById('clientPhone')?.value.trim();
-  const clientCity = document.getElementById('clientCity')?.value.trim() || 'Mumbai / Pan-India';
-  const clientEmail = document.getElementById('clientEmail')?.value.trim() || 'Not Provided';
-  const product = document.getElementById('productSelect')?.value || 'Luxury Printing';
-  const paper = document.getElementById('paperStock')?.value || 'Premium Stock';
-  const qty = document.getElementById('qtySelect')?.value || '500 pcs';
-  const turnaround = document.getElementById('turnaround')?.value || 'Standard';
-  const notes = document.getElementById('clientNotes')?.value.trim() || 'None';
+  const clientName = document.getElementById("clientName")?.value.trim();
+  const clientPhone = document.getElementById("clientPhone")?.value.trim();
+  const clientCity =
+    document.getElementById("clientCity")?.value.trim() || "Mumbai / Pan-India";
+  const clientEmail =
+    document.getElementById("clientEmail")?.value.trim() || "Not Provided";
+  const product =
+    document.getElementById("productSelect")?.value || "Luxury Printing";
+  const paper = document.getElementById("paperStock")?.value || "Premium Stock";
+  const qty = document.getElementById("qtySelect")?.value || "500 pcs";
+  const turnaround = document.getElementById("turnaround")?.value || "Standard";
+  const notes = document.getElementById("clientNotes")?.value.trim() || "None";
 
   if (!clientName || !clientPhone) {
-    alert('Please provide your Name and Phone / WhatsApp number so our studio team can connect with you.');
+    alert(
+      "Please provide your Name and Phone / WhatsApp number so our studio team can connect with you.",
+    );
     return;
   }
 
   // Finishes List
   const finishes = [];
-  document.querySelectorAll('input[name="finish"]:checked').forEach(cb => {
+  document.querySelectorAll('input[name="finish"]:checked').forEach((cb) => {
     finishes.push(cb.value);
   });
-  const finishesText = finishes.length > 0 ? finishes.join(', ') : 'Standard Print (No Specialty Finish)';
+  const finishesText =
+    finishes.length > 0
+      ? finishes.join(", ")
+      : "Standard Print (No Specialty Finish)";
 
   // 1. Asynchronously send form to Web3Forms in background for inbox logging (vkzway2@gmail.com)
-  const formElement = document.getElementById('quoteCalculatorForm');
+  const formElement = document.getElementById("quoteCalculatorForm");
   if (formElement) {
     const formData = new FormData(formElement);
-    formData.append('selected_finishes_list', finishesText);
-    formData.append('submission_timestamp', new Date().toLocaleString());
+    formData.append("selected_finishes_list", finishesText);
+    formData.append("submission_timestamp", new Date().toLocaleString());
 
-    fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Web3Forms lead logged:', data);
-    })
-    .catch(err => {
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      body: formData,
+    }).catch(() => {
       // Non-blocking catch to ensure WhatsApp and user flow are never interrupted
-      console.warn('Web3Forms notification log notice:', err);
     });
   }
 
   // 2. Format Structured WhatsApp Specification Message
-  const isSampleKit = currentLeadMode === 'sample' || product.includes('Sample Kit');
-  let message = '';
+  const isSampleKit =
+    currentLeadMode === "sample" || product.includes("Sample Kit");
+  let message = "";
 
   if (isSampleKit) {
-    message = 
-`📦 *PHYSICAL SAMPLE KIT REQUEST — CRAFTSVEDA STUDIO* 📦
+    message = `📦 *PHYSICAL SAMPLE KIT REQUEST — CRAFTSVEDA STUDIO* 📦
 -----------------------------------------
 👤 *Client / Brand:* ${clientName}
 📞 *Contact No:* ${clientPhone}
@@ -521,8 +533,7 @@ function handleUnifiedLeadSubmit(e) {
 -----------------------------------------
 _Please dispatch sample kit details and payment link._`;
   } else {
-    message = 
-`✨ *NEW PRINT INQUIRY — CRAFTSVEDA STUDIO* ✨
+    message = `✨ *NEW PRINT INQUIRY — CRAFTSVEDA STUDIO* ✨
 -----------------------------------------
 👤 *Client / Brand:* ${clientName}
 📞 *Contact No:* ${clientPhone}
@@ -544,24 +555,26 @@ _Inquiry sent to vkzway2@gmail.com. Please confirm formal quotation & production
   const encodedUrl = `https://wa.me/918840035249?text=${encodeURIComponent(message)}`;
 
   // 3. User Feedback Toast
-  showToast('Inquiry Sent! Opening WhatsApp with our print specialist at Saki Naka, Mumbai...');
+  showToast(
+    "Inquiry Sent! Opening WhatsApp with our print specialist at Saki Naka, Mumbai...",
+  );
 
   // 4. Launch WhatsApp in new tab
   setTimeout(() => {
-    window.open(encodedUrl, '_blank');
+    window.open(encodedUrl, "_blank");
   }, 400);
 }
 
 function showToast(text) {
-  const toast = document.getElementById('toastNotification');
-  const toastText = document.getElementById('toastText');
+  const toast = document.getElementById("toastNotification");
+  const toastText = document.getElementById("toastText");
   if (!toast || !toastText) return;
 
   toastText.textContent = text;
-  toast.classList.add('show');
+  toast.classList.add("show");
 
   setTimeout(() => {
-    toast.classList.remove('show');
+    toast.classList.remove("show");
   }, 5000);
 }
 
@@ -569,12 +582,16 @@ function showToast(text) {
  * Cross-Browser Email Copy with Clipboard API, execCommand, and mailto fallback
  */
 function copyEmailToClipboard(email, e) {
-  if (e && typeof e.preventDefault === 'function') e.preventDefault();
+  if (e && typeof e.preventDefault === "function") e.preventDefault();
 
-  if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
-    navigator.clipboard.writeText(email)
+  if (
+    navigator.clipboard &&
+    typeof navigator.clipboard.writeText === "function"
+  ) {
+    navigator.clipboard
+      .writeText(email)
       .then(() => {
-        showToast('✉ Email copied to clipboard!');
+        showToast("✉ Email copied to clipboard!");
       })
       .catch(() => {
         copyViaExecCommand(email);
@@ -586,36 +603,38 @@ function copyEmailToClipboard(email, e) {
 
 function copyViaExecCommand(text) {
   try {
-    const tempInput = document.createElement('textarea');
+    const tempInput = document.createElement("textarea");
     tempInput.value = text;
-    tempInput.setAttribute('readonly', '');
-    tempInput.style.position = 'fixed';
-    tempInput.style.opacity = '0';
-    tempInput.style.left = '-9999px';
+    tempInput.setAttribute("readonly", "");
+    tempInput.style.position = "fixed";
+    tempInput.style.opacity = "0";
+    tempInput.style.left = "-9999px";
     document.body.appendChild(tempInput);
     tempInput.select();
     tempInput.setSelectionRange(0, 99999);
-    const successful = document.execCommand('copy');
+    const successful = document.execCommand("copy");
     document.body.removeChild(tempInput);
     if (successful) {
-      showToast('✉ Email copied to clipboard!');
+      showToast("✉ Email copied to clipboard!");
       return;
     }
   } catch (_) {}
   // Final fallback to native mailto link
-  window.location.href = 'mailto:' + text;
+  window.location.href = "mailto:" + text;
 }
 
 /* ==========================================================================
    07. HERO 3D TILT WITH LERP SMOOTHING & PARALLAX FOIL SWEEP
    ========================================================================== */
 function initHero3DTilt() {
-  const card = document.getElementById('heroGoldCard');
-  const stage = document.getElementById('heroStage3d');
-  const foilSweep = document.getElementById('foilLightSweep');
+  const card = document.getElementById("heroGoldCard");
+  const stage = document.getElementById("heroStage3d");
+  const foilSweep = document.getElementById("foilLightSweep");
   if (!card || !stage) return;
 
-  const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const prefersReduced =
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (prefersReduced) return;
 
   let targetX = 0;
@@ -629,7 +648,7 @@ function initHero3DTilt() {
   let isHovered = false;
 
   // On touch devices / screens < 992px: gentle continuous ambient floating motion
-  if (window.innerWidth < 992 || 'ontouchstart' in window) {
+  if (window.innerWidth < 992 || "ontouchstart" in window) {
     let floatAngle = 0;
     function floatLoop() {
       floatAngle += 0.02;
@@ -674,13 +693,13 @@ function initHero3DTilt() {
     requestAnimationFrame(update);
   }
 
-  stage.addEventListener('mouseenter', () => {
+  stage.addEventListener("mouseenter", () => {
     isHovered = true;
   });
 
-  stage.addEventListener('mousemove', onMouseMove);
+  stage.addEventListener("mousemove", onMouseMove);
 
-  stage.addEventListener('mouseleave', () => {
+  stage.addEventListener("mouseleave", () => {
     isHovered = false;
     targetX = 0;
     targetY = 0;
@@ -696,49 +715,53 @@ function initHero3DTilt() {
    ========================================================================== */
 const HERO_SLIDES_DATA = [
   {
-    badge: '✦ SIGNATURE DUAL FINISH',
-    title: 'Metallic Gold Foil & Spot UV',
-    specs: '24K Heated Brass Stamping • Raised Gloss Droplets • 600 GSM Cotton'
+    badge: "✦ SIGNATURE DUAL FINISH",
+    title: "Metallic Gold Foil & Spot UV",
+    specs: "24K Heated Brass Stamping • Raised Gloss Droplets • 600 GSM Cotton",
   },
   {
-    badge: '✦ 3D TACTILE COATING',
-    title: 'Raised Spot UV & 3D Gloss',
-    specs: 'AccurioShine Dimensional Polymer • 50µm Tactile Raise • Matte Black'
+    badge: "✦ 3D TACTILE COATING",
+    title: "Raised Spot UV & 3D Gloss",
+    specs:
+      "AccurioShine Dimensional Polymer • 50µm Tactile Raise • Matte Black",
   },
   {
-    badge: '✦ PRISMATIC FOIL',
-    title: 'Holographic Rainbow Foil',
-    specs: 'Multi-Angle Iridescent Shimmer • Micro-Foil Detailing • Deep Contrast'
+    badge: "✦ PRISMATIC FOIL",
+    title: "Holographic Rainbow Foil",
+    specs:
+      "Multi-Angle Iridescent Shimmer • Micro-Foil Detailing • Deep Contrast",
   },
   {
-    badge: '✦ ARTISANAL CARDS',
-    title: '24K Gold Edge Gilding & Deboss',
-    specs: 'Mirror Foil Side Profile • Blind Letterpress Relief • 700 GSM Wild Cotton'
+    badge: "✦ ARTISANAL CARDS",
+    title: "24K Gold Edge Gilding & Deboss",
+    specs:
+      "Mirror Foil Side Profile • Blind Letterpress Relief • 700 GSM Wild Cotton",
   },
   {
-    badge: '✦ BESPOKE PACKAGING',
-    title: 'Luxury Rigid Boxes & Packaging',
-    specs: 'Magnetic Closure & Drawer • Velvet Soft-Touch • 1200 GSM Kappa Board'
-  }
+    badge: "✦ BESPOKE PACKAGING",
+    title: "Luxury Rigid Boxes & Packaging",
+    specs:
+      "Magnetic Closure & Drawer • Velvet Soft-Touch • 1200 GSM Kappa Board",
+  },
 ];
 
 function initHeroSlider() {
-  const viewport = document.getElementById('showcaseViewport');
-  const deck = document.getElementById('showcaseDeck');
-  const slides = document.querySelectorAll('#showcaseDeck .showcase-slide');
-  const dashes = document.querySelectorAll('#heroSliderDots .dash-btn');
-  const prevBtn = document.getElementById('heroPrevBtn');
-  const nextBtn = document.getElementById('heroNextBtn');
-  const currentNumEl = document.getElementById('slideCurrentNum');
-  const badgePill = document.getElementById('slideBadgePill');
-  const finishTitle = document.getElementById('slideFinishTitle');
-  const specsLine = document.getElementById('slideSpecsLine');
-  const glassBar = document.getElementById('showcaseGlassBar');
+  const viewport = document.getElementById("showcaseViewport");
+  const deck = document.getElementById("showcaseDeck");
+  const slides = document.querySelectorAll("#showcaseDeck .showcase-slide");
+  const dashes = document.querySelectorAll("#heroSliderDots .dash-btn");
+  const prevBtn = document.getElementById("heroPrevBtn");
+  const nextBtn = document.getElementById("heroNextBtn");
+  const currentNumEl = document.getElementById("slideCurrentNum");
+  const badgePill = document.getElementById("slideBadgePill");
+  const finishTitle = document.getElementById("slideFinishTitle");
+  const specsLine = document.getElementById("slideSpecsLine");
+  const glassBar = document.getElementById("showcaseGlassBar");
 
   if (!viewport || slides.length === 0) return;
 
   if (deck) {
-    deck.classList.add('showcase-deck-ready');
+    deck.classList.add("showcase-deck-ready");
   }
 
   let currentIndex = 0;
@@ -749,10 +772,10 @@ function initHeroSlider() {
 
   function ensureSlideLoaded(slideEl) {
     if (!slideEl) return;
-    const img = slideEl.querySelector('img[data-src]');
+    const img = slideEl.querySelector("img[data-src]");
     if (img) {
-      img.src = img.getAttribute('data-src');
-      img.removeAttribute('data-src');
+      img.src = img.getAttribute("data-src");
+      img.removeAttribute("data-src");
     }
   }
 
@@ -760,7 +783,7 @@ function initHeroSlider() {
   const preloadRemaining = () => {
     slides.forEach(ensureSlideLoaded);
   };
-  if ('requestIdleCallback' in window) {
+  if ("requestIdleCallback" in window) {
     window.requestIdleCallback(preloadRemaining, { timeout: 2000 });
   } else {
     setTimeout(preloadRemaining, 1200);
@@ -787,61 +810,61 @@ function initHeroSlider() {
 
     // 1. 3D Slide Transition: Exit Old Slide with -25deg Rotation
     if (oldSlide) {
-      oldSlide.classList.remove('active');
-      oldSlide.classList.add('exit-3d');
+      oldSlide.classList.remove("active");
+      oldSlide.classList.add("exit-3d");
       setTimeout(() => {
-        oldSlide.classList.remove('exit-3d');
+        oldSlide.classList.remove("exit-3d");
       }, 750);
     }
 
     // 2. Enter New Slide with 0deg Rotation
     if (newSlide) {
-      newSlide.classList.add('active');
+      newSlide.classList.add("active");
     }
 
     currentIndex = newIndex;
 
     // 3. Update Numerical Counter
     if (currentNumEl) {
-      currentNumEl.textContent = String(currentIndex + 1).padStart(2, '0');
+      currentNumEl.textContent = String(currentIndex + 1).padStart(2, "0");
     }
 
     // 4. Update Badge Pill with subtle micro-fade
     if (badgePill && data) {
-      badgePill.style.opacity = '0.4';
-      badgePill.style.transform = 'translateY(-2px)';
+      badgePill.style.opacity = "0.4";
+      badgePill.style.transform = "translateY(-2px)";
       setTimeout(() => {
         badgePill.textContent = data.badge;
-        badgePill.style.opacity = '1';
-        badgePill.style.transform = 'translateY(0)';
+        badgePill.style.opacity = "1";
+        badgePill.style.transform = "translateY(0)";
       }, 150);
     }
 
     // 5. Update Glass Caption Bar with smooth fade
     if (glassBar && data) {
-      glassBar.style.opacity = '0.5';
+      glassBar.style.opacity = "0.5";
       setTimeout(() => {
         if (finishTitle) finishTitle.textContent = data.title;
         if (specsLine) specsLine.textContent = data.specs;
-        glassBar.style.opacity = '1';
+        glassBar.style.opacity = "1";
       }, 150);
     }
 
     // 6. Update Progress Dashes & restart timer fill
     dashes.forEach((dash, idx) => {
       if (idx === currentIndex) {
-        dash.classList.add('active');
-        const fill = dash.querySelector('.dash-fill');
+        dash.classList.add("active");
+        const fill = dash.querySelector(".dash-fill");
         if (fill) {
-          fill.style.animation = 'none';
+          fill.style.animation = "none";
           void fill.offsetWidth; // Reflow
           fill.style.animation = `dashProgress ${AUTOPLAY_INTERVAL}ms linear forwards`;
         }
       } else {
-        dash.classList.remove('active');
-        const fill = dash.querySelector('.dash-fill');
+        dash.classList.remove("active");
+        const fill = dash.querySelector(".dash-fill");
         if (fill) {
-          fill.style.animation = 'none';
+          fill.style.animation = "none";
         }
       }
     });
@@ -880,14 +903,14 @@ function initHeroSlider() {
 
   // Navigation Arrow Handlers
   if (prevBtn) {
-    prevBtn.addEventListener('click', (e) => {
+    prevBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       goToSlide(currentIndex - 1);
     });
   }
 
   if (nextBtn) {
-    nextBtn.addEventListener('click', (e) => {
+    nextBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       goToSlide(currentIndex + 1);
     });
@@ -895,29 +918,29 @@ function initHeroSlider() {
 
   // Progress Dash Buttons Click
   dashes.forEach((dash, idx) => {
-    dash.addEventListener('click', (e) => {
+    dash.addEventListener("click", (e) => {
       e.stopPropagation();
       goToSlide(idx);
     });
   });
 
   // Hover & Focus Pause
-  viewport.addEventListener('mouseenter', pauseAutoplay);
-  viewport.addEventListener('mouseleave', resumeAutoplay);
-  viewport.addEventListener('focusin', pauseAutoplay);
-  viewport.addEventListener('focusout', resumeAutoplay);
+  viewport.addEventListener("mouseenter", pauseAutoplay);
+  viewport.addEventListener("mouseleave", resumeAutoplay);
+  viewport.addEventListener("focusin", pauseAutoplay);
+  viewport.addEventListener("focusout", resumeAutoplay);
 
   // Keyboard Arrow Navigation
-  window.addEventListener('keydown', (e) => {
-    const heroEl = document.getElementById('hero');
+  window.addEventListener("keydown", (e) => {
+    const heroEl = document.getElementById("hero");
     if (!heroEl) return;
     const rect = heroEl.getBoundingClientRect();
     const isInView = rect.top < window.innerHeight && rect.bottom > 0;
     if (!isInView) return;
 
-    if (e.key === 'ArrowLeft') {
+    if (e.key === "ArrowLeft") {
       goToSlide(currentIndex - 1);
-    } else if (e.key === 'ArrowRight') {
+    } else if (e.key === "ArrowRight") {
       goToSlide(currentIndex + 1);
     }
   });
@@ -925,24 +948,32 @@ function initHeroSlider() {
   // Touch Swipe Support
   let touchStartX = 0;
   let touchEndX = 0;
-  viewport.addEventListener('touchstart', (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-  }, { passive: true });
+  viewport.addEventListener(
+    "touchstart",
+    (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    },
+    { passive: true },
+  );
 
-  viewport.addEventListener('touchend', (e) => {
-    touchEndX = e.changedTouches[0].screenX;
-    const diff = touchEndX - touchStartX;
-    if (Math.abs(diff) > 40) {
-      if (diff < 0) {
-        goToSlide(currentIndex + 1);
-      } else {
-        goToSlide(currentIndex - 1);
+  viewport.addEventListener(
+    "touchend",
+    (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const diff = touchEndX - touchStartX;
+      if (Math.abs(diff) > 40) {
+        if (diff < 0) {
+          goToSlide(currentIndex + 1);
+        } else {
+          goToSlide(currentIndex - 1);
+        }
       }
-    }
-  }, { passive: true });
+    },
+    { passive: true },
+  );
 
   // Tab Visibility Change: pause when tab hidden
-  document.addEventListener('visibilitychange', () => {
+  document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
       pauseAutoplay();
     } else {
@@ -953,8 +984,8 @@ function initHeroSlider() {
   // Initialize initial dash animation
   const initialDash = dashes[0];
   if (initialDash) {
-    initialDash.classList.add('active');
-    const fill = initialDash.querySelector('.dash-fill');
+    initialDash.classList.add("active");
+    const fill = initialDash.querySelector(".dash-fill");
     if (fill) {
       fill.style.animation = `dashProgress ${AUTOPLAY_INTERVAL}ms linear forwards`;
     }
@@ -967,27 +998,29 @@ function initHeroSlider() {
    08. SCROLL SPY FOR NAVIGATION
    ========================================================================== */
 function initScrollSpy() {
-  const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.nav-link');
+  const sections = document.querySelectorAll("section[id]");
+  const navLinks = document.querySelectorAll(".nav-link");
 
-  window.addEventListener('scroll', () => {
-    let current = '';
-    const header = document.getElementById('headerMaster') || document.getElementById('siteHeader');
+  window.addEventListener("scroll", () => {
+    let current = "";
+    const header =
+      document.getElementById("headerMaster") ||
+      document.getElementById("siteHeader");
     const headerHeight = header ? header.offsetHeight : 100;
     const scrollPos = window.pageYOffset + headerHeight + 50;
 
-    sections.forEach(section => {
+    sections.forEach((section) => {
       const sectionTop = section.offsetTop;
       const sectionHeight = section.offsetHeight;
       if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
-        current = section.getAttribute('id');
+        current = section.getAttribute("id");
       }
     });
 
-    navLinks.forEach(link => {
-      link.classList.remove('active');
-      if (link.getAttribute('href') === `#${current}`) {
-        link.classList.add('active');
+    navLinks.forEach((link) => {
+      link.classList.remove("active");
+      if (link.getAttribute("href") === `#${current}`) {
+        link.classList.add("active");
       }
     });
   });
@@ -997,37 +1030,41 @@ function initScrollSpy() {
    09. FIXED HEADER SMOOTH SCROLLING ENGINE
    ========================================================================== */
 function scrollToTarget(target) {
-  const element = typeof target === 'string' ? document.querySelector(target) : target;
+  const element =
+    typeof target === "string" ? document.querySelector(target) : target;
   if (!element) return;
 
-  const header = document.getElementById('headerMaster') || document.getElementById('siteHeader');
+  const header =
+    document.getElementById("headerMaster") ||
+    document.getElementById("siteHeader");
   const headerHeight = header ? header.offsetHeight : 100;
-  const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+  const elementPosition =
+    element.getBoundingClientRect().top + window.pageYOffset;
   const offsetPosition = Math.max(0, elementPosition - headerHeight - 10);
 
   window.scrollTo({
     top: offsetPosition,
-    behavior: 'smooth'
+    behavior: "smooth",
   });
 }
 
 function initSmoothScroll() {
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-      const targetId = this.getAttribute('href');
-      if (!targetId || targetId === '#' || targetId.length <= 1) return;
-      
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener("click", function (e) {
+      const targetId = this.getAttribute("href");
+      if (!targetId || targetId === "#" || targetId.length <= 1) return;
+
       const targetElement = document.querySelector(targetId);
       if (targetElement) {
         e.preventDefault();
         scrollToTarget(targetElement);
 
         // Close mobile nav if open
-        const nav = document.getElementById('mainNav');
-        const toggleBtn = document.getElementById('mobileToggle');
-        if (nav && nav.classList.contains('open')) {
-          nav.classList.remove('open');
-          if (toggleBtn) toggleBtn.classList.remove('active');
+        const nav = document.getElementById("mainNav");
+        const toggleBtn = document.getElementById("mobileToggle");
+        if (nav && nav.classList.contains("open")) {
+          nav.classList.remove("open");
+          if (toggleBtn) toggleBtn.classList.remove("active");
         }
 
         try {
@@ -1044,16 +1081,18 @@ function initSmoothScroll() {
    10. GSAP ENTRANCE TIMELINE, SVG STROKE DRAWINGS & NUMBER COUNTERS
    ========================================================================== */
 function initHeroGSAPReveal() {
-  const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const pantoneRing = document.getElementById('pantoneRing');
-  const clockArc = document.getElementById('clockArc');
-  const statGsm = document.getElementById('statGsm');
-  const statPantone = document.getElementById('statPantone');
-  const statRush = document.getElementById('statRush');
+  const prefersReduced =
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const pantoneRing = document.getElementById("pantoneRing");
+  const clockArc = document.getElementById("clockArc");
+  const statGsm = document.getElementById("statGsm");
+  const statPantone = document.getElementById("statPantone");
+  const statRush = document.getElementById("statRush");
 
   function triggerSvgStrokes() {
-    if (pantoneRing) pantoneRing.style.strokeDashoffset = '0';
-    if (clockArc) clockArc.style.strokeDashoffset = '0';
+    if (pantoneRing) pantoneRing.style.strokeDashoffset = "0";
+    if (clockArc) clockArc.style.strokeDashoffset = "0";
   }
 
   function runCounterInterpolation() {
@@ -1084,9 +1123,9 @@ function initHeroGSAPReveal() {
       if (progress < 1) {
         requestAnimationFrame(updateCounters);
       } else {
-        if (statGsm) statGsm.textContent = '600';
-        if (statPantone) statPantone.textContent = '100';
-        if (statRush) statRush.textContent = '24-48';
+        if (statGsm) statGsm.textContent = "600";
+        if (statPantone) statPantone.textContent = "100";
+        if (statRush) statRush.textContent = "24-48";
       }
     }
 
@@ -1094,72 +1133,92 @@ function initHeroGSAPReveal() {
   }
 
   if (prefersReduced) {
-    if (statGsm) statGsm.textContent = '600';
-    if (statPantone) statPantone.textContent = '100';
-    if (statRush) statRush.textContent = '24-48';
+    if (statGsm) statGsm.textContent = "600";
+    if (statPantone) statPantone.textContent = "100";
+    if (statRush) statRush.textContent = "24-48";
     triggerSvgStrokes();
     return;
   }
 
   // Check if GSAP is available
-  if (typeof gsap !== 'undefined') {
+  if (typeof gsap !== "undefined") {
     const tl = gsap.timeline({
-      defaults: { ease: 'power3.out' },
+      defaults: { ease: "power3.out" },
       onStart: () => {
         setTimeout(triggerSvgStrokes, 250);
         setTimeout(runCounterInterpolation, 300);
-      }
+      },
     });
 
-    tl.from('#heroBadge', {
-      opacity: 0,
-      y: -10,
-      duration: 0.3
-    }, 0.05)
-    .from('.title-line', {
-      y: '100%',
-      opacity: 0,
-      duration: 0.45,
-      stagger: 0.08
-    }, 0.1)
-    .from('#heroDesc', {
-      opacity: 0,
-      y: 10,
-      duration: 0.3
-    }, 0.25)
-    .from('#heroCta', {
-      opacity: 0,
-      y: 10,
-      duration: 0.3
-    }, 0.35)
-    .from('#heroInfographics', {
-      opacity: 0,
-      y: 12,
-      duration: 0.35
-    }, 0.4);
+    tl.from(
+      "#heroBadge",
+      {
+        opacity: 0,
+        y: -10,
+        duration: 0.3,
+      },
+      0.05,
+    )
+      .from(
+        ".title-line",
+        {
+          y: "100%",
+          opacity: 0,
+          duration: 0.45,
+          stagger: 0.08,
+        },
+        0.1,
+      )
+      .from(
+        "#heroDesc",
+        {
+          opacity: 0,
+          y: 10,
+          duration: 0.3,
+        },
+        0.25,
+      )
+      .from(
+        "#heroCta",
+        {
+          opacity: 0,
+          y: 10,
+          duration: 0.3,
+        },
+        0.35,
+      )
+      .from(
+        "#heroInfographics",
+        {
+          opacity: 0,
+          y: 12,
+          duration: 0.35,
+        },
+        0.4,
+      );
 
     // Subtle scroll parallax
-    if (typeof ScrollTrigger !== 'undefined' && window.innerWidth > 991) {
+    if (typeof ScrollTrigger !== "undefined" && window.innerWidth > 991) {
       gsap.registerPlugin(ScrollTrigger);
-      gsap.to('#heroVisualCol', {
+      gsap.to("#heroVisualCol", {
         y: 35,
-        ease: 'none',
+        ease: "none",
         scrollTrigger: {
-          trigger: '#hero',
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.5
-        }
+          trigger: "#hero",
+          start: "top top",
+          end: "bottom top",
+          scrub: 0.5,
+        },
       });
-      gsap.to('#heroContent', {
+      gsap.to("#heroContent", {
         y: 18,
-        ease: 'none',
+        ease: "none",
         scrollTrigger: {
-          trigger: '#hero',
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.5
-        }
+          trigger: "#hero",
+          start: "top top",
+          end: "bottom top",
+          scrub: 0.5,
+        },
       });
     }
   } else {
@@ -1173,10 +1232,10 @@ function initHeroGSAPReveal() {
    10. LUXURY BACKGROUND ANIMATION (GOLD PARTICLES & AMBIENT SHIMMER)
    ========================================================================== */
 function initLuxuryBackgroundAnimation() {
-  const canvas = document.getElementById('luxuryBgCanvas');
+  const canvas = document.getElementById("luxuryBgCanvas");
   if (!canvas) return;
 
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
   let width = 0;
@@ -1190,15 +1249,15 @@ function initLuxuryBackgroundAnimation() {
     x: -9999,
     y: -9999,
     radius: 90,
-    active: false
+    active: false,
   };
 
   const goldColors = [
-    { r: 212, g: 175, b: 55 },   // Primary 24K Gold
-    { r: 243, g: 229, b: 171 },  // Pale Gold
-    { r: 255, g: 215, b: 0 },    // Bright Gold
-    { r: 197, g: 160, b: 89 },   // Champagne
-    { r: 255, g: 255, b: 255 }   // Diamond Sparkle Speck
+    { r: 212, g: 175, b: 55 }, // Primary 24K Gold
+    { r: 243, g: 229, b: 171 }, // Pale Gold
+    { r: 255, g: 215, b: 0 }, // Bright Gold
+    { r: 197, g: 160, b: 89 }, // Champagne
+    { r: 255, g: 255, b: 255 }, // Diamond Sparkle Speck
   ];
 
   class Particle {
@@ -1218,7 +1277,7 @@ function initLuxuryBackgroundAnimation() {
       // - 'goldDust': Shimmering 24K gold dust specks (60%)
       const rand = Math.random();
       if (rand < 0.12) {
-        this.type = 'registration';
+        this.type = "registration";
         this.radius = 6 + Math.random() * 5;
         this.baseAlpha = 0.08 + Math.random() * 0.14;
         this.speedY = 0.15 + Math.random() * 0.25;
@@ -1226,7 +1285,7 @@ function initLuxuryBackgroundAnimation() {
         this.rotation = Math.random() * Math.PI * 2;
         this.rotSpeed = (Math.random() - 0.5) * 0.008;
       } else if (rand < 0.24) {
-        this.type = 'paper';
+        this.type = "paper";
         this.cardW = 10 + Math.random() * 7;
         this.cardH = 14 + Math.random() * 8;
         this.radius = Math.max(this.cardW, this.cardH);
@@ -1238,23 +1297,23 @@ function initLuxuryBackgroundAnimation() {
         this.flipAngle = Math.random() * Math.PI * 2;
         this.flipSpeed = 0.012 + Math.random() * 0.015;
       } else if (rand < 0.32) {
-        this.type = 'cropmark';
+        this.type = "cropmark";
         this.radius = 5 + Math.random() * 4;
         this.baseAlpha = 0.08 + Math.random() * 0.14;
         this.speedY = 0.16 + Math.random() * 0.3;
         this.speedX = (Math.random() - 0.5) * 0.2;
         this.rotation = Math.random() * Math.PI * 2;
         this.rotSpeed = (Math.random() - 0.5) * 0.006;
-      } else if (rand < 0.40) {
-        this.type = 'bokeh';
+      } else if (rand < 0.4) {
+        this.type = "bokeh";
         this.radius = 14 + Math.random() * 22;
         this.baseAlpha = 0.015 + Math.random() * 0.03;
         this.speedY = 0.12 + Math.random() * 0.2;
         this.speedX = (Math.random() - 0.5) * 0.18;
       } else {
-        this.type = 'goldDust';
+        this.type = "goldDust";
         this.radius = 0.6 + Math.random() * 1.8;
-        this.baseAlpha = 0.10 + Math.random() * 0.35;
+        this.baseAlpha = 0.1 + Math.random() * 0.35;
         this.speedY = 0.2 + Math.random() * 0.5;
         this.speedX = (Math.random() - 0.5) * 0.3;
       }
@@ -1274,7 +1333,8 @@ function initLuxuryBackgroundAnimation() {
 
       // Natural floating upwards with harmonic sine wave drift
       this.y -= this.speedY;
-      const swayScale = (this.type === 'bokeh' || this.type === 'paper') ? 0.35 : 0.6;
+      const swayScale =
+        this.type === "bokeh" || this.type === "paper" ? 0.35 : 0.6;
       this.x += Math.sin(this.angle) * swayScale + this.speedX;
 
       // Cursor / touch interaction
@@ -1304,7 +1364,7 @@ function initLuxuryBackgroundAnimation() {
 
       ctx.save();
 
-      if (this.type === 'registration') {
+      if (this.type === "registration") {
         // Subtle CMYK Registration Crosshair target mark
         ctx.translate(this.x, this.y);
         ctx.rotate(this.rotation);
@@ -1329,8 +1389,7 @@ function initLuxuryBackgroundAnimation() {
         ctx.arc(0, 0, 1, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${currentAlpha * 1.2})`;
         ctx.fill();
-
-      } else if (this.type === 'paper') {
+      } else if (this.type === "paper") {
         // Miniature luxury paper card swatch drifting in 3D perspective
         ctx.translate(this.x, this.y);
         ctx.rotate(this.rotation);
@@ -1347,11 +1406,15 @@ function initLuxuryBackgroundAnimation() {
 
         // Faint inner watermark / deckle line
         ctx.beginPath();
-        ctx.rect(-this.cardW / 2 + 2, -this.cardH / 2 + 2, this.cardW - 4, this.cardH - 4);
+        ctx.rect(
+          -this.cardW / 2 + 2,
+          -this.cardH / 2 + 2,
+          this.cardW - 4,
+          this.cardH - 4,
+        );
         ctx.strokeStyle = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${currentAlpha * 0.4})`;
         ctx.stroke();
-
-      } else if (this.type === 'cropmark') {
+      } else if (this.type === "cropmark") {
         // Printer dieline / bleed corner crop mark ( ┌ )
         ctx.translate(this.x, this.y);
         ctx.rotate(this.rotation);
@@ -1363,17 +1426,28 @@ function initLuxuryBackgroundAnimation() {
         ctx.lineTo(-this.radius, -this.radius);
         ctx.lineTo(this.radius, -this.radius);
         ctx.stroke();
-
-      } else if (this.type === 'bokeh') {
+      } else if (this.type === "bokeh") {
         // Soft ambient bokeh disc
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
-        grad.addColorStop(0, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${currentAlpha})`);
-        grad.addColorStop(1, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, 0)`);
+        const grad = ctx.createRadialGradient(
+          this.x,
+          this.y,
+          0,
+          this.x,
+          this.y,
+          this.radius,
+        );
+        grad.addColorStop(
+          0,
+          `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${currentAlpha})`,
+        );
+        grad.addColorStop(
+          1,
+          `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, 0)`,
+        );
         ctx.fillStyle = grad;
         ctx.fill();
-
       } else {
         // Shimmering 24K Gold Dust speck
         ctx.beginPath();
@@ -1421,34 +1495,54 @@ function initLuxuryBackgroundAnimation() {
   }
 
   // Pointer & Touch Events
-  window.addEventListener('resize', () => {
-    resize();
-  }, { passive: true });
+  window.addEventListener(
+    "resize",
+    () => {
+      resize();
+    },
+    { passive: true },
+  );
 
-  window.addEventListener('mousemove', (e) => {
-    pointer.x = e.clientX;
-    pointer.y = e.clientY;
-    pointer.active = true;
-  }, { passive: true });
-
-  window.addEventListener('mouseleave', () => {
-    pointer.active = false;
-  }, { passive: true });
-
-  window.addEventListener('touchmove', (e) => {
-    if (e.touches.length > 0) {
-      pointer.x = e.touches[0].clientX;
-      pointer.y = e.touches[0].clientY;
+  window.addEventListener(
+    "mousemove",
+    (e) => {
+      pointer.x = e.clientX;
+      pointer.y = e.clientY;
       pointer.active = true;
-    }
-  }, { passive: true });
+    },
+    { passive: true },
+  );
 
-  window.addEventListener('touchend', () => {
-    pointer.active = false;
-  }, { passive: true });
+  window.addEventListener(
+    "mouseleave",
+    () => {
+      pointer.active = false;
+    },
+    { passive: true },
+  );
+
+  window.addEventListener(
+    "touchmove",
+    (e) => {
+      if (e.touches.length > 0) {
+        pointer.x = e.touches[0].clientX;
+        pointer.y = e.touches[0].clientY;
+        pointer.active = true;
+      }
+    },
+    { passive: true },
+  );
+
+  window.addEventListener(
+    "touchend",
+    () => {
+      pointer.active = false;
+    },
+    { passive: true },
+  );
 
   // Battery & CPU saving: auto-pause animation loop when tab is in background
-  document.addEventListener('visibilitychange', () => {
+  document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
       isPaused = true;
       if (animFrameId) {
@@ -1465,25 +1559,28 @@ function initLuxuryBackgroundAnimation() {
 
   // Performance: Pause particle loop when hero section is scrolled out of viewport
   let isHeroInView = true;
-  const heroSectionEl = document.getElementById('hero');
-  if (heroSectionEl && 'IntersectionObserver' in window) {
-    const heroObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        isHeroInView = entry.isIntersecting;
-        if (!isHeroInView) {
-          isPaused = true;
-          if (animFrameId) {
-            cancelAnimationFrame(animFrameId);
-            animFrameId = null;
+  const heroSectionEl = document.getElementById("hero");
+  if (heroSectionEl && "IntersectionObserver" in window) {
+    const heroObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          isHeroInView = entry.isIntersecting;
+          if (!isHeroInView) {
+            isPaused = true;
+            if (animFrameId) {
+              cancelAnimationFrame(animFrameId);
+              animFrameId = null;
+            }
+          } else if (!document.hidden) {
+            isPaused = false;
+            if (!animFrameId) {
+              animFrameId = requestAnimationFrame(animate);
+            }
           }
-        } else if (!document.hidden) {
-          isPaused = false;
-          if (!animFrameId) {
-            animFrameId = requestAnimationFrame(animate);
-          }
-        }
-      });
-    }, { threshold: 0.02 });
+        });
+      },
+      { threshold: 0.02 },
+    );
     heroObserver.observe(heroSectionEl);
   }
 
@@ -1501,6 +1598,7 @@ function initLuxuryBackgroundAnimation() {
  */
 (function initGoldConicFallbackEngine() {
   if (window.CSS && CSS.registerProperty) return;
+  document.documentElement.classList.add("gold-conic-js-fallback");
 
   let angle = 0;
   let lastTime = performance.now();
@@ -1511,11 +1609,14 @@ function initLuxuryBackgroundAnimation() {
     lastTime = currentTime;
     // 60 deg/sec = 6 seconds for a full luxury rotation
     angle = (angle + delta * 60) % 360;
-    document.documentElement.style.setProperty('--gold-conic-angle', angle.toFixed(1) + 'deg');
+    document.documentElement.style.setProperty(
+      "--gold-conic-angle",
+      angle.toFixed(1) + "deg",
+    );
     rafId = requestAnimationFrame(step);
   }
 
-  document.addEventListener('visibilitychange', () => {
+  document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
       if (rafId) {
         cancelAnimationFrame(rafId);
@@ -1535,20 +1636,24 @@ function initLuxuryBackgroundAnimation() {
  * Tracks cursor position across luxury cards and translates ambient gold radiance
  */
 function initInteractiveCardSpotlights() {
-  if (window.innerWidth < 992 || 'ontouchstart' in window) return;
+  if (window.innerWidth < 992 || "ontouchstart" in window) return;
 
   const targetCards = document.querySelectorAll(
-    '.portfolio-card, .finish-detail-box, .custom-print-banner, .gold-frame, .summary-card, .category-card'
+    ".portfolio-card, .finish-detail-box, .custom-print-banner, .gold-frame, .summary-card, .category-card",
   );
 
-  targetCards.forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      card.style.setProperty('--mouse-x', `${x.toFixed(1)}%`);
-      card.style.setProperty('--mouse-y', `${y.toFixed(1)}%`);
-    }, { passive: true });
+  targetCards.forEach((card) => {
+    card.addEventListener(
+      "mousemove",
+      (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        card.style.setProperty("--mouse-x", `${x.toFixed(1)}%`);
+        card.style.setProperty("--mouse-y", `${y.toFixed(1)}%`);
+      },
+      { passive: true },
+    );
   });
 }
 
@@ -1557,10 +1662,10 @@ function initInteractiveCardSpotlights() {
  * Adds smooth tactile 3D depth to showcase cards on desktop
  */
 function initPortfolioCard3DTilt() {
-  if (window.innerWidth < 992 || 'ontouchstart' in window) return;
+  if (window.innerWidth < 992 || "ontouchstart" in window) return;
 
-  const cards = document.querySelectorAll('.portfolio-card');
-  cards.forEach(card => {
+  const cards = document.querySelectorAll(".portfolio-card");
+  cards.forEach((card) => {
     let rafId = null;
     let targetRx = 0;
     let targetRy = 0;
@@ -1571,31 +1676,42 @@ function initPortfolioCard3DTilt() {
       curRx += (targetRx - curRx) * 0.12;
       curRy += (targetRy - curRy) * 0.12;
       card.style.transform = `perspective(1000px) rotateX(${curRx.toFixed(2)}deg) rotateY(${curRy.toFixed(2)}deg) translateY(-6px)`;
-      if (Math.abs(targetRx - curRx) > 0.04 || Math.abs(targetRy - curRy) > 0.04) {
+      if (
+        Math.abs(targetRx - curRx) > 0.04 ||
+        Math.abs(targetRy - curRy) > 0.04
+      ) {
         rafId = requestAnimationFrame(updateTilt);
       } else {
         rafId = null;
       }
     }
 
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const normX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-      const normY = ((e.clientY - rect.top) / rect.height) * 2 - 1;
-      targetRx = -normY * 5; // clamp to max ±5 deg
-      targetRy = normX * 5;
-      if (!rafId) rafId = requestAnimationFrame(updateTilt);
-    }, { passive: true });
+    card.addEventListener(
+      "mousemove",
+      (e) => {
+        const rect = card.getBoundingClientRect();
+        const normX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        const normY = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+        targetRx = -normY * 5; // clamp to max ±5 deg
+        targetRy = normX * 5;
+        if (!rafId) rafId = requestAnimationFrame(updateTilt);
+      },
+      { passive: true },
+    );
 
-    card.addEventListener('mouseleave', () => {
-      targetRx = 0;
-      targetRy = 0;
-      card.style.transform = '';
-      if (rafId) {
-        cancelAnimationFrame(rafId);
-        rafId = null;
-      }
-    }, { passive: true });
+    card.addEventListener(
+      "mouseleave",
+      () => {
+        targetRx = 0;
+        targetRy = 0;
+        card.style.transform = "";
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+      },
+      { passive: true },
+    );
   });
 }
 
@@ -1605,11 +1721,11 @@ function initPortfolioCard3DTilt() {
  * Supports horizontal progression on desktop and vertical progression on mobile
  */
 function initScrollDrivenTimeline() {
-  const line = document.getElementById('timelineProgressLine');
-  const section = document.getElementById('how-it-works');
+  const line = document.getElementById("timelineProgressLine");
+  const section = document.getElementById("how-it-works");
   if (!line || !section) return;
 
-  const steps = section.querySelectorAll('.process-step');
+  const steps = section.querySelectorAll(".process-step");
 
   function updateTimeline() {
     const rect = section.getBoundingClientRect();
@@ -1623,27 +1739,30 @@ function initScrollDrivenTimeline() {
 
     const isMobile = window.innerWidth <= 768;
     if (isMobile) {
-      line.style.width = '100%';
+      line.style.width = "100%";
       line.style.height = `${(progress * 100).toFixed(1)}%`;
     } else {
-      line.style.height = '100%';
+      line.style.height = "100%";
       line.style.width = `${(progress * 100).toFixed(1)}%`;
     }
 
     // Step milestone activations as the line reaches each step
-    const thresholds = [0.05, 0.25, 0.50, 0.75, 0.95];
+    const thresholds = [0.05, 0.25, 0.5, 0.75, 0.95];
     steps.forEach((step, idx) => {
-      const milestone = thresholds[idx] !== undefined ? thresholds[idx] : idx / (steps.length - 1);
+      const milestone =
+        thresholds[idx] !== undefined
+          ? thresholds[idx]
+          : idx / (steps.length - 1);
       if (progress >= milestone) {
-        step.classList.add('is-active');
+        step.classList.add("is-active");
       } else {
-        step.classList.remove('is-active');
+        step.classList.remove("is-active");
       }
     });
   }
 
-  window.addEventListener('scroll', updateTimeline, { passive: true });
-  window.addEventListener('resize', updateTimeline, { passive: true });
+  window.addEventListener("scroll", updateTimeline, { passive: true });
+  window.addEventListener("resize", updateTimeline, { passive: true });
   updateTimeline();
 }
 
@@ -1652,29 +1771,41 @@ function initScrollDrivenTimeline() {
  * Touch events enable smooth horizontal swipe on mobile screens
  */
 function initTestimonialsMobileSwipe() {
-  const grid = document.querySelector('.testimonials-grid');
+  const grid = document.querySelector(".testimonials-grid");
   if (!grid) return;
 
   let startX = 0;
   let scrollLeft = 0;
   let isDown = false;
 
-  grid.addEventListener('touchstart', (e) => {
-    isDown = true;
-    startX = e.touches[0].pageX - grid.offsetLeft;
-    scrollLeft = grid.scrollLeft;
-  }, { passive: true });
+  grid.addEventListener(
+    "touchstart",
+    (e) => {
+      isDown = true;
+      startX = e.touches[0].pageX - grid.offsetLeft;
+      scrollLeft = grid.scrollLeft;
+    },
+    { passive: true },
+  );
 
-  grid.addEventListener('touchmove', (e) => {
-    if (!isDown) return;
-    const x = e.touches[0].pageX - grid.offsetLeft;
-    const walk = (x - startX) * 1.5;
-    grid.scrollLeft = scrollLeft - walk;
-  }, { passive: true });
+  grid.addEventListener(
+    "touchmove",
+    (e) => {
+      if (!isDown) return;
+      const x = e.touches[0].pageX - grid.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      grid.scrollLeft = scrollLeft - walk;
+    },
+    { passive: true },
+  );
 
-  grid.addEventListener('touchend', () => {
-    isDown = false;
-  }, { passive: true });
+  grid.addEventListener(
+    "touchend",
+    () => {
+      isDown = false;
+    },
+    { passive: true },
+  );
 }
 
 /* ==========================================================================
@@ -1686,21 +1817,26 @@ function initTestimonialsMobileSwipe() {
  * Thin gold bar at the top of the page showing reading progress
  */
 function initScrollProgressBar() {
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  )
+    return;
 
-  const bar = document.createElement('div');
-  bar.className = 'scroll-progress-bar';
-  bar.setAttribute('aria-hidden', 'true');
+  const bar = document.createElement("div");
+  bar.className = "scroll-progress-bar";
+  bar.setAttribute("aria-hidden", "true");
   document.body.prepend(bar);
 
   function updateProgress() {
     const scrollTop = window.scrollY;
-    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const docHeight =
+      document.documentElement.scrollHeight - window.innerHeight;
     const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-    bar.style.width = progress.toFixed(1) + '%';
+    bar.style.width = progress.toFixed(1) + "%";
   }
 
-  window.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener("scroll", updateProgress, { passive: true });
   updateProgress();
 }
 
@@ -1710,53 +1846,69 @@ function initScrollProgressBar() {
  * Also handles stagger-reveal for grid children with sequential delays.
  */
 function initScrollReveal() {
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  if (!('IntersectionObserver' in window)) return;
+  if (
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  )
+    return;
+  if (!("IntersectionObserver" in window)) return;
 
   // Tag section headers for reveal
-  document.querySelectorAll('.section-header').forEach(h => {
-    if (!h.closest('.hero-section')) h.classList.add('scroll-reveal');
+  document.querySelectorAll(".section-header").forEach((h) => {
+    if (!h.closest(".hero-section")) h.classList.add("scroll-reveal");
   });
 
   // Tag key content containers
-  document.querySelectorAll(
-    '.finishes-explorer, .quote-main-wrapper, .custom-print-banner, .finish-detail-box'
-  ).forEach(el => el.classList.add('scroll-reveal'));
+  document
+    .querySelectorAll(
+      ".finishes-explorer, .quote-main-wrapper, .custom-print-banner, .finish-detail-box",
+    )
+    .forEach((el) => el.classList.add("scroll-reveal"));
 
   // Tag grid items for stagger
   const staggerContainers = document.querySelectorAll(
-    '.categories-grid, .portfolio-filter-grid, .features-grid, .testimonials-grid'
+    ".categories-grid, .portfolio-filter-grid, .features-grid, .testimonials-grid",
   );
-  staggerContainers.forEach(grid => {
+  staggerContainers.forEach((grid) => {
     Array.from(grid.children).forEach((child, i) => {
-      child.classList.add('stagger-child');
+      child.classList.add("stagger-child");
       child.style.transitionDelay = `${i * 80}ms`;
     });
   });
 
   // Observe scroll-reveal elements
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+  const revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15, rootMargin: "0px 0px -60px 0px" },
+  );
 
-  document.querySelectorAll('.scroll-reveal').forEach(el => revealObserver.observe(el));
+  document
+    .querySelectorAll(".scroll-reveal")
+    .forEach((el) => revealObserver.observe(el));
 
   // Observe stagger children
-  const staggerObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-        staggerObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  const staggerObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          staggerObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.08, rootMargin: "0px 0px -40px 0px" },
+  );
 
-  document.querySelectorAll('.stagger-child').forEach(el => staggerObserver.observe(el));
+  document
+    .querySelectorAll(".stagger-child")
+    .forEach((el) => staggerObserver.observe(el));
 }
 
 /**
@@ -1764,28 +1916,40 @@ function initScrollReveal() {
  * CTA buttons subtly pull toward cursor on hover (desktop only)
  */
 function initMagneticButtons() {
-  if (window.innerWidth < 992 || 'ontouchstart' in window) return;
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (window.innerWidth < 992 || "ontouchstart" in window) return;
+  if (
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  )
+    return;
 
   const buttons = document.querySelectorAll(
-    '.hero-cta-button, .cta-primary, .btn-submit-quote'
+    ".hero-cta-button, .cta-primary, .btn-submit-quote",
   );
 
-  buttons.forEach(btn => {
-    btn.classList.add('magnetic-btn');
+  buttons.forEach((btn) => {
+    btn.classList.add("magnetic-btn");
 
-    btn.addEventListener('mousemove', (e) => {
-      const rect = btn.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-      const dx = (e.clientX - cx) * 0.2;
-      const dy = (e.clientY - cy) * 0.2;
-      btn.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px)`;
-    }, { passive: true });
+    btn.addEventListener(
+      "mousemove",
+      (e) => {
+        const rect = btn.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dx = (e.clientX - cx) * 0.2;
+        const dy = (e.clientY - cy) * 0.2;
+        btn.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px)`;
+      },
+      { passive: true },
+    );
 
-    btn.addEventListener('mouseleave', () => {
-      btn.style.transform = '';
-    }, { passive: true });
+    btn.addEventListener(
+      "mouseleave",
+      () => {
+        btn.style.transform = "";
+      },
+      { passive: true },
+    );
   });
 }
 
@@ -1794,28 +1958,32 @@ function initMagneticButtons() {
  * Material-style expanding ripple on CTA button clicks
  */
 function initButtonRipple() {
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  )
+    return;
 
   const buttons = document.querySelectorAll(
-    '.hero-cta-button, .cta-primary, .btn-submit-quote, .lead-tab, .finish-nav-item'
+    ".hero-cta-button, .cta-primary, .btn-submit-quote, .lead-tab, .finish-nav-item",
   );
 
-  buttons.forEach(btn => {
-    btn.style.position = btn.style.position || 'relative';
-    btn.style.overflow = 'hidden';
+  buttons.forEach((btn) => {
+    btn.style.position = btn.style.position || "relative";
+    btn.style.overflow = "hidden";
 
-    btn.addEventListener('click', (e) => {
-      const ripple = document.createElement('span');
-      ripple.className = 'btn-ripple';
+    btn.addEventListener("click", (e) => {
+      const ripple = document.createElement("span");
+      ripple.className = "btn-ripple";
 
       const rect = btn.getBoundingClientRect();
       const size = Math.max(rect.width, rect.height);
-      ripple.style.width = ripple.style.height = size + 'px';
-      ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
-      ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+      ripple.style.width = ripple.style.height = size + "px";
+      ripple.style.left = e.clientX - rect.left - size / 2 + "px";
+      ripple.style.top = e.clientY - rect.top - size / 2 + "px";
 
       btn.appendChild(ripple);
-      ripple.addEventListener('animationend', () => ripple.remove());
+      ripple.addEventListener("animationend", () => ripple.remove());
     });
   });
 }
@@ -1825,22 +1993,29 @@ function initButtonRipple() {
  * Animated gold underline appears under section titles as they enter viewport
  */
 function initSectionTitleLineWipe() {
-  const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersReduced || !('IntersectionObserver' in window)) {
-    document.querySelectorAll('.section-title').forEach(t => t.classList.add('line-wipe-active'));
+  const prefersReduced =
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (prefersReduced || !("IntersectionObserver" in window)) {
+    document
+      .querySelectorAll(".section-title")
+      .forEach((t) => t.classList.add("line-wipe-active"));
     return;
   }
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('line-wipe-active');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.5, rootMargin: '0px 0px -30px 0px' });
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("line-wipe-active");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.5, rootMargin: "0px 0px -30px 0px" },
+  );
 
-  document.querySelectorAll('.section-title').forEach(title => {
+  document.querySelectorAll(".section-title").forEach((title) => {
     observer.observe(title);
   });
 }
