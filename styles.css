@@ -425,7 +425,6 @@ section,
 
 /* Tabular numerals for stats and figures */
 .stat-number,
-.counter,
 .s-v {
   font-variant-numeric: tabular-nums;
 }
@@ -5264,7 +5263,7 @@ select.form-control {
   .slide-subtle-vignette,
   .glass-bar-nav,
   .glass-progress-dashes,
-  .hero-infographics {
+  .hero-infographics-strip {
     display: none !important;
   }
 
