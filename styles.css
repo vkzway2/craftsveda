@@ -1113,16 +1113,19 @@ section,
 
 /* Precision SVG Infographics Strip */
 .hero-infographics-strip {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 18px;
-  padding: 10px 18px;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 9px 12px;
   background: rgba(14, 20, 32, 0.65);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(212, 175, 55, 0.2);
   border-radius: var(--radius-md);
+  width: 100%;
   max-width: 100%;
+  box-sizing: border-box;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
 }
 
@@ -1130,6 +1133,8 @@ section,
   display: flex;
   flex-direction: column;
   gap: 2px;
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .stat-visual-row {
@@ -1159,12 +1164,15 @@ section,
 }
 
 .stat-label {
-  font-size: 0.62rem;
+  font-size: 0.53rem;
   font-weight: 700;
   color: #7e8ba3;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
-  white-space: nowrap;
+  white-space: normal;
+  line-height: 1.2;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .stat-hairline-sep {
@@ -1233,6 +1241,7 @@ section,
   background: #0c101a;
   padding: 1.5px;
   box-shadow: 0 25px 65px rgba(0, 0, 0, 0.85);
+  cursor: pointer;
 }
 
 /* 1px Rotating Gold Conic Border */
@@ -1318,6 +1327,9 @@ section,
   overflow: hidden;
   border-radius: calc(var(--radius-lg) - 1.5px);
   background: #080b12;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .showcase-slides-deck {
@@ -1325,6 +1337,7 @@ section,
   width: 100%;
   height: 100%;
   perspective: 1000px;
+  cursor: pointer;
 }
 
 .showcase-slide {
@@ -1338,6 +1351,7 @@ section,
   transform-style: preserve-3d;
   backface-visibility: hidden;
   pointer-events: none;
+  cursor: pointer;
 }
 
 .showcase-slide.active {
@@ -1346,6 +1360,7 @@ section,
   transform: rotateY(0deg) translateZ(0) scale(1);
   pointer-events: auto;
   z-index: 2;
+  cursor: pointer;
 }
 
 /* Enable smooth 3D transitions after slider is initialized */
@@ -1369,6 +1384,7 @@ section,
   object-fit: cover;
   object-position: center;
   display: block;
+  cursor: pointer;
 }
 
 .slide-subtle-vignette {
@@ -5065,31 +5081,6 @@ select.form-control {
   width: 60px;
 }
 
-/* --- 4. Card Shimmer Effect (What We Print / Category Cards) --- */
-.category-card::before,
-.portfolio-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 60%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    transparent 0%,
-    rgba(212, 175, 55, 0.06) 40%,
-    rgba(245, 230, 168, 0.12) 50%,
-    rgba(212, 175, 55, 0.06) 60%,
-    transparent 100%
-  );
-  transition: left 0.65s cubic-bezier(0.22, 1, 0.36, 1);
-  z-index: 1;
-  pointer-events: none;
-}
-.category-card:hover::before,
-.portfolio-card:hover::before {
-  left: 130%;
-}
 
 /* --- 5. Button Ripple Effect --- */
 .btn-ripple {
@@ -5150,15 +5141,7 @@ select.form-control {
 
 /* --- 9. Finish Nav Tab Active Pulse --- */
 .finish-nav-item.active {
-  animation: tabPulse 0.4s ease-out;
-}
-@keyframes tabPulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4);
-  }
-  100% {
-    box-shadow: 0 0 0 8px rgba(212, 175, 55, 0);
-  }
+  animation: none !important;
 }
 
 /* --- 10. Testimonial Card Hover Lift --- */
