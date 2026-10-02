@@ -13,7 +13,7 @@ const FINISH_DATA = {
     val1: "Gold, Rose Gold, Silver, Copper, Hologram",
     val2: "Soft-Touch Velvet, 600 GSM Cotton, Black Board",
     val3: "100 pieces (Custom Dies included)",
-    img: "assets/finishes-mockup.jpg",
+    img: "assets/product-packaging.jpg",
   },
   spotuv: {
     badge: "DIMENSIONAL COATING",
@@ -22,7 +22,7 @@ const FINISH_DATA = {
     val1: "High-Gloss Clear Polymer (Up to 50 microns raise)",
     val2: "Velvet Soft-Touch & Ultra-Matte Lamination",
     val3: "250 pieces",
-    img: "assets/hero-mockup.jpg",
+    img: "assets/finish-raised-uv.jpg",
   },
   emboss: {
     badge: "TACTILE IMPRESSION",
@@ -31,7 +31,7 @@ const FINISH_DATA = {
     val1: "Single-level, Multi-level & Sculpted 3D Brass Dies",
     val2: "500+ GSM Heavyweight Cotton & Textured Linen",
     val3: "100 pieces",
-    img: "assets/cards-mockup.jpg",
+    img: "assets/Emboss vs Deboss_ CraftsVeda Logo Mockup.png",
   },
   velvet: {
     badge: "SURFACE PROTECTION",
@@ -40,7 +40,7 @@ const FINISH_DATA = {
     val1: "Matte Velvet Soft-Touch & Anti-Scratch Finish",
     val2: "Rigid Boxes, Pocket Folders, Book Covers & Cards",
     val3: "100 pieces",
-    img: "assets/packaging-mockup.jpg",
+    img: "assets/Velvet Soft-Touch Card Showcase.png",
   },
   gilding: {
     badge: "ARTISANAL DETAIL",
@@ -757,6 +757,7 @@ function initHeroSlider() {
   const finishTitle = document.getElementById("slideFinishTitle");
   const specsLine = document.getElementById("slideSpecsLine");
   const glassBar = document.getElementById("showcaseGlassBar");
+  const goldCard = document.getElementById("heroGoldCard");
 
   if (!viewport || slides.length === 0) return;
 
@@ -945,6 +946,35 @@ function initHeroSlider() {
     }
   });
 
+  // Whole Card / Viewport Click Navigation:
+  // Left half click = Previous slide, Right half click = Next slide
+  let isSwiping = false;
+
+  const stageTarget = goldCard || viewport;
+  stageTarget.addEventListener("click", (e) => {
+    // If a touch swipe was just performed, suppress synthetic click
+    if (isSwiping) {
+      isSwiping = false;
+      return;
+    }
+    // Let arrow buttons and dash buttons execute their dedicated listeners
+    if (
+      e.target.closest("#heroPrevBtn") ||
+      e.target.closest("#heroNextBtn") ||
+      e.target.closest(".dash-btn")
+    ) {
+      return;
+    }
+
+    const rect = viewport.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    if (clickX < rect.width / 2) {
+      goToSlide(currentIndex - 1);
+    } else {
+      goToSlide(currentIndex + 1);
+    }
+  });
+
   // Touch Swipe Support
   let touchStartX = 0;
   let touchEndX = 0;
@@ -962,6 +992,10 @@ function initHeroSlider() {
       touchEndX = e.changedTouches[0].screenX;
       const diff = touchEndX - touchStartX;
       if (Math.abs(diff) > 40) {
+        isSwiping = true;
+        setTimeout(() => {
+          isSwiping = false;
+        }, 350);
         if (diff < 0) {
           goToSlide(currentIndex + 1);
         } else {
@@ -1965,7 +1999,7 @@ function initButtonRipple() {
     return;
 
   const buttons = document.querySelectorAll(
-    ".hero-cta-button, .cta-primary, .btn-submit-quote, .lead-tab, .finish-nav-item",
+    ".hero-cta-button, .cta-primary, .btn-submit-quote, .lead-tab",
   );
 
   buttons.forEach((btn) => {
