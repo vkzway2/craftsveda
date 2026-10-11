@@ -4,6 +4,14 @@
  * Interactive Engine & WhatsApp Quotation Builder
  */
 
+// Global Campaign Configuration (Festival / Seasonal Discounts)
+const CAMPAIGN_CONFIG = {
+  isActive: true,                // Set to false after Diwali
+  name: "Diwali Special",
+  discountPercent: 20,
+  badgeText: "🪔 Diwali Special: 20% Auto-Applied"
+};
+
 // Finish Data Matrix for Interactive Finishes Explorer
 const FINISH_DATA = {
   foil: {
@@ -83,6 +91,9 @@ document.addEventListener("DOMContentLoaded", () => {
   initMagneticButtons();
   initButtonRipple();
   initSectionTitleLineWipe();
+  initEnquiryForm();
+  initQuoteModal();
+  initCardCalculator();
 });
 
 /* ==========================================================================
@@ -1200,6 +1211,10 @@ function initHeroGSAPReveal() {
           opacity: 0,
           duration: 0.45,
           stagger: 0.08,
+          onComplete: () => {
+            const masks = document.querySelectorAll(".title-line-mask");
+            masks.forEach((m) => (m.style.overflow = "visible"));
+          },
         },
         0.1,
       )
@@ -1999,7 +2014,7 @@ function initButtonRipple() {
     return;
 
   const buttons = document.querySelectorAll(
-    ".hero-cta-button, .cta-primary, .btn-submit-quote, .lead-tab",
+    ".hero-cta-button, .cta-primary, .btn-submit-quote, .lead-tab, .btn-enquiry-submit",
   );
 
   buttons.forEach((btn) => {
@@ -2052,4 +2067,1534 @@ function initSectionTitleLineWipe() {
   document.querySelectorAll(".section-title").forEach((title) => {
     observer.observe(title);
   });
+}
+
+/* ==========================================================================
+   15. DIRECT CONTACT ENQUIRY FORM (WEB3FORMS AJAX + 10-DIGIT VALIDATION)
+   ========================================================================== */
+function initEnquiryForm() {
+  const form = document.getElementById("contactEnquiryForm");
+  if (!form) return;
+
+  const nameInput = document.getElementById("enquiryName");
+  const phoneInput = document.getElementById("enquiryPhone");
+  const nameError = document.getElementById("enquiryNameError");
+  const phoneError = document.getElementById("enquiryPhoneError");
+  const statusBox = document.getElementById("enquiryStatusBox");
+  const submitBtn = document.getElementById("btnEnquirySubmit");
+  const submitLabel = document.getElementById("btnEnquirySubmitLabel");
+
+  // Real-time error clearance
+  if (nameInput) {
+    nameInput.addEventListener("input", () => {
+      nameInput.classList.remove("input-error");
+      if (nameError) nameError.textContent = "";
+    });
+  }
+
+  if (phoneInput) {
+    phoneInput.addEventListener("input", () => {
+      phoneInput.classList.remove("input-error");
+      if (phoneError) phoneError.textContent = "";
+    });
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    // Reset status & errors
+    if (statusBox) {
+      statusBox.style.display = "none";
+      statusBox.className = "enquiry-status-box";
+      statusBox.innerHTML = "";
+    }
+    if (nameError) nameError.textContent = "";
+    if (phoneError) phoneError.textContent = "";
+    if (nameInput) nameInput.classList.remove("input-error");
+    if (phoneInput) phoneInput.classList.remove("input-error");
+
+    let isValid = true;
+    const nameVal = nameInput ? nameInput.value.trim() : "";
+    const phoneVal = phoneInput ? phoneInput.value.trim() : "";
+
+    // 1. Name validation
+    if (!nameVal) {
+      isValid = false;
+      if (nameInput) nameInput.classList.add("input-error");
+      if (nameError) nameError.textContent = "Kripya apna naam enter karein.";
+      if (nameInput) nameInput.focus();
+    }
+
+    // 2. Phone 10-digit validation
+    let cleanDigits = phoneVal.replace(/\D/g, "");
+    if (cleanDigits.length === 12 && cleanDigits.startsWith("91")) {
+      cleanDigits = cleanDigits.substring(2);
+    } else if (cleanDigits.length === 11 && cleanDigits.startsWith("0")) {
+      cleanDigits = cleanDigits.substring(1);
+    }
+
+    if (!phoneVal) {
+      isValid = false;
+      if (phoneInput) phoneInput.classList.add("input-error");
+      if (phoneError) phoneError.textContent = "Kripya apna phone number enter karein.";
+      if (isValid && phoneInput) phoneInput.focus();
+    } else if (cleanDigits.length !== 10) {
+      isValid = false;
+      if (phoneInput) phoneInput.classList.add("input-error");
+      if (phoneError) phoneError.textContent = "Kripya 10-digit phone number enter karein (e.g. 9820012345).";
+      if (isValid && phoneInput) phoneInput.focus();
+    }
+
+    if (!isValid) return;
+
+    // Prepare FormData
+    const formData = new FormData(form);
+    formData.set("phone", cleanDigits);
+    formData.append("submission_time", new Date().toLocaleString());
+
+    // UI: "Sending..." status with spinner
+    const originalBtnHTML = submitLabel ? submitLabel.innerHTML : "Submit Enquiry";
+    if (submitBtn) submitBtn.disabled = true;
+    if (submitLabel) {
+      submitLabel.innerHTML = `
+        <svg class="btn-spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation: spinWa 0.8s linear infinite; vertical-align: -2px; margin-right: 6px;">
+          <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+          <path d="M12 2a10 10 0 0 1 10 10"></path>
+        </svg>
+        Sending...
+      `;
+    }
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData,
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      const result = await response.json();
+
+      if (response.ok && (result.success || result.status === 200)) {
+        form.reset();
+        if (statusBox) {
+          statusBox.className = "enquiry-status-box status-success";
+          statusBox.innerHTML = `
+            <div class="status-content">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <span>Thank you, hum jaldi sampark karenge</span>
+            </div>
+          `;
+          statusBox.style.display = "block";
+        }
+      } else {
+        throw new Error(result.message || "Submission failed");
+      }
+    } catch (err) {
+      if (statusBox) {
+        statusBox.className = "enquiry-status-box status-failure";
+        statusBox.innerHTML = `
+          <div class="status-content">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span>Kuch galat hua, <a href="https://wa.me/918840035249?text=Hi%20CraftsVeda%2C%20mujhe%20printing%20ke%20baare%20me%20enquiry%20karni%20hai" target="_blank" rel="noopener noreferrer" class="status-wa-link">WhatsApp pe message karein →</a></span>
+          </div>
+        `;
+        statusBox.style.display = "block";
+      }
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
+      if (submitLabel) submitLabel.innerHTML = originalBtnHTML;
+    }
+  });
+}
+
+/* ==========================================================================
+   16. QUICK QUOTE MODAL CONTROLLER (ACCESSIBLE, SMOOTH & WEB3FORMS CONNECTED)
+   ========================================================================== */
+function initQuoteModal() {
+  const modalWrap = document.getElementById("quoteModal");
+  if (!modalWrap) return;
+
+  const closeBtn = document.getElementById("quoteModalClose");
+  const backdrop = document.getElementById("quoteModalBackdrop");
+  const form = document.getElementById("quickQuoteForm");
+  const nameInput = document.getElementById("quickQuoteName");
+  const phoneInput = document.getElementById("quickQuotePhone");
+  const notesInput = document.getElementById("quickQuoteNotes");
+  const nameError = document.getElementById("quickQuoteNameError");
+  const phoneError = document.getElementById("quickQuotePhoneError");
+  const statusBox = document.getElementById("quickQuoteStatus");
+  const submitBtn = document.getElementById("btnQuickQuoteSubmit");
+  const submitLabel = document.getElementById("btnQuickQuoteSubmitLabel");
+
+  function openModal(defaultNotes = "") {
+    modalWrap.classList.add("active");
+    modalWrap.setAttribute("aria-hidden", "false");
+    document.body.classList.add("cv-modal-open");
+    if (notesInput && defaultNotes) {
+      notesInput.value = defaultNotes;
+    }
+    if (nameInput) {
+      setTimeout(() => nameInput.focus(), 120);
+    }
+  }
+
+  function closeModal() {
+    modalWrap.classList.remove("active");
+    modalWrap.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("cv-modal-open");
+    if (nameError) nameError.textContent = "";
+    if (phoneError) phoneError.textContent = "";
+    if (nameInput) nameInput.classList.remove("input-error");
+    if (phoneInput) phoneInput.classList.remove("input-error");
+    if (statusBox) {
+      statusBox.style.display = "none";
+      statusBox.innerHTML = "";
+    }
+  }
+
+  // Open modal triggers
+  document.querySelectorAll('#headerGetQuoteBtn, #mobileNavGetQuoteBtn, [data-open-modal="quote"]').forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const customNotes = btn.getAttribute("data-quote-notes") || "";
+      openModal(customNotes);
+    });
+  });
+
+  window.openQuoteModal = openModal;
+  window.closeQuoteModal = closeModal;
+
+  if (closeBtn) closeBtn.addEventListener("click", closeModal);
+  if (backdrop) backdrop.addEventListener("click", closeModal);
+
+  // Close on Escape
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modalWrap.classList.contains("active")) {
+      closeModal();
+    }
+  });
+
+  if (nameInput) {
+    nameInput.addEventListener("input", () => {
+      nameInput.classList.remove("input-error");
+      if (nameError) nameError.textContent = "";
+    });
+  }
+
+  if (phoneInput) {
+    phoneInput.addEventListener("input", () => {
+      phoneInput.classList.remove("input-error");
+      if (phoneError) phoneError.textContent = "";
+    });
+  }
+
+  // Web3Forms Form handler
+  if (form) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      if (statusBox) {
+        statusBox.style.display = "none";
+        statusBox.className = "enquiry-status-box";
+        statusBox.innerHTML = "";
+      }
+      if (nameError) nameError.textContent = "";
+      if (phoneError) phoneError.textContent = "";
+      if (nameInput) nameInput.classList.remove("input-error");
+      if (phoneInput) phoneInput.classList.remove("input-error");
+
+      let isValid = true;
+      const nameVal = nameInput ? nameInput.value.trim() : "";
+      const phoneVal = phoneInput ? phoneInput.value.trim() : "";
+
+      if (!nameVal) {
+        isValid = false;
+        if (nameInput) nameInput.classList.add("input-error");
+        if (nameError) nameError.textContent = "Kripya apna naam enter karein.";
+        if (nameInput) nameInput.focus();
+      }
+
+      let cleanDigits = phoneVal.replace(/\D/g, "");
+      if (cleanDigits.length === 12 && cleanDigits.startsWith("91")) {
+        cleanDigits = cleanDigits.substring(2);
+      } else if (cleanDigits.length === 11 && cleanDigits.startsWith("0")) {
+        cleanDigits = cleanDigits.substring(1);
+      }
+
+      if (!phoneVal) {
+        isValid = false;
+        if (phoneInput) phoneInput.classList.add("input-error");
+        if (phoneError) phoneError.textContent = "Kripya apna phone number enter karein.";
+        if (isValid && phoneInput) phoneInput.focus();
+      } else if (cleanDigits.length !== 10) {
+        isValid = false;
+        if (phoneInput) phoneInput.classList.add("input-error");
+        if (phoneError) phoneError.textContent = "Kripya 10-digit phone number enter karein (e.g. 9820012345).";
+        if (isValid && phoneInput) phoneInput.focus();
+      }
+
+      if (!isValid) return;
+
+      const formData = new FormData(form);
+      formData.set("phone", cleanDigits);
+      formData.append("submission_time", new Date().toLocaleString());
+
+      const originalBtnHTML = submitLabel ? submitLabel.innerHTML : "Submit Enquiry";
+      if (submitBtn) submitBtn.disabled = true;
+      if (submitLabel) {
+        submitLabel.innerHTML = `
+          <svg class="btn-spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation: spinWa 0.8s linear infinite; vertical-align: -2px; margin-right: 6px;">
+            <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+            <path d="M12 2a10 10 0 0 1 10 10"></path>
+          </svg>
+          Sending...
+        `;
+      }
+
+      try {
+        const response = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          body: formData,
+          headers: { Accept: "application/json" }
+        });
+
+        const result = await response.json();
+        if (response.ok && (result.success || result.status === 200)) {
+          form.reset();
+          if (statusBox) {
+            statusBox.className = "enquiry-status-box status-success";
+            statusBox.innerHTML = `
+              <div class="status-content">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>Thank you, hum jaldi sampark karenge</span>
+              </div>
+            `;
+            statusBox.style.display = "block";
+          }
+          setTimeout(() => {
+            closeModal();
+          }, 3500);
+        } else {
+          throw new Error(result.message || "Submission failed");
+        }
+      } catch (err) {
+        if (statusBox) {
+          statusBox.className = "enquiry-status-box status-failure";
+          statusBox.innerHTML = `
+            <div class="status-content">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              <span>Kuch galat hua, <a href="https://wa.me/918840035249?text=Hi%20CraftsVeda%2C%20mujhe%20printing%20ke%20baare%20me%20enquiry%20karni%20hai" target="_blank" rel="noopener noreferrer" class="status-wa-link">WhatsApp pe message karein →</a></span>
+            </div>
+          `;
+          statusBox.style.display = "block";
+        }
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+        if (submitLabel) submitLabel.innerHTML = originalBtnHTML;
+      }
+    });
+  }
+}
+
+/* ==========================================================================
+   17. LUXURY BUSINESS CARDS LIVE CALCULATOR & RATE MATRIX (+25% HIKE)
+   ========================================================================== */
+function initCardCalculator() {
+  const calcContainer = document.getElementById("luxuryCardCalc");
+  if (!calcContainer) return;
+
+  // 1. Official Plain Card Base Rate Table
+  const PLAIN_CARD_RATES = {
+    "350_matt_one":   { 100: 240, 200: 456, 300: 648, 400: 816, 500: 960, 1000: 1680 },
+    "400_matt_one":   { 100: 280, 200: 532, 300: 756, 400: 952, 500: 1120, 1000: 1960 },
+    "350_matt_both":  { 100: 300, 200: 570, 300: 810, 400: 1020, 500: 1200, 1000: 2100 },
+    "400_matt_both":  { 100: 340, 200: 646, 300: 918, 400: 1156, 500: 1360, 1000: 2380 },
+    "350_velvet_one": { 100: 285, 200: 542, 300: 768, 400: 968, 500: 1140, 1000: 2000 },
+    "400_velvet_one": { 100: 320, 200: 608, 300: 864, 400: 1088, 500: 1280, 1000: 2240 },
+    "350_velvet_both":{ 100: 375, 200: 713, 300: 1013, 400: 1275, 500: 1500, 1000: 2625 },
+    "400_velvet_both":{ 100: 415, 200: 789, 300: 1121, 400: 1411, 500: 1660, 1000: 2905 }
+  };
+
+  const PLAIN_SAVINGS = {
+    100: 0,
+    200: 5,
+    300: 10,
+    400: 15,
+    500: 20,
+    1000: 30
+  };
+
+  // 2. Add-on Pricing (Section 9)
+  const CUSTOM_SHAPE_CUT_RATES = {
+    100: 90,
+    200: 140,
+    300: 180,
+    400: 220,
+    500: 250,
+    1000: 480
+  };
+
+  const DRIPOFF_RATES = {
+    one_side: { 100: 125, 200: 225, 300: 325, 400: 425, 500: 525, 1000: 1050 },
+    both_side: { 100: 250, 200: 450, 300: 650, 400: 850, 500: 1050, 1000: 2100 }
+  };
+
+  // 3. 2026 Finish Chart Selling Rates (BV-01..12 & BM-01..12)
+  const FINISH_RATES = {
+    velvet: {
+      "01": { p350: { 100: 519, 200: 775, 300: 1006, 400: 1263, 500: 1488, 1000: 2806 }, p400: { 100: 544, 200: 825, 300: 1069, 400: 1350, 500: 1594, 1000: 3019 } },
+      "02": { p350: { 100: 569, 200: 856, 300: 1119, 400: 1406, 500: 1669, 1000: 3163 }, p400: { 100: 594, 200: 906, 300: 1181, 400: 1494, 500: 1775, 1000: 3375 } },
+      "03": { p350: { 100: 744, 200: 1175, 300: 1563, 400: 1994, 500: 2375, 1000: 4581 }, p400: { 100: 775, 200: 1225, 300: 1638, 400: 2081, 500: 2481, 1000: 4794 } },
+      "04": { p350: { 100: 781, 200: 1244, 300: 1650, 400: 2106, 500: 2519, 1000: 4863 }, p400: { 100: 806, 200: 1288, 300: 1719, 400: 2194, 500: 2625, 1000: 5075 } },
+      "05": { p350: { 100: 825, 200: 1319, 300: 1763, 400: 2250, 500: 2694, 1000: 5219 }, p400: { 100: 856, 200: 1369, 300: 1831, 400: 2344, 500: 2800, 1000: 5431 } },
+      "06": { p350: { 100: 1188, 200: 1963, 300: 2656, 400: 3425, 500: 4113, 1000: 8056 }, p400: { 100: 1219, 200: 2013, 300: 2725, 400: 3513, 500: 4219, 1000: 8269 } },
+      "07": { p350: { 100: 600, 200: 919, 300: 1206, 400: 1525, 500: 1806, 1000: 3444 }, p400: { 100: 625, 200: 969, 300: 1275, 400: 1613, 500: 1913, 1000: 3656 } },
+      "08": { p350: { 100: 644, 200: 1000, 300: 1319, 400: 1669, 500: 1988, 1000: 3800 }, p400: { 100: 675, 200: 1050, 300: 1388, 400: 1763, 500: 2094, 1000: 4013 } },
+      "09": { p350: { 100: 825, 200: 1319, 300: 1763, 400: 2250, 500: 2694, 1000: 5219 }, p400: { 100: 856, 200: 1369, 300: 1831, 400: 2344, 500: 2800, 1000: 5431 } },
+      "10": { p350: { 100: 1013, 200: 1644, 300: 2225, 400: 2838, 500: 3400, 1000: 6638 }, p400: { 100: 1038, 200: 1688, 300: 2281, 400: 2925, 500: 3513, 1000: 6850 } },
+      "11": { p350: { 100: 1056, 200: 1719, 300: 2325, 400: 2988, 500: 3581, 1000: 6988 }, p400: { 100: 1088, 200: 1769, 300: 2394, 400: 3075, 500: 3688, 1000: 7206 } },
+      "12": { p350: { 100: 1056, 200: 1719, 300: 2325, 400: 2988, 500: 3581, 1000: 6988 }, p400: { 100: 1094, 200: 1769, 300: 2388, 400: 3075, 500: 3688, 1000: 7200 } }
+    },
+    matt: {
+      "01": { p350: { 100: 494, 200: 725, 300: 938, 400: 1175, 500: 1381, 1000: 2594 }, p400: { 100: 519, 200: 775, 300: 1006, 400: 1263, 500: 1488, 1000: 2818 } },
+      "02": { p350: { 100: 538, 200: 806, 300: 1056, 400: 1319, 500: 1563, 1000: 2950 }, p400: { 100: 569, 200: 856, 300: 1119, 400: 1406, 500: 1669, 1000: 3163 } },
+      "03": { p350: { 100: 719, 200: 1125, 300: 1494, 400: 1906, 500: 2269, 1000: 4369 }, p400: { 100: 744, 200: 1175, 300: 1563, 400: 1994, 500: 2375, 1000: 4581 } },
+      "04": { p350: { 100: 725, 200: 1144, 300: 1519, 400: 1931, 500: 2306, 1000: 4438 }, p400: { 100: 763, 200: 1219, 300: 1588, 400: 2019, 500: 2413, 1000: 4650 } },
+      "05": { p350: { 100: 775, 200: 1225, 300: 1631, 400: 2081, 500: 2481, 1000: 4794 }, p400: { 100: 800, 200: 1275, 300: 1700, 400: 2169, 500: 2588, 1000: 5013 } },
+      "06": { p350: { 100: 1138, 200: 1869, 300: 2525, 400: 3250, 500: 3900, 1000: 7625 }, p400: { 100: 1163, 200: 1913, 300: 2594, 400: 3338, 500: 4006, 1000: 7838 } },
+      "07": { p350: { 100: 544, 200: 825, 300: 1069, 400: 1350, 500: 1594, 1000: 3019 }, p400: { 100: 575, 200: 875, 300: 1138, 400: 1438, 500: 1700, 1000: 3229 } },
+      "08": { p350: { 100: 594, 200: 906, 300: 1181, 400: 1494, 500: 1775, 1000: 3375 }, p400: { 100: 619, 200: 950, 300: 1250, 400: 1581, 500: 1875, 1000: 3588 } },
+      "09": { p350: { 100: 775, 200: 1225, 300: 1625, 400: 2081, 500: 2481, 1000: 4794 }, p400: { 100: 800, 200: 1275, 300: 1700, 400: 2169, 500: 2588, 1000: 5000 } },
+      "10": { p350: { 100: 844, 200: 1544, 300: 2075, 400: 2663, 500: 3188, 1000: 6213 }, p400: { 100: 981, 200: 1594, 300: 2144, 400: 2750, 500: 3294, 1000: 6425 } },
+      "11": { p350: { 100: 1000, 200: 1625, 300: 2188, 400: 2813, 500: 3369, 1000: 6563 }, p400: { 100: 1025, 200: 1675, 300: 2263, 400: 2900, 500: 3475, 1000: 6775 } },
+      "12": { p350: { 100: 1088, 200: 1788, 300: 2413, 400: 3100, 500: 3725, 1000: 7275 }, p400: { 100: 1119, 200: 1831, 300: 2481, 400: 3188, 500: 3831, 1000: 7488 } }
+    }
+  };
+
+  // CENTRAL PRICING ENGINE
+  function calculateBusinessCardPrice(sel) {
+    const qty = parseInt(sel.quantity, 10);
+    const stock = sel.paperStock === "400" ? "400" : "350";
+    const lam = (sel.lamination === "gloss" || sel.lamination === "matt") ? "matt" : "velvet";
+    const side = sel.printSide === "one_side" ? "one" : "both";
+    const isSpecialFoil = ["rose_gold", "copper", "red", "black", "pink", "blue", "rainbow"].includes(sel.foilColour);
+    const hasFoil = sel.foil && sel.foil !== "none";
+    const hasUv = sel.spotUv && sel.spotUv !== "none";
+
+    // CASE A: Plain Card (No UV, No Foil)
+    if (!hasFoil && !hasUv) {
+      const key = stock + "_" + lam + "_" + side;
+      const table = PLAIN_CARD_RATES[key];
+      if (!table || table[qty] === undefined) {
+        return { supported: false, confirmationRequired: true };
+      }
+      const cardSellingTotal = table[qty];
+      const baseRate = table[100];
+      const perCardRate = parseFloat((cardSellingTotal / qty).toFixed(2));
+      const discountPercent = PLAIN_SAVINGS[qty] || 0;
+
+      let dripCharge = 0;
+      if (sel.dripOff) {
+        dripCharge = side === "both" ? DRIPOFF_RATES.both_side[qty] : DRIPOFF_RATES.one_side[qty];
+      }
+      let customShapeCharge = 0;
+      if (sel.customShapeCut) {
+        customShapeCharge = CUSTOM_SHAPE_CUT_RATES[qty];
+      }
+      const finalTotal = cardSellingTotal + dripCharge + customShapeCharge;
+
+      return {
+        supported: true,
+        rateSource: "plain_card_table",
+        baseRate,
+        cardSellingTotal,
+        perCardRate,
+        discountPercent,
+        addonCharges: { drip: dripCharge, customShape: customShapeCharge, total: dripCharge + customShapeCharge },
+        finalTotal,
+        confirmationRequired: false
+      };
+    }
+
+    // CASE B: Specialty Embellishment Combinations (BV/BM-01 to 12)
+    let variantCode = null;
+
+    if (hasUv && !hasFoil) {
+      if (side === "one") {
+        variantCode = "01";
+      } else {
+        variantCode = sel.spotUv === "both_side" ? "04" : "07";
+      }
+    } else if (hasFoil && !hasUv) {
+      if (isSpecialFoil) {
+        return { supported: false, confirmationRequired: true };
+      }
+      if (side === "one") {
+        variantCode = "02";
+      } else {
+        variantCode = sel.foil === "both_side" ? "05" : "08";
+      }
+    } else if (hasFoil && hasUv) {
+      if (isSpecialFoil) {
+        if (side === "both" && sel.spotUv === "both_side" && sel.foil === "one_side") {
+          variantCode = "12";
+        } else {
+          return { supported: false, confirmationRequired: true };
+        }
+      } else {
+        if (side === "one") {
+          variantCode = "03";
+        } else {
+          if (sel.foil === "both_side" && sel.spotUv === "both_side") {
+            variantCode = "06";
+          } else if (sel.foil === "one_side" && sel.spotUv === "one_side") {
+            variantCode = "09";
+          } else if (sel.foil === "one_side" && sel.spotUv === "both_side") {
+            variantCode = "10";
+          } else if (sel.foil === "both_side" && sel.spotUv === "one_side") {
+            variantCode = "11";
+          }
+        }
+      }
+    }
+
+    if (!variantCode) {
+      return { supported: false, confirmationRequired: true };
+    }
+
+    const lamKey = lam;
+    const stockKey = stock === "350" ? "p350" : "p400";
+    const finishEntry = FINISH_RATES[lamKey] && FINISH_RATES[lamKey][variantCode];
+
+    if (!finishEntry || !finishEntry[stockKey] || finishEntry[stockKey][qty] === undefined) {
+      return { supported: false, confirmationRequired: true };
+    }
+
+    const cardSellingTotal = finishEntry[stockKey][qty];
+    const perCardRate = parseFloat((cardSellingTotal / qty).toFixed(2));
+    const baseRate = finishEntry[stockKey][100];
+
+    let dripCharge = 0;
+    if (sel.dripOff) {
+      dripCharge = side === "both" ? DRIPOFF_RATES.both_side[qty] : DRIPOFF_RATES.one_side[qty];
+    }
+    let customShapeCharge = 0;
+    if (sel.customShapeCut) {
+      customShapeCharge = CUSTOM_SHAPE_CUT_RATES[qty];
+    }
+    const finalTotal = cardSellingTotal + dripCharge + customShapeCharge;
+
+    return {
+      supported: true,
+      rateSource: "finish_chart_2026",
+      variantCode: (lamKey === "velvet" ? "BV-" : "BM-") + variantCode,
+      baseRate,
+      cardSellingTotal,
+      perCardRate,
+      discountPercent: 0,
+      addonCharges: { drip: dripCharge, customShape: customShapeCharge, total: dripCharge + customShapeCharge },
+      finalTotal,
+      confirmationRequired: false
+    };
+  }
+
+  // State Management
+  const state = {
+    paperStock: "400",
+    lamination: "velvet",
+    printSide: "both_side",
+    spotUv: "none",
+    foil: "none",
+    foilColour: "gold",
+    dripOff: false,
+    customShapeCut: false,
+    quantity: 500,
+    activeView: "front",
+    uploadedFile: null
+  };
+
+  // Color name formatting helper
+  const FOIL_NAMES = {
+    gold: "Gold",
+    silver: "Silver",
+    rose_gold: "Rose Gold",
+    copper: "Copper",
+    red: "Red",
+    black: "Black",
+    pink: "Pink",
+    blue: "Blue",
+    rainbow: "Rainbow"
+  };
+
+  // Helper: Format Finish for display
+  function getFinishDisplay(s) {
+    const hasFoil = s.foil && s.foil !== "none";
+    const hasUv = s.spotUv && s.spotUv !== "none";
+    const foilName = "3D Digital Foil " + (FOIL_NAMES[s.foilColour] || "Gold");
+
+    if (!hasFoil && !hasUv) {
+      return "Plain (No Specialty Finish)";
+    }
+    if (hasFoil && !hasUv) {
+      if (s.foil === "both_side") {
+        return `${foilName} — Both Sides`;
+      }
+      if (s.printSide === "one_side") {
+        return `${foilName} — One Side`;
+      }
+      return `Front — ${foilName} | Back — Plain`;
+    }
+    if (hasUv && !hasFoil) {
+      if (s.spotUv === "both_side") {
+        return "Raised 3D Spot UV — Both Sides";
+      }
+      if (s.printSide === "one_side") {
+        return "Raised 3D Spot UV — One Side";
+      }
+      return "Front — Raised 3D Spot UV | Back — Plain";
+    }
+    if (hasFoil && hasUv) {
+      if (s.foil === "both_side" && s.spotUv === "both_side") {
+        return `${foilName} + Spot UV — Both Sides`;
+      }
+      if (s.foil === "one_side" && s.spotUv === "one_side") {
+        if (s.printSide === "one_side") {
+          return `${foilName} + Spot UV — One Side`;
+        }
+        return `Front — ${foilName} + Spot UV | Back — Plain`;
+      }
+      if (s.foil === "one_side" && s.spotUv === "both_side") {
+        return `Front — ${foilName} + Spot UV | Back — Spot UV`;
+      }
+      if (s.foil === "both_side" && s.spotUv === "one_side") {
+        return `Front — ${foilName} + Spot UV | Back — ${foilName}`;
+      }
+    }
+    return "Custom Finishing";
+  }
+
+  const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbydv9ayz1vDhedta4BT9NWPT8hdw89FcxLWnO8slQvnTL_JUqK2gzeqDXM4YqDk2hTtZw/exec';
+
+  function buildOrderText(orderId, customerName, phone, city, notes) {
+    const pricing = calculateBusinessCardPrice(state);
+    const lamName = state.lamination === "velvet" ? "Velvet" : state.lamination === "gloss" ? "Gloss" : "Matte";
+    const printSideName = state.printSide === "one_side" ? "One Side" : "Both Sides";
+    const finishLabel = getFinishDisplay(state);
+    const activeAddons = [];
+    if (state.dripOff) activeAddons.push("Drip-off");
+    if (state.customShapeCut) activeAddons.push("Custom Shape Cut");
+    let fileDesc = "Will share artwork file";
+    if (state.uploadedFile) {
+      fileDesc = isFileTooLarge
+        ? `${state.uploadedFile.name} (Over 15MB — will share on WhatsApp)`
+        : state.uploadedFile.name;
+    }
+
+    let waText = orderId
+      ? `✨ LUXURY BUSINESS CARD ORDER CONFIRMATION — CRAFTSVEDA ✨\n\n`
+      : `✨ LUXURY BUSINESS CARD ORDER — CRAFTSVEDA ✨\n\n`;
+
+    if (orderId) waText += `Order ID: ${orderId}\n`;
+    if (customerName) waText += `Customer: ${customerName}\n`;
+    if (phone) waText += `Phone: ${phone}\n`;
+    if (city) waText += `Delivery City/Pincode: ${city}\n`;
+    if (orderId || customerName || phone || city) waText += `\n`;
+
+    waText +=
+      `Quantity: ${state.quantity} Cards\n` +
+      `GSM: ${state.paperStock}\n` +
+      `Lamination: ${lamName}\n` +
+      `Print Side: ${printSideName}\n\n` +
+      `Finish: ${finishLabel}\n`;
+
+    if (activeAddons.length > 0) {
+      waText += `Add-ons: ${activeAddons.join(", ")}\n`;
+    }
+
+    if (pricing.supported) {
+      if (typeof CAMPAIGN_CONFIG !== "undefined" && CAMPAIGN_CONFIG.isActive) {
+        const discountedTotal = Math.round(pricing.finalTotal * (1 - CAMPAIGN_CONFIG.discountPercent / 100));
+        const discPerCard = (discountedTotal / state.quantity).toFixed(2);
+        waText +=
+          `\nRate: ₹${discPerCard} / Card (${CAMPAIGN_CONFIG.name} applied)\n` +
+          `TOTAL: ₹${discountedTotal.toLocaleString("en-IN")} (Original: ₹${pricing.finalTotal.toLocaleString("en-IN")})\n\n`;
+      } else {
+        waText +=
+          `\nRate: ₹${pricing.perCardRate.toFixed(2)} / Card\n` +
+          `TOTAL: ₹${pricing.finalTotal.toLocaleString("en-IN")}\n\n`;
+      }
+    } else {
+      waText += `\nRate: Custom Quote Required\n\n`;
+    }
+
+    if (notes) {
+      waText += `Notes: ${notes}\n\n`;
+    }
+
+    waText += `Design: ${fileDesc}\n\n`;
+    waText += orderId
+      ? `Hi CraftsVeda, I've placed Order #${orderId}. Please confirm production.`
+      : `Please confirm the order.`;
+
+    return waText;
+  }
+
+  // Element Queries
+  const stockButtons = calcContainer.querySelectorAll(".cfg-stock-btn");
+  const lamButtons = calcContainer.querySelectorAll(".cfg-lam-btn");
+  const sideButtons = calcContainer.querySelectorAll(".cfg-side-btn");
+  const uvButtons = calcContainer.querySelectorAll(".cfg-spotuv-btn");
+  const foilButtons = calcContainer.querySelectorAll(".cfg-foil-btn");
+  const foilColourWrap = document.getElementById("stepFoilColour");
+  const swatchButtons = calcContainer.querySelectorAll(".cfg-color-swatch-btn, .cfg-swatch-btn");
+  const qtyButtons = calcContainer.querySelectorAll(".cfg-qty-pill, .cfg-qty-btn");
+  const tileDrip = document.getElementById("tileDripOff");
+  const tileShape = document.getElementById("tileCustomShape");
+  const thumbButtons = calcContainer.querySelectorAll(".thumb-card-btn, .thumb-pill-btn");
+  const btnFlipView = document.getElementById("btnFlipView");
+  const flipBtnText = document.getElementById("flipBtnText");
+
+  const btnSpotUvBoth = document.getElementById("btnSpotUvBoth");
+  const btnFoilBoth = document.getElementById("btnFoilBoth");
+
+  const previewFrame = document.getElementById("previewCardFrame");
+  const cardPreviewImg = document.getElementById("cardPreviewImg");
+  const previewSpecBadge = document.getElementById("previewSpecBadge");
+
+  // Summary Elements (Right Column)
+  const summaryStock = document.getElementById("summaryStock");
+  const summaryLam = document.getElementById("summaryLam");
+  const summarySide = document.getElementById("summarySide");
+  const summarySpotUv = document.getElementById("summarySpotUv");
+  const summaryFoil = document.getElementById("summaryFoil");
+  const summaryRowFoilColour = document.getElementById("summaryRowFoilColour");
+  const summaryFoilColour = document.getElementById("summaryFoilColour");
+  const summaryDripoff = document.getElementById("summaryDripoff");
+  const summaryShapeCut = document.getElementById("summaryShapeCut");
+  const summaryFinish = document.getElementById("summaryFinish");
+  const summaryAddons = document.getElementById("summaryAddons");
+  const summaryQty = document.getElementById("summaryQty");
+  const summaryMiniThumb = document.getElementById("summaryMiniThumb");
+
+  // Pricing Elements
+  const priceSupportedWrap = document.getElementById("priceSupportedWrap");
+  const priceConfirmationWrap = document.getElementById("priceConfirmationWrap");
+  const displayRatePerCard = document.getElementById("displayRatePerCard");
+  const priceSavingSlot = document.getElementById("priceSavingSlot");
+  const displayFinalTotal = document.getElementById("displayFinalTotal");
+  const campaignOriginalPrice = document.getElementById("campaignOriginalPrice");
+  const campaignPromoBadge = document.getElementById("campaignPromoBadge");
+
+  // CTAs
+  const calcWaOrderBtn = document.getElementById("calcWaOrderBtn");
+  const btnOpenEmailQuote = document.getElementById("btnOpenEmailQuote");
+  const btnOpenPlaceOrderModal = document.getElementById("btnOpenPlaceOrderModal");
+
+  // Place Order Modal Elements
+  const placeOrderModal = document.getElementById("placeOrderModal");
+  const placeOrderModalClose = document.getElementById("placeOrderModalClose");
+  const placeOrderModalBackdrop = document.getElementById("placeOrderModalBackdrop");
+  const modalStripSpecs = document.getElementById("modalStripSpecs");
+  const modalStripTotal = document.getElementById("modalStripTotal");
+  const modalSpecChip = document.getElementById("modalSpecChip");
+  const modalDirectWaBtn = document.getElementById("modalDirectWaBtn");
+
+  // Upload elements
+  const uploadDropzone = document.getElementById("uploadDropzone");
+  const designFileInput = document.getElementById("designFileInput");
+  const uploadEmptyState = document.getElementById("uploadEmptyState");
+  const uploadSelectedState = document.getElementById("uploadSelectedState");
+  const selectedFileName = document.getElementById("selectedFileName");
+  const btnChangeFile = document.getElementById("btnChangeFile");
+  const uploadFileWarning = document.getElementById("uploadFileWarning");
+
+  // Order Submission & Confirmation elements
+  const cfgOrderForm = document.getElementById("cfgOrderForm");
+  const orderCustomerName = document.getElementById("orderCustomerName");
+  const orderCustomerPhone = document.getElementById("orderCustomerPhone");
+  const orderCustomerEmail = document.getElementById("orderCustomerEmail");
+  const orderCustomerCity = document.getElementById("orderCustomerCity");
+  const orderCustomerNotes = document.getElementById("orderCustomerNotes");
+  const orderCustomerNameError = document.getElementById("orderCustomerNameError");
+  const orderCustomerPhoneError = document.getElementById("orderCustomerPhoneError");
+  const orderCustomerEmailError = document.getElementById("orderCustomerEmailError");
+  const orderCustomerCityError = document.getElementById("orderCustomerCityError");
+  const btnPlaceOrder = document.getElementById("btnPlaceOrder");
+  const btnPlaceOrderSpinner = document.getElementById("btnPlaceOrderSpinner");
+  const btnPlaceOrderText = document.getElementById("btnPlaceOrderText");
+  const cfgOrderErrorBox = document.getElementById("cfgOrderErrorBox");
+  const cfgErrorMsgText = document.getElementById("cfgErrorMsgText");
+  const btnTryAgainOrder = document.getElementById("btnTryAgainOrder");
+  const cfgErrorWaLink = document.getElementById("cfgErrorWaLink");
+  const cfgOrderConfirmationPanel = document.getElementById("cfgOrderConfirmationPanel");
+  const confirmedOrderId = document.getElementById("confirmedOrderId");
+  const confirmedOrderTotal = document.getElementById("confirmedOrderTotal");
+  const btnTrackOrder = document.getElementById("btnTrackOrder");
+  const btnConfirmedWa = document.getElementById("btnConfirmedWa");
+
+  // Update Visual Live Preview
+  function updateLivePreview() {
+    if (!cardPreviewImg || !previewFrame) return;
+
+    previewFrame.className = "preview-card-frame";
+
+    const hasFoil = state.foil && state.foil !== "none";
+    const hasUv = state.spotUv && state.spotUv !== "none";
+    const lamLabel = state.lamination === "velvet" ? "Velvet" : state.lamination === "gloss" ? "Gloss" : "Matte";
+
+    if (state.activeView === "angle") {
+      if (!hasFoil && !hasUv) {
+        cardPreviewImg.src = "assets/Plain VC FB.jpg";
+        cardPreviewImg.alt = "Plain Luxury Business Card Front & Back Showcase";
+        if (flipBtnText) flipBtnText.textContent = "Front View";
+        if (previewSpecBadge) {
+          previewSpecBadge.textContent = `Plain Base FB • ${state.paperStock} GSM ${lamLabel}`;
+        }
+      } else {
+        cardPreviewImg.src = "assets/Velvet Soft-Touch Card Showcase.png";
+        cardPreviewImg.alt = "Velvet Soft-Touch Luxury Business Cards Perspective";
+        if (flipBtnText) flipBtnText.textContent = "Front View";
+        if (previewSpecBadge) {
+          previewSpecBadge.textContent = "Luxury Studio Angle Perspective";
+        }
+      }
+      return;
+    }
+
+    if (flipBtnText) flipBtnText.textContent = "Angle View";
+
+    // Front View Mapping
+    if (!hasFoil && !hasUv) {
+      if (state.printSide === "one_side") {
+        cardPreviewImg.src = "assets/One Side VC Plain.jpg";
+        cardPreviewImg.alt = "One Side VC Plain Luxury Business Card";
+        if (previewSpecBadge) {
+          previewSpecBadge.textContent = `One Side VC Plain • ${state.paperStock} GSM ${lamLabel}`;
+        }
+      } else {
+        cardPreviewImg.src = "assets/Both Side VC Plain.jpg";
+        cardPreviewImg.alt = "Both Side VC Plain Luxury Business Card";
+        if (previewSpecBadge) {
+          previewSpecBadge.textContent = `Both Side VC Plain • ${state.paperStock} GSM ${lamLabel}`;
+        }
+      }
+    } else if (hasUv && !hasFoil) {
+      cardPreviewImg.src = "assets/luxury-business-card-spot-uv.webp";
+      cardPreviewImg.alt = "Raised 3D Spot UV Business Card Preview";
+      if (previewSpecBadge) {
+        previewSpecBadge.textContent = `Raised 3D Spot UV • ${state.paperStock} GSM`;
+      }
+    } else if (hasFoil && !hasUv) {
+      if (state.foilColour === "rainbow") {
+        cardPreviewImg.src = "assets/luxury-business-card-finishing.webp";
+      } else {
+        cardPreviewImg.src = "assets/luxury-business-card-gold-foil.webp";
+        if (state.foilColour !== "gold") {
+          previewFrame.classList.add(`foil-shader-${state.foilColour}`);
+        }
+      }
+      cardPreviewImg.alt = `3D Foil ${FOIL_NAMES[state.foilColour]} Luxury Business Card Preview`;
+      if (previewSpecBadge) {
+        previewSpecBadge.textContent = `3D Foil ${FOIL_NAMES[state.foilColour]} • ${state.paperStock} GSM`;
+      }
+    } else if (hasFoil && hasUv) {
+      cardPreviewImg.src = "assets/craftsveda-luxury-mockup.jpg";
+      if (state.foilColour !== "gold" && state.foilColour !== "rainbow") {
+        previewFrame.classList.add(`foil-shader-${state.foilColour}`);
+      }
+      cardPreviewImg.alt = `3D Foil ${FOIL_NAMES[state.foilColour]} + Raised Spot UV Preview`;
+      if (previewSpecBadge) {
+        previewSpecBadge.textContent = `3D Foil ${FOIL_NAMES[state.foilColour]} + Spot UV • ${state.paperStock} GSM`;
+      }
+    }
+  }
+
+  // Update Thumbnail Strip Synchronization
+  function updateThumbnailsSync() {
+    const hasFoil = state.foil && state.foil !== "none";
+    const hasUv = state.spotUv && state.spotUv !== "none";
+
+    let activeCategory = "plain";
+    if (state.activeView === "angle") {
+      activeCategory = "showcase";
+    } else if (hasFoil && hasUv) {
+      activeCategory = "foil_uv";
+    } else if (hasFoil && !hasUv) {
+      activeCategory = "foil";
+    } else if (hasUv && !hasFoil) {
+      activeCategory = "spot_uv";
+    } else {
+      activeCategory = "plain";
+    }
+
+    thumbButtons.forEach((btn) => {
+      btn.classList.toggle("active", btn.getAttribute("data-thumb") === activeCategory);
+    });
+  }
+
+  // Main UI Render & Recalculate
+  function renderConfigurator() {
+    // 1. Enforce side rules: if One Side print, disable both sides for finishes
+    const isOneSide = state.printSide === "one_side";
+    if (btnSpotUvBoth) {
+      btnSpotUvBoth.disabled = isOneSide;
+      btnSpotUvBoth.classList.toggle("disabled", isOneSide);
+    }
+    if (btnFoilBoth) {
+      btnFoilBoth.disabled = isOneSide;
+      btnFoilBoth.classList.toggle("disabled", isOneSide);
+    }
+    if (isOneSide) {
+      if (state.spotUv === "both_side") state.spotUv = "one_side";
+      if (state.foil === "both_side") state.foil = "one_side";
+    }
+
+    // 2. Toggle Foil Colour selector visibility
+    const hasFoil = state.foil && state.foil !== "none";
+    if (foilColourWrap) {
+      foilColourWrap.style.display = hasFoil ? "flex" : "none";
+    }
+
+    // 3. Update active states on Option Buttons
+    stockButtons.forEach((b) => b.classList.toggle("active", b.getAttribute("data-stock") === state.paperStock));
+    lamButtons.forEach((b) => b.classList.toggle("active", b.getAttribute("data-lam") === state.lamination));
+    sideButtons.forEach((b) => b.classList.toggle("active", b.getAttribute("data-side") === state.printSide));
+    uvButtons.forEach((b) => b.classList.toggle("active", b.getAttribute("data-spotuv") === state.spotUv));
+    foilButtons.forEach((b) => b.classList.toggle("active", b.getAttribute("data-foil") === state.foil));
+    swatchButtons.forEach((b) => b.classList.toggle("active", b.getAttribute("data-color") === state.foilColour));
+    qtyButtons.forEach((b) => b.classList.toggle("active", b.getAttribute("data-qty") === String(state.quantity)));
+
+    // 4. Update Add-on Toggle Tiles & Dynamic Badges
+    if (tileDrip) {
+      tileDrip.classList.toggle("active", !!state.dripOff);
+      tileDrip.setAttribute("aria-checked", state.dripOff ? "true" : "false");
+    }
+    if (tileShape) {
+      tileShape.classList.toggle("active", !!state.customShapeCut);
+      tileShape.setAttribute("aria-checked", state.customShapeCut ? "true" : "false");
+    }
+
+    const currentQtyNum = parseInt(state.quantity, 10);
+    const dripTotal = state.printSide === "one_side" ? DRIPOFF_RATES.one_side[currentQtyNum] : DRIPOFF_RATES.both_side[currentQtyNum];
+    const dripPerCard = (dripTotal / currentQtyNum).toFixed(2);
+    const dripRateBadge = document.getElementById("dripRateBadge");
+    if (dripRateBadge) {
+      dripRateBadge.textContent = `+₹${dripPerCard} / card`;
+    }
+
+    const shapeCost = CUSTOM_SHAPE_CUT_RATES[currentQtyNum] || 250;
+    const shapeRateBadge = document.getElementById("shapeRateBadge");
+    const shapeSwitchStatus = document.getElementById("shapeSwitchStatus");
+    if (shapeRateBadge) {
+      shapeRateBadge.textContent = `${currentQtyNum} Cutting Cost ₹${shapeCost}`;
+    }
+    if (shapeSwitchStatus) {
+      shapeSwitchStatus.textContent = state.customShapeCut ? "Included" : "Add";
+    }
+
+    // 5. Update Visual Preview & Thumbnails
+    updateLivePreview();
+    updateThumbnailsSync();
+
+    // 6. Run Central Pricing Engine
+    const pricing = calculateBusinessCardPrice(state);
+
+    // 7. Update Order Summary Specifications (Right Column)
+    const lamLabels = { velvet: "Velvet", matt: "Matte", gloss: "Gloss" };
+    const lamName = lamLabels[state.lamination] || "Matte";
+    const printSideName = state.printSide === "one_side" ? "One Side" : "Both Side";
+    const finishLabel = getFinishDisplay(state);
+
+    if (summaryStock) summaryStock.textContent = `${state.paperStock} GSM Art Card`;
+    if (summaryLam) summaryLam.textContent = lamName;
+    if (summarySide) summarySide.textContent = printSideName;
+    if (summarySpotUv) summarySpotUv.textContent = state.spotUv === "none" ? "None" : (state.spotUv === "one_side" ? "One Side" : "Both Side");
+    if (summaryFoil) summaryFoil.textContent = state.foil === "none" ? "None" : (state.foil === "one_side" ? "One Side (3D)" : "Both Side (3D)");
+    if (summaryRowFoilColour) summaryRowFoilColour.style.display = hasFoil ? "flex" : "none";
+    if (summaryFoilColour) summaryFoilColour.textContent = FOIL_NAMES[state.foilColour] || "Gold";
+    if (summaryDripoff) summaryDripoff.textContent = state.dripOff ? `Yes (+₹${dripPerCard}/card)` : "No";
+    if (summaryShapeCut) summaryShapeCut.textContent = state.customShapeCut ? `Yes (+₹${shapeCost})` : "No";
+    if (summaryFinish) summaryFinish.textContent = finishLabel;
+
+    const activeAddons = [];
+    if (state.dripOff) activeAddons.push("Drip-off UV");
+    if (state.customShapeCut) activeAddons.push("Custom Shape Cut");
+    if (summaryAddons) {
+      summaryAddons.textContent = activeAddons.length > 0 ? activeAddons.join(", ") : "Standard Trimming";
+    }
+    if (summaryQty) summaryQty.textContent = `${state.quantity} Cards`;
+    if (summaryMiniThumb && cardPreviewImg) summaryMiniThumb.src = cardPreviewImg.src;
+
+    // 8. Update Pricing Display (Pure Clean Customer Total — No Markup or Hike Exposed)
+    if (pricing.supported) {
+      if (priceSupportedWrap) priceSupportedWrap.style.display = "block";
+      if (priceConfirmationWrap) priceConfirmationWrap.style.display = "none";
+
+      const basePrice = pricing.finalTotal;
+      const isOfferActive = typeof CAMPAIGN_CONFIG !== "undefined" && CAMPAIGN_CONFIG.isActive;
+
+      if (isOfferActive) {
+        const discountedPrice = Math.round(basePrice * (1 - CAMPAIGN_CONFIG.discountPercent / 100));
+
+        if (campaignOriginalPrice) {
+          campaignOriginalPrice.textContent = `₹${basePrice.toLocaleString("en-IN")}`;
+          campaignOriginalPrice.style.display = "inline-block";
+        }
+        if (campaignPromoBadge) {
+          campaignPromoBadge.textContent = CAMPAIGN_CONFIG.badgeText;
+          campaignPromoBadge.style.display = "inline-flex";
+        }
+        if (displayFinalTotal) {
+          displayFinalTotal.textContent = `₹${discountedPrice.toLocaleString("en-IN")}`;
+        }
+        if (displayRatePerCard) {
+          displayRatePerCard.textContent = `₹${(discountedPrice / currentQtyNum).toFixed(2)}`;
+        }
+      } else {
+        if (campaignOriginalPrice) {
+          campaignOriginalPrice.textContent = "";
+          campaignOriginalPrice.style.display = "none";
+        }
+        if (campaignPromoBadge) {
+          campaignPromoBadge.textContent = "";
+          campaignPromoBadge.style.display = "none";
+        }
+        if (displayFinalTotal) {
+          displayFinalTotal.textContent = `₹${basePrice.toLocaleString("en-IN")}`;
+        }
+        if (displayRatePerCard) {
+          displayRatePerCard.textContent = `₹${pricing.perCardRate.toFixed(2)}`;
+        }
+      }
+
+      if (priceSavingSlot) {
+        if (pricing.discountPercent > 0) {
+          priceSavingSlot.innerHTML = `<span class="calc-save-pill">SAVE ${pricing.discountPercent}%</span>`;
+        } else {
+          priceSavingSlot.innerHTML = "";
+        }
+      }
+
+      // WhatsApp Quick Button
+      if (calcWaOrderBtn) {
+        calcWaOrderBtn.href = `https://wa.me/918840035249?text=${encodeURIComponent(buildOrderText())}`;
+      }
+
+    } else {
+      if (priceSupportedWrap) priceSupportedWrap.style.display = "none";
+      if (priceConfirmationWrap) priceConfirmationWrap.style.display = "block";
+
+      if (campaignOriginalPrice) {
+        campaignOriginalPrice.textContent = "";
+        campaignOriginalPrice.style.display = "none";
+      }
+      if (campaignPromoBadge) {
+        campaignPromoBadge.textContent = "";
+        campaignPromoBadge.style.display = "none";
+      }
+
+      if (calcWaOrderBtn) {
+        calcWaOrderBtn.href = `https://wa.me/918840035249?text=${encodeURIComponent(buildOrderText())}`;
+      }
+    }
+
+    // 9. Sync Pop-Up Modal Values
+    const effectiveTotal = (typeof CAMPAIGN_CONFIG !== "undefined" && CAMPAIGN_CONFIG.isActive && pricing.supported)
+      ? Math.round(pricing.finalTotal * (1 - CAMPAIGN_CONFIG.discountPercent / 100))
+      : pricing.finalTotal;
+    const finalTotalDisplay = pricing.supported ? `₹${effectiveTotal.toLocaleString("en-IN")}` : "Confirmed Before Production";
+    if (modalStripSpecs) {
+      modalStripSpecs.textContent = `${state.paperStock} GSM Art Card • ${lamName} • ${printSideName} • ${finishLabel} • ${state.quantity} Cards`;
+    }
+    if (modalSpecChip) {
+      modalSpecChip.textContent = `${state.paperStock} GSM • ${lamName} • ${state.quantity} Cards`;
+    }
+    if (modalStripTotal) {
+      modalStripTotal.textContent = finalTotalDisplay;
+    }
+    if (modalDirectWaBtn) {
+      modalDirectWaBtn.href = `https://wa.me/918840035249?text=${encodeURIComponent(buildOrderText())}`;
+    }
+  }
+
+  // --- STUDIO MODAL & ORDER MODAL CONTROLS ---
+  const luxuryCardConfigModal = document.getElementById("luxuryCardConfigModal");
+  const luxuryCardConfigModalClose = document.getElementById("luxuryCardConfigModalClose");
+  const luxuryCardConfigModalBackdrop = document.getElementById("luxuryCardConfigModalBackdrop");
+  const openCardStudioBtns = document.querySelectorAll('[data-open-card-studio="true"], .btn-open-card-config');
+
+  function openStudioModal() {
+    if (luxuryCardConfigModal) {
+      luxuryCardConfigModal.classList.add("active");
+      luxuryCardConfigModal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      renderConfigurator();
+    } else {
+      const studioElem = document.getElementById("pricing-matrix") || document.getElementById("luxuryCardCalc");
+      if (studioElem) {
+        studioElem.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  }
+
+  function closeStudioModal() {
+    if (!luxuryCardConfigModal) return;
+    luxuryCardConfigModal.classList.remove("active");
+    luxuryCardConfigModal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+  }
+
+  openCardStudioBtns.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      if (luxuryCardConfigModal) {
+        e.preventDefault();
+        openStudioModal();
+      }
+    });
+  });
+
+  if (luxuryCardConfigModalClose) {
+    luxuryCardConfigModalClose.addEventListener("click", closeStudioModal);
+  }
+  if (luxuryCardConfigModalBackdrop) {
+    luxuryCardConfigModalBackdrop.addEventListener("click", closeStudioModal);
+  }
+
+  function openPlaceOrderModal() {
+    if (!placeOrderModal) return;
+    placeOrderModal.classList.add("active");
+    placeOrderModal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+    setTimeout(() => {
+      if (orderCustomerName) orderCustomerName.focus();
+    }, 150);
+  }
+
+  function closePlaceOrderModal() {
+    if (!placeOrderModal) return;
+    placeOrderModal.classList.remove("active");
+    placeOrderModal.setAttribute("aria-hidden", "true");
+    if (!luxuryCardConfigModal || !luxuryCardConfigModal.classList.contains("active")) {
+      document.body.style.overflow = "";
+    }
+  }
+
+  if (btnOpenPlaceOrderModal) {
+    btnOpenPlaceOrderModal.addEventListener("click", openPlaceOrderModal);
+  }
+  if (placeOrderModalClose) {
+    placeOrderModalClose.addEventListener("click", closePlaceOrderModal);
+  }
+  if (placeOrderModalBackdrop) {
+    placeOrderModalBackdrop.addEventListener("click", closePlaceOrderModal);
+  }
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      if (placeOrderModal && placeOrderModal.classList.contains("active")) {
+        closePlaceOrderModal();
+      } else if (luxuryCardConfigModal && luxuryCardConfigModal.classList.contains("active")) {
+        closeStudioModal();
+      }
+    }
+  });
+
+  // Email Quote button triggers quoteModal
+  if (btnOpenEmailQuote) {
+    btnOpenEmailQuote.addEventListener("click", () => {
+      const quoteModal = document.getElementById("quoteModal");
+      if (quoteModal) {
+        quoteModal.classList.add("active");
+        quoteModal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        const serviceSelect = document.getElementById("quoteService");
+        if (serviceSelect) {
+          serviceSelect.value = "luxury-cards";
+        }
+      }
+    });
+  }
+
+  // --- EVENT LISTENERS ---
+
+  // Paper Stock
+  stockButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      state.paperStock = btn.getAttribute("data-stock") || "400";
+      renderConfigurator();
+    });
+  });
+
+  // Lamination
+  lamButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      state.lamination = btn.getAttribute("data-lam") || "velvet";
+      renderConfigurator();
+    });
+  });
+
+  // Print Side
+  sideButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      state.printSide = btn.getAttribute("data-side") || "both_side";
+      renderConfigurator();
+    });
+  });
+
+  // Spot UV
+  uvButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      state.spotUv = btn.getAttribute("data-spotuv") || "none";
+      state.activeView = "front";
+      renderConfigurator();
+    });
+  });
+
+  // 3D Foil
+  foilButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      state.foil = btn.getAttribute("data-foil") || "none";
+      state.activeView = "front";
+      renderConfigurator();
+    });
+  });
+
+  // Foil Colour Swatches
+  swatchButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      state.foilColour = btn.getAttribute("data-color") || "gold";
+      state.activeView = "front";
+      renderConfigurator();
+    });
+  });
+
+  // Quantity
+  qtyButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      state.quantity = parseInt(btn.getAttribute("data-qty") || "500", 10);
+      renderConfigurator();
+    });
+  });
+
+  // Add-on Toggle Clicks
+  if (tileDrip) {
+    tileDrip.addEventListener("click", () => {
+      state.dripOff = !state.dripOff;
+      renderConfigurator();
+    });
+    tileDrip.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        state.dripOff = !state.dripOff;
+        renderConfigurator();
+      }
+    });
+  }
+
+  if (tileShape) {
+    tileShape.addEventListener("click", () => {
+      state.customShapeCut = !state.customShapeCut;
+      renderConfigurator();
+    });
+    tileShape.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        state.customShapeCut = !state.customShapeCut;
+        renderConfigurator();
+      }
+    });
+  }
+
+  // Alternate Perspective Flip Button
+  if (btnFlipView) {
+    btnFlipView.addEventListener("click", () => {
+      state.activeView = state.activeView === "front" ? "angle" : "front";
+      renderConfigurator();
+    });
+  }
+
+  // Thumbnails Strip Quick Switch
+  thumbButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const mode = btn.getAttribute("data-thumb");
+      state.activeView = "front";
+
+      if (mode === "plain") {
+        state.spotUv = "none";
+        state.foil = "none";
+      } else if (mode === "spot_uv") {
+        state.spotUv = state.printSide === "one_side" ? "one_side" : "both_side";
+        state.foil = "none";
+      } else if (mode === "foil") {
+        state.foil = state.printSide === "one_side" ? "one_side" : "both_side";
+        state.spotUv = "none";
+      } else if (mode === "foil_uv") {
+        state.foil = state.printSide === "one_side" ? "one_side" : "both_side";
+        state.spotUv = state.printSide === "one_side" ? "one_side" : "both_side";
+      } else if (mode === "showcase") {
+        state.activeView = "angle";
+      }
+
+      renderConfigurator();
+    });
+  });
+
+  // Upload Design Interaction inside Modal
+  const MAX_FILE_SIZE = 15 * 1024 * 1024;
+  let isFileTooLarge = false;
+
+  function handleDesignFile(file) {
+    if (!file) return;
+    state.uploadedFile = file;
+    isFileTooLarge = file.size > MAX_FILE_SIZE;
+
+    if (uploadEmptyState) uploadEmptyState.style.display = "none";
+    if (uploadSelectedState) uploadSelectedState.style.display = "flex";
+    if (selectedFileName) {
+      const sizeKB = (file.size / 1024).toFixed(0);
+      const sizeStr = sizeKB > 1024 ? `${(sizeKB / 1024).toFixed(1)} MB` : `${sizeKB} KB`;
+      selectedFileName.textContent = `${file.name} (${sizeStr})`;
+    }
+    if (uploadFileWarning) {
+      uploadFileWarning.style.display = isFileTooLarge ? "block" : "none";
+    }
+    renderConfigurator();
+  }
+
+  function readFileAsBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result;
+        if (typeof result === "string") {
+          const commaIdx = result.indexOf(",");
+          resolve(commaIdx !== -1 ? result.slice(commaIdx + 1) : result);
+        } else {
+          resolve("");
+        }
+      };
+      reader.onerror = (err) => reject(err);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  if (uploadDropzone && designFileInput) {
+    uploadDropzone.addEventListener("click", (e) => {
+      if (e.target !== btnChangeFile) {
+        designFileInput.click();
+      }
+    });
+
+    if (btnChangeFile) {
+      btnChangeFile.addEventListener("click", (e) => {
+        e.stopPropagation();
+        designFileInput.click();
+      });
+    }
+
+    designFileInput.addEventListener("change", (e) => {
+      const files = e.target.files;
+      if (files && files.length > 0) {
+        handleDesignFile(files[0]);
+      }
+    });
+
+    uploadDropzone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      uploadDropzone.style.borderColor = "var(--gold-base)";
+    });
+
+    uploadDropzone.addEventListener("dragleave", () => {
+      uploadDropzone.style.borderColor = "";
+    });
+
+    uploadDropzone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      uploadDropzone.style.borderColor = "";
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        handleDesignFile(e.dataTransfer.files[0]);
+      }
+    });
+  }
+
+  // --- FINAL ORDER SUBMISSION FLOW (INSIDE MODAL) ---
+  if (cfgOrderForm) {
+    cfgOrderForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const nameVal = orderCustomerName ? orderCustomerName.value.trim() : "";
+      const phoneVal = orderCustomerPhone ? orderCustomerPhone.value.trim() : "";
+      const emailVal = orderCustomerEmail ? orderCustomerEmail.value.trim() : "";
+      const cityVal = orderCustomerCity ? orderCustomerCity.value.trim() : "";
+      const notesVal = orderCustomerNotes ? orderCustomerNotes.value.trim() : "";
+
+      let isValid = true;
+      if (!nameVal) {
+        if (orderCustomerNameError) orderCustomerNameError.textContent = "Please enter your name.";
+        isValid = false;
+      } else {
+        if (orderCustomerNameError) orderCustomerNameError.textContent = "";
+      }
+
+      const cleanPhone = phoneVal.replace(/[^0-9]/g, "");
+      if (cleanPhone.length < 10) {
+        if (orderCustomerPhoneError) orderCustomerPhoneError.textContent = "Please enter a valid 10-digit number.";
+        isValid = false;
+      } else {
+        if (orderCustomerPhoneError) orderCustomerPhoneError.textContent = "";
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailVal || !emailRegex.test(emailVal)) {
+        if (orderCustomerEmailError) orderCustomerEmailError.textContent = "Please enter a valid email address.";
+        isValid = false;
+      } else {
+        if (orderCustomerEmailError) orderCustomerEmailError.textContent = "";
+      }
+
+      if (!cityVal) {
+        if (orderCustomerCityError) orderCustomerCityError.textContent = "Please enter your city and delivery pincode.";
+        isValid = false;
+      } else {
+        if (orderCustomerCityError) orderCustomerCityError.textContent = "";
+      }
+
+      if (!isValid) return;
+
+      if (cfgOrderErrorBox) cfgOrderErrorBox.style.display = "none";
+      if (btnPlaceOrder) btnPlaceOrder.disabled = true;
+      if (btnPlaceOrderSpinner) btnPlaceOrderSpinner.style.display = "inline-block";
+      if (btnPlaceOrderText) btnPlaceOrderText.textContent = "Submitting Order...";
+
+      try {
+        const pricing = calculateBusinessCardPrice(state);
+        const activeAddons = [];
+        if (state.dripOff) activeAddons.push("Drip-off");
+        if (state.customShapeCut) activeAddons.push("Custom Shape Cut");
+        const addonsStr = activeAddons.length > 0 ? activeAddons.join(", ") : "None";
+
+        const payload = {
+          action: "submitOrder",
+          customerName: nameVal,
+          phone: phoneVal,
+          email: emailVal,
+          deliveryCity: cityVal,
+          notes: notesVal,
+          product: "Luxury Business Cards",
+          paperGsm: state.paperStock,
+          paperStock: state.paperStock,
+          lamination: state.lamination,
+          printSide: state.printSide,
+          spotUv: state.spotUv,
+          foil: state.foil !== "none" ? `${state.foil} (${state.foilColour})` : state.foil,
+          foilSelection: state.foil,
+          foilColour: state.foilColour,
+          dripOff: state.dripOff,
+          customShapeCut: state.customShapeCut,
+          addons: addonsStr,
+          quantity: state.quantity,
+          perCardRate: pricing.supported ? pricing.perCardRate : "Confirmation Required",
+          totalAmount: pricing.supported ? pricing.finalTotal : "Confirmation Required"
+        };
+
+        if (state.uploadedFile && !isFileTooLarge) {
+          try {
+            const base64Data = await readFileAsBase64(state.uploadedFile);
+            payload.fileBase64 = base64Data;
+            payload.fileName = state.uploadedFile.name;
+            payload.fileMimeType = state.uploadedFile.type || "application/octet-stream";
+          } catch (fileErr) {
+            console.warn("Could not read base64:", fileErr);
+          }
+        } else if (state.uploadedFile && isFileTooLarge) {
+          payload.fileName = state.uploadedFile.name;
+          payload.fileMimeType = state.uploadedFile.type || "application/octet-stream";
+        }
+
+        const res = await fetch(WEB_APP_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const resText = await res.text();
+        let resData = null;
+        try {
+          resData = JSON.parse(resText);
+        } catch (parseErr) {
+          console.warn("Response not JSON:", resText);
+        }
+
+        if (!res.ok || !resData || resData.ok === false) {
+          const errMsg = (resData && (resData.error || resData.message)) || "Submission failed";
+          throw new Error(errMsg);
+        }
+
+        const orderId = (resData && (resData.orderId || resData.id || resData.order_id)) || ("CV-" + Math.floor(100000 + Math.random() * 900000));
+        const orderTotalToDisplay = (typeof CAMPAIGN_CONFIG !== "undefined" && CAMPAIGN_CONFIG.isActive && pricing.supported)
+          ? Math.round(pricing.finalTotal * (1 - CAMPAIGN_CONFIG.discountPercent / 100))
+          : pricing.finalTotal;
+        const finalTotalDisplay = pricing.supported ? `₹${orderTotalToDisplay.toLocaleString("en-IN")}` : "Confirmed Before Production";
+
+        // Success - show confirmation inside modal
+        if (cfgOrderForm) cfgOrderForm.style.display = "none";
+        if (cfgOrderErrorBox) cfgOrderErrorBox.style.display = "none";
+        if (cfgOrderConfirmationPanel) cfgOrderConfirmationPanel.style.display = "flex";
+
+        if (confirmedOrderId) confirmedOrderId.textContent = orderId;
+        if (confirmedOrderTotal) confirmedOrderTotal.textContent = finalTotalDisplay;
+
+        if (btnTrackOrder) {
+          btnTrackOrder.href = `track-order.html?orderId=${encodeURIComponent(orderId)}`;
+        }
+
+        if (btnConfirmedWa) {
+          btnConfirmedWa.href = `https://wa.me/918840035249?text=${encodeURIComponent(buildOrderText(orderId, nameVal, phoneVal, cityVal, notesVal))}`;
+        }
+
+      } catch (err) {
+        console.error("Order submission failed:", err);
+        if (cfgOrderErrorBox) {
+          cfgOrderErrorBox.style.display = "flex";
+          if (cfgErrorMsgText) {
+            cfgErrorMsgText.textContent = "Unable to submit your order right now. Please try again or complete your order via WhatsApp.";
+          }
+        }
+
+        if (cfgErrorWaLink) {
+          cfgErrorWaLink.href = `https://wa.me/918840035249?text=${encodeURIComponent(buildOrderText(null, nameVal, phoneVal, cityVal, notesVal))}`;
+        }
+
+      } finally {
+        if (btnPlaceOrder) btnPlaceOrder.disabled = false;
+        if (btnPlaceOrderSpinner) btnPlaceOrderSpinner.style.display = "none";
+        if (btnPlaceOrderText) btnPlaceOrderText.textContent = "Confirm & Submit Order";
+      }
+    });
+  }
+
+  if (btnTryAgainOrder) {
+    btnTryAgainOrder.addEventListener("click", () => {
+      if (cfgOrderErrorBox) cfgOrderErrorBox.style.display = "none";
+      if (btnPlaceOrder) btnPlaceOrder.focus();
+    });
+  }
+
+  // Initial Calculation
+  renderConfigurator();
 }
