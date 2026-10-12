@@ -8,7 +8,7 @@
 const CAMPAIGN_CONFIG = {
   isActive: true,                // Set to false after Diwali
   name: "Diwali Special",
-  discountPercent: 20,
+  discountPercent: 15,
   badgeText: "🪔 Diwali Special: 20% Auto-Applied"
 };
 
