@@ -9,7 +9,7 @@ const CAMPAIGN_CONFIG = {
   isActive: true,                // Set to false after Diwali
   name: "Diwali Special",
   discountPercent: 15,
-  badgeText: "🪔 Diwali Special: 20% Auto-Applied"
+  badgeText: "🪔 Diwali Special: 15% Auto-Applied"
 };
 
 // Finish Data Matrix for Interactive Finishes Explorer
