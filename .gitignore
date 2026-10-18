@@ -9,3 +9,6 @@ $RECYCLE.BIN/
 scratch/
 *.log
 *.bak
+
+# Backend Source (Google Apps Script)
+Code.gs
