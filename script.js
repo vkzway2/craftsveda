@@ -8,8 +8,8 @@
 const CAMPAIGN_CONFIG = {
   isActive: true,                // Set to false after Diwali
   name: "Diwali Special",
-  discountPercent: 20,
-  badgeText: "🪔 Diwali Special: 20% Auto-Applied"
+  discountPercent: 15,
+  badgeText: "🪔 Diwali Special: 15% Auto-Applied"
 };
 
 // Finish Data Matrix for Interactive Finishes Explorer
@@ -2687,7 +2687,7 @@ function initCardCalculator() {
     return "Custom Finishing";
   }
 
-  const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbydv9ayz1vDhedta4BT9NWPT8hdw89FcxLWnO8slQvnTL_JUqK2gzeqDXM4YqDk2hTtZw/exec';
+  const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyvdBZtzqONY_pmXqEhGrqOlgoCM3TI5hUhSDCX4p30wY5Vq3WrE87rftCz9FhrkcPg2Q/exec';
 
   function buildOrderText(orderId, customerName, phone, city, notes) {
     const pricing = calculateBusinessCardPrice(state);

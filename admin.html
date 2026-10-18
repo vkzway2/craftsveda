@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard — CraftsVeda Luxury Studio</title>
+  <meta name="robots" content="noindex, nofollow" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Playfair+Display:wght@500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css?v=3.1" />
+  <link rel="stylesheet" href="admin.css?v=3.1" />
+  <link rel="stylesheet" href="admin-additions.css?v=3.1" />
+</head>
+<body class="admin-body">
+
+  <a href="#mainContent" class="skip-link">Skip to content</a>
+
+  <!-- TOP APP BAR -->
+  <header class="admin-topbar">
+    <div class="admin-topbar-inner">
+
+      <div class="admin-brand-group">
+        <a href="index.html" class="admin-brand-link">
+          <div class="logo-mark"><span class="logo-initials">CV</span></div>
+          <div>
+            <h1 class="admin-title">CraftsVeda Studio Admin</h1>
+            <span class="admin-sub">Order Management &amp; WhatsApp Engine</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="admin-header-center">
+        <div class="system-status-chip" id="syncStatusChip" title="Google Apps Script &amp; Sheet Sync">
+          <span class="status-pulse-dot-green" id="syncDot"></span>
+          <span id="syncStatusText">Connecting…</span>
+        </div>
+        <div class="system-status-chip wa-status-chip" id="waStatusChip" title="WhatsApp Cloud API status">
+          <span class="wa-dot"></span>
+          <span id="waStatusText">WhatsApp: checking…</span>
+        </div>
+        <div class="admin-clock" id="adminClock">--:--:-- IST</div>
+      </div>
+
+      <div class="admin-header-actions">
+        <button type="button" class="btn btn-outline-gold btn-sm" id="btnOpenWaSettings" title="WhatsApp &amp; backend status">
+          <span>WhatsApp Status</span>
+        </button>
+        <button type="button" class="btn btn-outline-gold btn-sm" id="btnExportCsv" title="Export filtered orders to CSV">
+          <span>Export CSV</span>
+        </button>
+        <button type="button" class="btn btn-gold btn-sm" id="btnRefreshOrders" title="Refresh orders">
+          <svg class="refresh-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+          <span>Refresh</span>
+        </button>
+        <span class="last-synced" id="lastSynced">Not synced</span>
+
+        <div id="adminUserBadge" class="admin-user-badge hidden">
+          <span class="user-avatar-dot"></span>
+          <span id="adminUserEmailText" class="admin-user-email">admin</span>
+          <button type="button" class="btn-logout" id="btnAdminLogout" title="Sign Out" aria-label="Sign out">✕</button>
+        </div>
+
+        <a href="track.html" target="_blank" rel="noopener" class="btn btn-sm btn-outline-gold" title="Open Customer Tracking Page">Customer Portal ↗</a>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="admin-main" id="mainContent">
+    <div class="admin-container">
+
+      <!-- KPI ROW (data-filter values = status constants used everywhere) -->
+      <section class="kpi-grid" aria-label="Key metrics">
+        <button type="button" class="kpi-card" data-filter="ALL">
+          <div class="kpi-icon-wrap gold-glow">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+          </div>
+          <div class="kpi-info"><span class="kpi-label">TOTAL ORDERS</span><div class="kpi-value" id="kpiTotalOrders">0</div></div>
+        </button>
+
+        <button type="button" class="kpi-card" data-filter="ORDER RECEIVED">
+          <div class="kpi-icon-wrap amber-glow">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          </div>
+          <div class="kpi-info"><span class="kpi-label">NEW / PENDING</span><div class="kpi-value" id="kpiNewOrders">0</div></div>
+        </button>
+
+        <button type="button" class="kpi-card" data-filter="PRODUCTION IN PROGRESS">
+          <div class="kpi-icon-wrap blue-glow">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+          </div>
+          <div class="kpi-info"><span class="kpi-label">IN PRODUCTION</span><div class="kpi-value" id="kpiProductionOrders">0</div></div>
+        </button>
+
+        <button type="button" class="kpi-card" data-filter="DISPATCHED">
+          <div class="kpi-icon-wrap green-glow">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+          </div>
+          <div class="kpi-info"><span class="kpi-label">DISPATCHED</span><div class="kpi-value" id="kpiDispatchedOrders">0</div></div>
+        </button>
+
+        <!-- Revenue: filter nahi, sirf info -->
+        <div class="kpi-card kpi-static">
+          <div class="kpi-icon-wrap emerald-glow">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          </div>
+          <div class="kpi-info">
+            <span class="kpi-label">REVENUE / PENDING BALANCE</span>
+            <div class="kpi-value" id="kpiTotalRevenue">₹0</div>
+            <div class="kpi-sub" id="kpiBalance">Balance: ₹0</div>
+          </div>
+        </div>
+
+        <div class="kpi-card kpi-static kpi-danger">
+          <div class="kpi-icon-wrap amber-glow">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          </div>
+          <div class="kpi-info"><span class="kpi-label">OVERDUE ORDERS</span><div class="kpi-value" id="kpiOverdue">0</div></div>
+        </div>
+      </section>
+
+      <!-- TOOLBAR -->
+      <section class="admin-toolbar" aria-label="Filters">
+        <div class="toolbar-search">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="adminSearchInput" class="toolbar-search-input" placeholder="Search Order ID, Name, Phone, Email, City…" autocomplete="off" aria-label="Search orders" />
+          <button type="button" class="btn-clear-search hidden" id="btnClearSearch" aria-label="Clear search">✕</button>
+        </div>
+
+        <div class="toolbar-tabs" id="statusFilterTabs" role="tablist">
+          <button type="button" class="tab-btn tab-active" data-status="ALL">All (<span id="countAll">0</span>)</button>
+          <button type="button" class="tab-btn" data-status="ORDER RECEIVED">New (<span id="countNew">0</span>)</button>
+          <button type="button" class="tab-btn" data-status="ORDER CONFIRMED">Confirmed (<span id="countConfirmed">0</span>)</button>
+          <button type="button" class="tab-btn" data-status="PRODUCTION IN PROGRESS">In Production (<span id="countProduction">0</span>)</button>
+          <button type="button" class="tab-btn" data-status="QUALITY CHECKED &amp; READY">Ready (<span id="countReady">0</span>)</button>
+          <button type="button" class="tab-btn" data-status="DISPATCHED">Dispatched (<span id="countDispatched">0</span>)</button>
+          <button type="button" class="tab-btn" data-status="DELIVERED">Delivered (<span id="countDelivered">0</span>)</button>
+          <button type="button" class="tab-btn" data-status="MANUAL CONFIRMATION REQUIRED">Needs Quote (<span id="countQuote">0</span>)</button>
+        </div>
+
+        <div class="toolbar-sort">
+          <label for="paymentFilterSelect" class="sort-label">Payment:</label>
+          <select id="paymentFilterSelect" class="toolbar-select">
+            <option value="ALL">All</option>
+            <option value="UNPAID">Unpaid</option>
+            <option value="PARTIAL">Advance / Partial</option>
+            <option value="PAID">Fully Paid</option>
+          </select>
+
+          <label for="adminSortSelect" class="sort-label">Sort:</label>
+          <select id="adminSortSelect" class="toolbar-select">
+            <option value="DATE_DESC">Newest First</option>
+            <option value="DATE_ASC">Oldest First</option>
+            <option value="DEADLINE_ASC">Deadline: Earliest</option>
+            <option value="AMOUNT_DESC">Amount: High to Low</option>
+            <option value="QTY_DESC">Quantity: High to Low</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- BULK ACTION BAR -->
+      <section class="bulk-bar hidden" id="bulkBar" aria-live="polite">
+        <span><strong id="bulkCount">0</strong> selected</span>
+        <select id="bulkStatusSelect" class="toolbar-select" aria-label="Bulk status">
+          <option value="">Change status to…</option>
+          <option value="ORDER RECEIVED">Order Received</option>
+          <option value="ORDER CONFIRMED">Order Confirmed</option>
+          <option value="ARTWORK APPROVAL REQUIRED">Artwork Approval Required</option>
+          <option value="ARTWORK REVISION REQUIRED">Artwork Revision Required</option>
+          <option value="PRODUCTION IN PROGRESS">Production In Progress</option>
+          <option value="QUALITY CHECKED &amp; READY">Quality Checked &amp; Ready</option>
+          <option value="DELIVERED">Delivered</option>
+          <option value="DELIVERY DELAYED">Delivery Delayed</option>
+        </select>
+        <label class="modal-checkbox-label"><input type="checkbox" id="bulkSendWa" /><span>Customer ko WhatsApp bhi bhejo</span></label>
+        <button type="button" class="btn btn-gold btn-sm" id="btnBulkApply">Apply</button>
+        <button type="button" class="btn btn-outline-gold btn-sm" id="btnBulkClear">Clear</button>
+      </section>
+
+      <!-- ORDERS TABLE -->
+      <section class="orders-table-card">
+        <div class="table-card-header">
+          <div class="table-header-left">
+            <h2 class="section-heading">Orders Registry</h2>
+            <span class="active-filter-badge" id="activeFilterBadge">Showing: All Orders</span>
+          </div>
+          <div class="table-header-right">
+            <label class="modal-checkbox-label auto-refresh-label"><input type="checkbox" id="autoRefreshToggle" checked /><span>Auto-refresh</span></label>
+            <span class="order-counter" id="tableOrdersCount">0 Orders</span>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="orders-table" id="ordersTable">
+            <thead>
+              <tr>
+                <th class="col-check"><input type="checkbox" id="selectAllRows" aria-label="Select all visible orders" /></th>
+                <th class="w-130">Order ID &amp; Date</th>
+                <th class="w-170">Customer</th>
+                <th class="w-200">Specifications</th>
+                <th class="w-130">Amount &amp; Payment</th>
+                <th class="w-130">Deadline</th>
+                <th class="w-130">Artwork</th>
+                <th class="w-150">Status</th>
+                <th class="w-170">Notes &amp; Dispatch</th>
+                <th class="w-150">WhatsApp</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTableBody"></tbody>
+          </table>
+        </div>
+
+        <div id="tableEmptyState" class="table-empty-state hidden">
+          <h3>No Orders Found</h3>
+          <p id="emptyStateMsg">No orders match the current filter or search query.</p>
+        </div>
+
+        <div class="pagination-bar" id="paginationBar">
+          <button type="button" class="btn btn-outline-gold btn-sm" id="btnPrevPage">← Prev</button>
+          <span id="pageInfo">Page 1 / 1</span>
+          <button type="button" class="btn btn-outline-gold btn-sm" id="btnNextPage">Next →</button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- MODAL 1: WHATSAPP SEND -->
+  <div id="waPreviewModal" class="admin-modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="waModalTitle">
+    <div class="admin-modal-box wa-modal-box">
+      <div class="modal-header">
+        <h3 class="modal-heading" id="waModalTitle">Send WhatsApp Update</h3>
+        <button type="button" class="modal-close-btn" id="btnCloseWaModal" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="wa-recipient-bar">
+          <div><span class="info-label">Customer:</span> <strong id="waModalCustomerName">Customer</strong> (<span id="waModalOrderId">CV-xxx</span>)</div>
+          <div><span class="info-label">Phone:</span> <strong id="waModalPhone" class="gold-text">—</strong></div>
+        </div>
+
+        <div class="form-group-modal">
+          <label for="waTemplateSelect" class="modal-field-label">Notification Template:</label>
+          <select id="waTemplateSelect" class="modal-field-select">
+            <option value="ORDER_CONFIRMED">1. Order Confirmed</option>
+            <option value="PAYMENT_RECEIVED">2. Payment Received</option>
+            <option value="IN_PRODUCTION">3. In Production</option>
+            <option value="DISPATCHED">4. Dispatched (Courier + AWB)</option>
+            <option value="DELIVERED">5. Delivered</option>
+            <option value="BALANCE_REMINDER">6. Balance Payment Reminder</option>
+            <option value="CUSTOM">7. Custom Message</option>
+          </select>
+        </div>
+
+        <div class="form-group-modal">
+          <div class="label-with-hint">
+            <label for="waMessageTextarea" class="modal-field-label">Message Preview (Editable):</label>
+            <span class="char-count" id="waCharCount">0 characters</span>
+          </div>
+          <textarea id="waMessageTextarea" class="modal-field-textarea" rows="8"></textarea>
+          <small class="field-help">Note: Meta ke rules ke hisaab se customer ke last message ke 24 ghante ke baad sirf <b>approved template</b> hi jaata hai. Agar API fail ho, to “wa.me” button use karo.</small>
+        </div>
+
+        <div id="waSendResultAlert" class="modal-alert-box hidden"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-gold" id="btnCancelWaModal">Cancel</button>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp" id="btnOpenWaWebDirect"><span>Open in WhatsApp (wa.me)</span></a>
+        <button type="button" class="btn btn-gold" id="btnSendViaWaApi">
+          <span class="btn-spinner hidden" id="waApiSpinner"></span>
+          <span id="btnSendViaWaApiText">⚡ Send via WhatsApp API</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: DISPATCH -->
+  <div id="dispatchModal" class="admin-modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="dispatchTitle">
+    <div class="admin-modal-box">
+      <div class="modal-header">
+        <h3 class="modal-heading" id="dispatchTitle">Mark Order as Dispatched</h3>
+        <button type="button" class="modal-close-btn" id="btnCloseDispatchModal" aria-label="Close">✕</button>
+      </div>
+      <form id="dispatchForm" class="modal-body" novalidate>
+        <p class="modal-desc">Courier details for order <strong id="dispatchOrderIdText" class="gold-text">CV-xxx</strong>.</p>
+
+        <div class="form-group-modal">
+          <label for="dispatchCourierSelect" class="modal-field-label">Courier Partner <span class="required-star">*</span></label>
+          <select id="dispatchCourierSelect" class="modal-field-select" required>
+            <option value="Blue Dart Express">Blue Dart Express Air</option>
+            <option value="Delhivery">Delhivery Express</option>
+            <option value="DTDC">DTDC Courier</option>
+            <option value="Shree Tirupati Courier">Shree Tirupati Courier</option>
+            <option value="Trackon">Trackon Express</option>
+            <option value="Porter (Mumbai Local)">Porter Local Delivery</option>
+            <option value="India Post Speed Post">India Post Speed Post</option>
+            <option value="Other">Other Courier Partner</option>
+          </select>
+        </div>
+
+        <div class="form-group-modal">
+          <label for="dispatchAwbInput" class="modal-field-label">AWB / Tracking Number <span class="required-star">*</span></label>
+          <input type="text" id="dispatchAwbInput" class="modal-field-input" placeholder="e.g. 88291039201" required />
+        </div>
+
+        <div class="form-group-modal">
+          <label for="dispatchTrackingUrlInput" class="modal-field-label">Courier Tracking URL (auto / custom)</label>
+          <input type="url" id="dispatchTrackingUrlInput" class="modal-field-input" placeholder="https://…" />
+        </div>
+
+        <div class="checkbox-group-modal">
+          <label class="modal-checkbox-label"><input type="checkbox" id="dispatchSendWaCheckbox" checked /><span>Customer ko tracking link WhatsApp par bhejo</span></label>
+        </div>
+      </form>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-gold" id="btnCancelDispatchModal">Cancel</button>
+        <button type="button" class="btn btn-gold" id="btnConfirmDispatch"><span>Confirm Dispatch</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: NOTES -->
+  <div id="notesModal" class="admin-modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="notesTitle">
+    <div class="admin-modal-box">
+      <div class="modal-header">
+        <h3 class="modal-heading" id="notesTitle">Production &amp; Admin Notes</h3>
+        <button type="button" class="modal-close-btn" id="btnCloseNotesModal" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">Order <strong id="notesOrderIdText" class="gold-text">CV-xxx</strong> (<span id="notesCustomerNameText">Client</span>)</p>
+        <div class="form-group-modal">
+          <label for="adminNotesTextarea" class="modal-field-label">Internal Studio Notes:</label>
+          <textarea id="adminNotesTextarea" class="modal-field-textarea" rows="6" placeholder="e.g. Foil registration check karna hai; delivery Friday se pehle."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-gold" id="btnCancelNotesModal">Cancel</button>
+        <button type="button" class="btn btn-gold" id="btnSaveNotes">Save Notes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 4: PAYMENT / DEADLINE / ARTWORK (NEW) -->
+  <div id="metaModal" class="admin-modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="metaTitle">
+    <div class="admin-modal-box">
+      <div class="modal-header">
+        <h3 class="modal-heading" id="metaTitle">Payment, Deadline &amp; Artwork</h3>
+        <button type="button" class="modal-close-btn" id="btnCloseMetaModal" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">Order <strong id="metaOrderIdText" class="gold-text">CV-xxx</strong> — Total: <strong id="metaTotalText">₹0</strong></p>
+
+        <div class="form-group-modal">
+          <label for="metaFinalInput" class="modal-field-label">Final Total (₹) <span class="mini-muted">— "Needs Quote" orders ka rate yahan daalo</span></label>
+          <input type="number" min="0" step="1" id="metaFinalInput" class="modal-field-input" />
+        </div>
+
+        <div class="form-group-modal">
+          <label for="metaPaidInput" class="modal-field-label">Amount Received (₹)</label>
+          <input type="number" min="0" step="1" id="metaPaidInput" class="modal-field-input" />
+          <small class="field-help" id="metaBalanceHelp">Balance: ₹0</small>
+        </div>
+
+        <div class="form-group-modal">
+          <label for="metaDeadlineInput" class="modal-field-label">Delivery Deadline</label>
+          <input type="date" id="metaDeadlineInput" class="modal-field-input" />
+        </div>
+
+        <div class="form-group-modal">
+          <label for="metaArtworkStatus" class="modal-field-label">Artwork Status</label>
+          <select id="metaArtworkStatus" class="modal-field-select">
+            <option value="RECEIVED">Received</option>
+            <option value="APPROVED">Approved</option>
+            <option value="REVISION">Revision needed</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-gold" id="btnCancelMetaModal">Cancel</button>
+        <button type="button" class="btn btn-gold" id="btnSaveMeta">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 5: WHATSAPP / BACKEND STATUS (read-only; secrets sirf Apps Script me) -->
+  <div id="waSettingsModal" class="admin-modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="waSettingsTitle">
+    <div class="admin-modal-box settings-modal-box">
+      <div class="modal-header">
+        <h3 class="modal-heading" id="waSettingsTitle">WhatsApp &amp; Backend Status</h3>
+        <button type="button" class="modal-close-btn" id="btnCloseWaSettingsModal" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">
+          Security ke liye token/password is page se save nahi hote. Inhe sirf <strong>Apps Script → Project Settings → Script Properties</strong> me set karo. Yahan sirf status dikhta hai.
+        </p>
+
+        <div class="props-table-wrap">
+          <table class="props-table">
+            <thead><tr><th>Property</th><th>Status</th></tr></thead>
+            <tbody id="propsStatusBody">
+              <tr><td class="font-mono prop-name">ADMIN_EMAIL</td><td><span class="prop-badge" data-prop="ADMIN_EMAIL">…</span></td></tr>
+              <tr><td class="font-mono prop-name">ADMIN_PASSWORD</td><td><span class="prop-badge" data-prop="ADMIN_PASSWORD">…</span></td></tr>
+              <tr><td class="font-mono prop-name">ORDERS_SHEET_ID</td><td><span class="prop-badge" data-prop="ORDERS_SHEET_ID">…</span></td></tr>
+              <tr><td class="font-mono prop-name">ROOT_FOLDER_ID</td><td><span class="prop-badge" data-prop="ROOT_FOLDER_ID">…</span></td></tr>
+              <tr><td class="font-mono prop-name">STUDIO_WHATSAPP</td><td><span class="prop-badge" data-prop="STUDIO_WHATSAPP">…</span></td></tr>
+              <tr><td class="font-mono prop-name">WHATSAPP_PHONE_NUMBER_ID</td><td><span class="prop-badge" data-prop="WHATSAPP_PHONE_NUMBER_ID">…</span></td></tr>
+              <tr><td class="font-mono prop-name">WHATSAPP_ACCESS_TOKEN</td><td><span class="prop-badge" data-prop="WHATSAPP_ACCESS_TOKEN">…</span></td></tr>
+              <tr><td class="font-mono prop-name">WHATSAPP_VERIFY_TOKEN</td><td><span class="prop-badge" data-prop="WHATSAPP_VERIFY_TOKEN">…</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="webhook-helper-box">
+          <div class="webhook-helper-header">
+            <span class="webhook-label">Meta Webhook Callback URL:</span>
+            <button type="button" class="btn-copy-url" id="btnCopyWebhookUrl">Copy URL</button>
+          </div>
+          <code class="webhook-code-display" id="webhookUrlDisplay">—</code>
+          <small class="field-help">Meta App → WhatsApp → Configuration → Callback URL (subscribe: <code>messages</code>). Verify token wahi jo Script Property me hai.</small>
+        </div>
+
+        <div class="settings-toggles-card">
+          <h4 class="toggles-title">Auto WhatsApp (aapke approved templates)</h4>
+          <label class="modal-checkbox-label"><input type="checkbox" id="toggleAutoNotify" checked /><span>Status ya payment badalne par customer ko automatic WhatsApp bhejo. Ek status par ek hi baar jata hai (duplicate nahi). Ye setting sirf is browser me save hoti hai.</span></label>
+        </div>
+
+        <div class="test-connection-box">
+          <h4 class="test-title">Test Message (order_confirmed template)</h4>
+          <div class="test-input-row">
+            <input type="tel" id="testPhoneInput" class="modal-field-input" placeholder="10-digit WhatsApp number" />
+            <button type="button" class="btn btn-outline-gold btn-sm" id="btnTestWaConnection">Send Test</button>
+          </div>
+          <div id="testConnectionResult" class="test-result-text hidden"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-gold" id="btnCloseWaSettingsFooter">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="adminLoginOverlay" class="admin-modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <div class="admin-modal-box login-modal-box">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="logo-mark logo-mark-sm"><span class="logo-initials">CV</span></div>
+          <div>
+            <h3 class="modal-heading" id="loginTitle">CraftsVeda Studio Access</h3>
+            <span class="admin-sub">Authorized Studio Personnel Only</span>
+          </div>
+        </div>
+      </div>
+
+      <form id="adminLoginForm" class="modal-body login-form">
+        <div id="adminLoginError" class="login-error-alert hidden" role="alert"></div>
+
+        <div class="form-group-modal">
+          <label for="adminLoginEmail" class="modal-field-label">Admin Email:</label>
+          <input type="email" id="adminLoginEmail" class="modal-field-input" placeholder="admin@craftsveda.in" required autocomplete="email" />
+        </div>
+
+        <div class="form-group-modal">
+          <label for="adminLoginPassword" class="modal-field-label">Admin Password:</label>
+          <div class="input-with-toggle">
+            <input type="password" id="adminLoginPassword" class="modal-field-input font-mono" placeholder="••••••••••••" required autocomplete="current-password" />
+            <button type="button" class="btn-toggle-pw" id="btnToggleLoginPw" aria-label="Show or hide password">👁</button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-gold btn-block" id="btnAdminLoginSubmit">
+          <span id="loginBtnText">Sign In to Dashboard</span>
+          <span id="loginBtnSpinner" class="spinner-inline hidden"></span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div id="adminToastContainer" class="admin-toast-container" aria-live="polite"></div>
+
+  <script src="config.js?v=3.1"></script>
+  <script src="admin.js?v=3.1"></script>
+</body>
+</html>
