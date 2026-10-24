@@ -53,7 +53,7 @@ const FINISH_DATA = {
   gilding: {
     badge: "ARTISANAL DETAIL",
     title: "Edge Gilding & Painted Edges",
-    desc: "The thick edges of stacked business cards and royal invitation cards are beveled, burnished, and foiled with genuine metallic foil or custom mixed Pantone pigments for an unmistakable luxury side-profile.",
+    desc: "The thick edges of stacked business cards and royal invitation cards are beveled, burnished, and foiled with genuine metallic foil or custom mixed Pantone pigments for an unmistakable premium side-profile.",
     val1: "Mirror Gold, Rose Gold, Silver, Black Gloss & Custom Ink",
     val2: "600 to 900 GSM Triplex Sandwich & Cotton Boards",
     val3: "100 pieces",
@@ -293,7 +293,7 @@ function setLeadMode(mode) {
     }
     if (paperStock) {
       paperStock.value =
-        "Curated Swatch Deck (15+ Luxury Papers & Foil Catalog)";
+        "Curated Swatch Deck (15+ Premium Papers & Foil Catalog)";
     }
     if (qtySelect) {
       qtySelect.value = "1 Sample Kit (₹499)";
@@ -325,7 +325,7 @@ function setLeadMode(mode) {
     if (sampleBanner) sampleBanner.style.display = "none";
 
     if (productSelect && productSelect.value.includes("Sample Kit")) {
-      productSelect.value = "Luxury Business Cards";
+      productSelect.value = "Premium Business Cards";
     }
     if (paperStock && paperStock.value.includes("Curated Swatch")) {
       paperStock.value = "600 GSM Natural Cotton Stock";
@@ -483,7 +483,7 @@ function handleUnifiedLeadSubmit(e) {
   const clientEmail =
     document.getElementById("clientEmail")?.value.trim() || "Not Provided";
   const product =
-    document.getElementById("productSelect")?.value || "Luxury Printing";
+    document.getElementById("productSelect")?.value || "Premium Printing";
   const paper = document.getElementById("paperStock")?.value || "Premium Stock";
   const qty = document.getElementById("qtySelect")?.value || "500 pcs";
   const turnaround = document.getElementById("turnaround")?.value || "Standard";
@@ -750,7 +750,7 @@ const HERO_SLIDES_DATA = [
   },
   {
     badge: "✦ BESPOKE PACKAGING",
-    title: "Luxury Rigid Boxes & Packaging",
+    title: "Premium Rigid Boxes & Packaging",
     specs:
       "Magnetic Closure & Drawer • Velvet Soft-Touch • 1200 GSM Kappa Board",
   },
@@ -2705,8 +2705,8 @@ function initCardCalculator() {
     }
 
     let waText = orderId
-      ? `✨ LUXURY BUSINESS CARD ORDER CONFIRMATION — CRAFTSVEDA ✨\n\n`
-      : `✨ LUXURY BUSINESS CARD ORDER — CRAFTSVEDA ✨\n\n`;
+      ? `✨ PREMIUM BUSINESS CARD ORDER CONFIRMATION — CRAFTSVEDA ✨\n\n`
+      : `✨ PREMIUM BUSINESS CARD ORDER — CRAFTSVEDA ✨\n\n`;
 
     if (orderId) waText += `Order ID: ${orderId}\n`;
     if (customerName) waText += `Customer: ${customerName}\n`;
@@ -2833,14 +2833,36 @@ function initCardCalculator() {
   const orderCustomerPhoneError = document.getElementById("orderCustomerPhoneError");
   const orderCustomerEmailError = document.getElementById("orderCustomerEmailError");
   const orderCustomerCityError = document.getElementById("orderCustomerCityError");
-  const btnPlaceOrder = document.getElementById("btnPlaceOrder");
-  const btnPlaceOrderSpinner = document.getElementById("btnPlaceOrderSpinner");
-  const btnPlaceOrderText = document.getElementById("btnPlaceOrderText");
+  const cfgHoneypot = document.getElementById("cfgHoneypot");
+  const btnAdvancePay = document.getElementById("btnAdvancePay");
+  const btnAdvancePaySpinner = document.getElementById("btnAdvancePaySpinner");
+  const btnAdvancePayText = document.getElementById("btnAdvancePayText");
+  const btnSkipPay = document.getElementById("btnSkipPay");
+  const btnSkipPaySpinner = document.getElementById("btnSkipPaySpinner");
+  const btnSkipPayText = document.getElementById("btnSkipPayText");
+
+  const cfgPaymentPanel = document.getElementById("cfgPaymentPanel");
+  const payScreenOrderId = document.getElementById("payScreenOrderId");
+  const payScreenAmount = document.getElementById("payScreenAmount");
+  const payScreenUpiId = document.getElementById("payScreenUpiId");
+  const btnCopyUpiId = document.getElementById("btnCopyUpiId");
+  const btnCopyUpiText = document.getElementById("btnCopyUpiText");
+  const btnUpiDeepLink = document.getElementById("btnUpiDeepLink");
+  const btnMainePayKarDiya = document.getElementById("btnMainePayKarDiya");
+  const btnMainePaySpinner = document.getElementById("btnMainePaySpinner");
+  const btnMainePayText = document.getElementById("btnMainePayText");
+
+  const cfgPaidAckPanel = document.getElementById("cfgPaidAckPanel");
+  const ackOrderId = document.getElementById("ackOrderId");
+  const btnAckTrackOrder = document.getElementById("btnAckTrackOrder");
+  const btnAckWa = document.getElementById("btnAckWa");
+
   const cfgOrderErrorBox = document.getElementById("cfgOrderErrorBox");
   const cfgErrorMsgText = document.getElementById("cfgErrorMsgText");
   const btnTryAgainOrder = document.getElementById("btnTryAgainOrder");
   const cfgErrorWaLink = document.getElementById("cfgErrorWaLink");
   const cfgOrderConfirmationPanel = document.getElementById("cfgOrderConfirmationPanel");
+  const cfgConfirmSubtitle = document.getElementById("cfgConfirmSubtitle");
   const confirmedOrderId = document.getElementById("confirmedOrderId");
   const confirmedOrderTotal = document.getElementById("confirmedOrderTotal");
   const btnTrackOrder = document.getElementById("btnTrackOrder");
@@ -2859,17 +2881,17 @@ function initCardCalculator() {
     if (state.activeView === "angle") {
       if (!hasFoil && !hasUv) {
         cardPreviewImg.src = "assets/Plain VC FB.jpg";
-        cardPreviewImg.alt = "Plain Luxury Business Card Front & Back Showcase";
+        cardPreviewImg.alt = "Plain Premium Business Card Front & Back Showcase";
         if (flipBtnText) flipBtnText.textContent = "Front View";
         if (previewSpecBadge) {
           previewSpecBadge.textContent = `Plain Base FB • ${state.paperStock} GSM ${lamLabel}`;
         }
       } else {
         cardPreviewImg.src = "assets/Velvet Soft-Touch Card Showcase.png";
-        cardPreviewImg.alt = "Velvet Soft-Touch Luxury Business Cards Perspective";
+        cardPreviewImg.alt = "Velvet Soft-Touch Premium Business Cards Perspective";
         if (flipBtnText) flipBtnText.textContent = "Front View";
         if (previewSpecBadge) {
-          previewSpecBadge.textContent = "Luxury Studio Angle Perspective";
+          previewSpecBadge.textContent = "Premium Studio Angle Perspective";
         }
       }
       return;
@@ -2881,13 +2903,13 @@ function initCardCalculator() {
     if (!hasFoil && !hasUv) {
       if (state.printSide === "one_side") {
         cardPreviewImg.src = "assets/One Side VC Plain.jpg";
-        cardPreviewImg.alt = "One Side VC Plain Luxury Business Card";
+        cardPreviewImg.alt = "One Side VC Plain Premium Business Card";
         if (previewSpecBadge) {
           previewSpecBadge.textContent = `One Side VC Plain • ${state.paperStock} GSM ${lamLabel}`;
         }
       } else {
         cardPreviewImg.src = "assets/Both Side VC Plain.jpg";
-        cardPreviewImg.alt = "Both Side VC Plain Luxury Business Card";
+        cardPreviewImg.alt = "Both Side VC Plain Premium Business Card";
         if (previewSpecBadge) {
           previewSpecBadge.textContent = `Both Side VC Plain • ${state.paperStock} GSM ${lamLabel}`;
         }
@@ -2907,7 +2929,7 @@ function initCardCalculator() {
           previewFrame.classList.add(`foil-shader-${state.foilColour}`);
         }
       }
-      cardPreviewImg.alt = `3D Foil ${FOIL_NAMES[state.foilColour]} Luxury Business Card Preview`;
+      cardPreviewImg.alt = `3D Foil ${FOIL_NAMES[state.foilColour]} Premium Business Card Preview`;
       if (previewSpecBadge) {
         previewSpecBadge.textContent = `3D Foil ${FOIL_NAMES[state.foilColour]} • ${state.paperStock} GSM`;
       }
@@ -3431,167 +3453,292 @@ function initCardCalculator() {
   }
 
   // --- FINAL ORDER SUBMISSION FLOW (INSIDE MODAL) ---
-  if (cfgOrderForm) {
-    cfgOrderForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
+  let activeSubmittedOrderId = null;
 
-      const nameVal = orderCustomerName ? orderCustomerName.value.trim() : "";
-      const phoneVal = orderCustomerPhone ? orderCustomerPhone.value.trim() : "";
-      const emailVal = orderCustomerEmail ? orderCustomerEmail.value.trim() : "";
-      const cityVal = orderCustomerCity ? orderCustomerCity.value.trim() : "";
-      const notesVal = orderCustomerNotes ? orderCustomerNotes.value.trim() : "";
+  function renderUpiQr(containerId, upiUrl) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = "";
+    if (typeof QRCode !== "undefined") {
+      new QRCode(container, {
+        text: upiUrl,
+        width: 190,
+        height: 190,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    } else {
+      const img = document.createElement("img");
+      img.src = "https://api.qrserver.com/v1/create-qr-code/?size=190x190&data=" + encodeURIComponent(upiUrl);
+      img.alt = "Scan UPI QR Code";
+      img.style.width = "190px";
+      img.style.height = "190px";
+      img.style.display = "block";
+      img.style.margin = "0 auto";
+      container.appendChild(img);
+    }
+  }
 
-      let isValid = true;
-      if (!nameVal) {
-        if (orderCustomerNameError) orderCustomerNameError.textContent = "Please enter your name.";
-        isValid = false;
-      } else {
-        if (orderCustomerNameError) orderCustomerNameError.textContent = "";
-      }
+  async function handleOrderSubmissionFlow(paymentChoice) {
+    const isAdvance = paymentChoice === "advance";
 
-      const cleanPhone = phoneVal.replace(/[^0-9]/g, "");
-      if (cleanPhone.length < 10) {
-        if (orderCustomerPhoneError) orderCustomerPhoneError.textContent = "Please enter a valid 10-digit number.";
-        isValid = false;
-      } else {
-        if (orderCustomerPhoneError) orderCustomerPhoneError.textContent = "";
-      }
+    // 0. Honeypot anti-bot trap check
+    const hpVal = (cfgHoneypot && cfgHoneypot.value) ? cfgHoneypot.value.trim() : "";
+    if (hpVal) {
+      console.warn("Bot submission rejected via honeypot.");
+      return;
+    }
 
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailVal || !emailRegex.test(emailVal)) {
-        if (orderCustomerEmailError) orderCustomerEmailError.textContent = "Please enter a valid email address.";
-        isValid = false;
-      } else {
-        if (orderCustomerEmailError) orderCustomerEmailError.textContent = "";
-      }
+    const nameVal = orderCustomerName ? orderCustomerName.value.trim() : "";
+    const phoneVal = orderCustomerPhone ? orderCustomerPhone.value.trim() : "";
+    const emailVal = orderCustomerEmail ? orderCustomerEmail.value.trim() : "";
+    const cityVal = orderCustomerCity ? orderCustomerCity.value.trim() : "";
+    const notesVal = orderCustomerNotes ? orderCustomerNotes.value.trim() : "";
 
-      if (!cityVal) {
-        if (orderCustomerCityError) orderCustomerCityError.textContent = "Please enter your city and delivery pincode.";
-        isValid = false;
-      } else {
-        if (orderCustomerCityError) orderCustomerCityError.textContent = "";
-      }
+    let isValid = true;
+    if (!nameVal) {
+      if (orderCustomerNameError) orderCustomerNameError.textContent = "Please enter your name.";
+      isValid = false;
+    } else {
+      if (orderCustomerNameError) orderCustomerNameError.textContent = "";
+    }
 
-      if (!isValid) return;
+    // Strict 10-digit phone validation
+    let cleanPhone = phoneVal.replace(/[^0-9]/g, "");
+    if (cleanPhone.length === 12 && cleanPhone.startsWith("91")) cleanPhone = cleanPhone.slice(2);
+    if (cleanPhone.length === 11 && cleanPhone.startsWith("0")) cleanPhone = cleanPhone.slice(1);
 
-      if (cfgOrderErrorBox) cfgOrderErrorBox.style.display = "none";
-      if (btnPlaceOrder) btnPlaceOrder.disabled = true;
-      if (btnPlaceOrderSpinner) btnPlaceOrderSpinner.style.display = "inline-block";
-      if (btnPlaceOrderText) btnPlaceOrderText.textContent = "Submitting Order...";
+    if (cleanPhone.length !== 10 || !/^[6-9]\d{9}$/.test(cleanPhone)) {
+      if (orderCustomerPhoneError) orderCustomerPhoneError.textContent = "Please enter a valid 10-digit mobile number.";
+      isValid = false;
+    } else {
+      if (orderCustomerPhoneError) orderCustomerPhoneError.textContent = "";
+    }
 
-      try {
-        const pricing = calculateBusinessCardPrice(state);
-        const activeAddons = [];
-        if (state.dripOff) activeAddons.push("Drip-off");
-        if (state.customShapeCut) activeAddons.push("Custom Shape Cut");
-        const addonsStr = activeAddons.length > 0 ? activeAddons.join(", ") : "None";
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailVal || !emailRegex.test(emailVal)) {
+      if (orderCustomerEmailError) orderCustomerEmailError.textContent = "Please enter a valid email address.";
+      isValid = false;
+    } else {
+      if (orderCustomerEmailError) orderCustomerEmailError.textContent = "";
+    }
 
-        const payload = {
-          action: "submitOrder",
-          customerName: nameVal,
-          phone: phoneVal,
-          email: emailVal,
-          deliveryCity: cityVal,
-          notes: notesVal,
-          product: "Luxury Business Cards",
-          paperGsm: state.paperStock,
-          paperStock: state.paperStock,
-          lamination: state.lamination,
-          printSide: state.printSide,
-          spotUv: state.spotUv,
-          foil: state.foil !== "none" ? `${state.foil} (${state.foilColour})` : state.foil,
-          foilSelection: state.foil,
-          foilColour: state.foilColour,
-          dripOff: state.dripOff,
-          customShapeCut: state.customShapeCut,
-          addons: addonsStr,
-          quantity: state.quantity,
-          perCardRate: pricing.supported ? pricing.perCardRate : "Confirmation Required",
-          totalAmount: pricing.supported ? pricing.finalTotal : "Confirmation Required"
-        };
+    if (!cityVal) {
+      if (orderCustomerCityError) orderCustomerCityError.textContent = "Please enter your city and delivery pincode.";
+      isValid = false;
+    } else {
+      if (orderCustomerCityError) orderCustomerCityError.textContent = "";
+    }
 
-        if (state.uploadedFile && !isFileTooLarge) {
-          try {
-            const base64Data = await readFileAsBase64(state.uploadedFile);
-            payload.fileBase64 = base64Data;
-            payload.fileName = state.uploadedFile.name;
-            payload.fileMimeType = state.uploadedFile.type || "application/octet-stream";
-          } catch (fileErr) {
-            console.warn("Could not read base64:", fileErr);
-          }
-        } else if (state.uploadedFile && isFileTooLarge) {
+    if (!isValid) return;
+
+    if (cfgOrderErrorBox) cfgOrderErrorBox.style.display = "none";
+
+    // Disable buttons & show spinner on active button
+    if (btnAdvancePay) btnAdvancePay.disabled = true;
+    if (btnSkipPay) btnSkipPay.disabled = true;
+
+    if (isAdvance) {
+      if (btnAdvancePaySpinner) btnAdvancePaySpinner.style.display = "inline-block";
+      if (btnAdvancePayText) btnAdvancePayText.textContent = "Preparing UPI Advance...";
+    } else {
+      if (btnSkipPaySpinner) btnSkipPaySpinner.style.display = "inline-block";
+      if (btnSkipPayText) btnSkipPayText.textContent = "Placing Pending Order...";
+    }
+
+    try {
+      const pricing = calculateBusinessCardPrice(state);
+      const activeAddons = [];
+      if (state.dripOff) activeAddons.push("Drip-off");
+      if (state.customShapeCut) activeAddons.push("Custom Shape Cut");
+      const addonsStr = activeAddons.length > 0 ? activeAddons.join(", ") : "None";
+
+      const payload = {
+        action: "submitOrder",
+        paymentChoice: isAdvance ? "advance" : "skip",
+        website_hp: hpVal,
+        customerName: nameVal,
+        phone: cleanPhone,
+        email: emailVal,
+        deliveryCity: cityVal,
+        notes: notesVal,
+        product: "Premium Business Cards",
+        paperGsm: state.paperStock,
+        paperStock: state.paperStock,
+        lamination: state.lamination,
+        printSide: state.printSide,
+        spotUv: state.spotUv,
+        foil: state.foil !== "none" ? `${state.foil} (${state.foilColour})` : state.foil,
+        foilSelection: state.foil,
+        foilColour: state.foilColour,
+        dripOff: state.dripOff,
+        customShapeCut: state.customShapeCut,
+        addons: addonsStr,
+        quantity: state.quantity,
+        perCardRate: pricing.supported ? pricing.perCardRate : "Confirmation Required",
+        totalAmount: pricing.supported ? pricing.finalTotal : "Confirmation Required"
+      };
+
+      if (state.uploadedFile && !isFileTooLarge) {
+        try {
+          const base64Data = await readFileAsBase64(state.uploadedFile);
+          payload.fileBase64 = base64Data;
           payload.fileName = state.uploadedFile.name;
           payload.fileMimeType = state.uploadedFile.type || "application/octet-stream";
+        } catch (fileErr) {
+          console.warn("Could not read base64:", fileErr);
+        }
+      } else if (state.uploadedFile && isFileTooLarge) {
+        payload.fileName = state.uploadedFile.name;
+        payload.fileMimeType = state.uploadedFile.type || "application/octet-stream";
+      }
+
+      const res = await fetch(WEB_APP_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const resText = await res.text();
+      let resData = null;
+      try {
+        resData = JSON.parse(resText);
+      } catch (parseErr) {
+        console.warn("Response not JSON:", resText);
+      }
+
+      if (!res.ok || !resData || resData.ok === false) {
+        const errMsg = (resData && (resData.error || resData.message)) || "Submission failed";
+        throw new Error(errMsg);
+      }
+
+      const orderId = resData.orderId || ("CV-" + Math.floor(100000 + Math.random() * 900000));
+      activeSubmittedOrderId = orderId;
+
+      // Hide order form
+      if (cfgOrderForm) cfgOrderForm.style.display = "none";
+      if (cfgOrderErrorBox) cfgOrderErrorBox.style.display = "none";
+
+      if (isAdvance && resData.upiLink && resData.advanceAmount) {
+        // --- 1. ADVANCE PAY FLOW ---
+        // Amount is strictly received from server (never calculated on frontend)
+        if (cfgPaymentPanel) cfgPaymentPanel.style.display = "flex";
+        if (payScreenOrderId) payScreenOrderId.textContent = orderId;
+        if (payScreenAmount) {
+          const advNum = parseFloat(resData.advanceAmount);
+          payScreenAmount.textContent = !isNaN(advNum) ? `₹${advNum.toFixed(2)}` : `₹${resData.advanceAmount}`;
+        }
+        if (payScreenUpiId) payScreenUpiId.textContent = resData.upiId || "YOUR_UPI_ID_HERE";
+        if (btnUpiDeepLink) btnUpiDeepLink.href = resData.upiLink;
+
+        // Render QR Code for desktop
+        renderUpiQr("payScreenQrCode", resData.upiLink);
+
+        // Copy UPI ID button
+        if (btnCopyUpiId) {
+          btnCopyUpiId.onclick = () => {
+            const upiToCopy = resData.upiId || "YOUR_UPI_ID_HERE";
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(upiToCopy);
+            }
+            if (btnCopyUpiText) {
+              btnCopyUpiText.textContent = "Copied! ✓";
+              setTimeout(() => { btnCopyUpiText.textContent = "Copy UPI ID"; }, 2500);
+            }
+          };
         }
 
-        const res = await fetch(WEB_APP_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "text/plain;charset=utf-8"
-          },
-          body: JSON.stringify(payload)
-        });
+        // Single-tap "Maine Pay Kar Diya" button
+        if (btnMainePayKarDiya) {
+          btnMainePayKarDiya.onclick = async () => {
+            btnMainePayKarDiya.disabled = true;
+            if (btnMainePaySpinner) btnMainePaySpinner.style.display = "inline-block";
+            if (btnMainePayText) btnMainePayText.textContent = "Recording...";
 
-        const resText = await res.text();
-        let resData = null;
-        try {
-          resData = JSON.parse(resText);
-        } catch (parseErr) {
-          console.warn("Response not JSON:", resText);
+            try {
+              await fetch(WEB_APP_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({ action: "markCustomerPaid", orderId: activeSubmittedOrderId })
+              });
+            } catch (payNotifyErr) {
+              console.warn("Could not notify server of payment tap:", payNotifyErr);
+            }
+
+            if (cfgPaymentPanel) cfgPaymentPanel.style.display = "none";
+            if (cfgPaidAckPanel) cfgPaidAckPanel.style.display = "flex";
+            if (ackOrderId) ackOrderId.textContent = activeSubmittedOrderId;
+            if (btnAckTrackOrder) {
+              btnAckTrackOrder.href = `track-order.html?orderId=${encodeURIComponent(activeSubmittedOrderId)}`;
+            }
+            if (btnAckWa) {
+              btnAckWa.href = `https://wa.me/918840035249?text=${encodeURIComponent("Namaste, I have paid the advance amount of ₹" + resData.advanceAmount + " for Order " + activeSubmittedOrderId + ". Please verify.")}`;
+            }
+          };
         }
 
-        if (!res.ok || !resData || resData.ok === false) {
-          const errMsg = (resData && (resData.error || resData.message)) || "Submission failed";
-          throw new Error(errMsg);
-        }
-
-        const orderId = (resData && (resData.orderId || resData.id || resData.order_id)) || ("CV-" + Math.floor(100000 + Math.random() * 900000));
-        const orderTotalToDisplay = (typeof CAMPAIGN_CONFIG !== "undefined" && CAMPAIGN_CONFIG.isActive && pricing.supported)
-          ? Math.round(pricing.finalTotal * (1 - CAMPAIGN_CONFIG.discountPercent / 100))
-          : pricing.finalTotal;
-        const finalTotalDisplay = pricing.supported ? `₹${orderTotalToDisplay.toLocaleString("en-IN")}` : "Confirmed Before Production";
-
-        // Success - show confirmation inside modal
-        if (cfgOrderForm) cfgOrderForm.style.display = "none";
-        if (cfgOrderErrorBox) cfgOrderErrorBox.style.display = "none";
+      } else {
+        // --- 2. SKIP PAYMENT FLOW: ORDER SEEDHA PENDING STATUS MEIN SAVE HO, KOI PAYMENT SCREEN NAHI ---
         if (cfgOrderConfirmationPanel) cfgOrderConfirmationPanel.style.display = "flex";
-
         if (confirmedOrderId) confirmedOrderId.textContent = orderId;
+        const finalTotalDisplay = pricing.supported ? `₹${pricing.finalTotal.toLocaleString("en-IN")}` : "Confirmed Before Production";
         if (confirmedOrderTotal) confirmedOrderTotal.textContent = finalTotalDisplay;
-
+        if (cfgConfirmSubtitle) {
+          cfgConfirmSubtitle.textContent = "Your order has been saved in Pending status. Sales team phone par baat karke details verify karegi.";
+        }
         if (btnTrackOrder) {
           btnTrackOrder.href = `track-order.html?orderId=${encodeURIComponent(orderId)}`;
         }
-
         if (btnConfirmedWa) {
-          btnConfirmedWa.href = `https://wa.me/918840035249?text=${encodeURIComponent(buildOrderText(orderId, nameVal, phoneVal, cityVal, notesVal))}`;
+          btnConfirmedWa.href = `https://wa.me/918840035249?text=${encodeURIComponent(buildOrderText(orderId, nameVal, cleanPhone, cityVal, notesVal))}`;
         }
-
-      } catch (err) {
-        console.error("Order submission failed:", err);
-        if (cfgOrderErrorBox) {
-          cfgOrderErrorBox.style.display = "flex";
-          if (cfgErrorMsgText) {
-            cfgErrorMsgText.textContent = "Unable to submit your order right now. Please try again or complete your order via WhatsApp.";
-          }
-        }
-
-        if (cfgErrorWaLink) {
-          cfgErrorWaLink.href = `https://wa.me/918840035249?text=${encodeURIComponent(buildOrderText(null, nameVal, phoneVal, cityVal, notesVal))}`;
-        }
-
-      } finally {
-        if (btnPlaceOrder) btnPlaceOrder.disabled = false;
-        if (btnPlaceOrderSpinner) btnPlaceOrderSpinner.style.display = "none";
-        if (btnPlaceOrderText) btnPlaceOrderText.textContent = "Confirm & Submit Order";
       }
+
+    } catch (err) {
+      console.error("Order submission failed:", err);
+      if (cfgOrderErrorBox) {
+        cfgOrderErrorBox.style.display = "flex";
+        if (cfgErrorMsgText) {
+          cfgErrorMsgText.textContent = err.message || "Order processing error. Kripya punah prayas karein ya WhatsApp par contact karein.";
+        }
+      }
+      if (cfgErrorWaLink) {
+        cfgErrorWaLink.href = `https://wa.me/918840035249?text=${encodeURIComponent(buildOrderText(null, nameVal, cleanPhone, cityVal, notesVal))}`;
+      }
+    } finally {
+      if (btnAdvancePay) btnAdvancePay.disabled = false;
+      if (btnAdvancePaySpinner) btnAdvancePaySpinner.style.display = "none";
+      if (btnAdvancePayText) btnAdvancePayText.textContent = "Advance Pay Karo (50%)";
+
+      if (btnSkipPay) btnSkipPay.disabled = false;
+      if (btnSkipPaySpinner) btnSkipPaySpinner.style.display = "none";
+      if (btnSkipPayText) btnSkipPayText.textContent = "Skip Payment, Order Place Karo";
+    }
+  }
+
+  // Hook up 2 checkout buttons
+  if (btnAdvancePay) {
+    btnAdvancePay.addEventListener("click", () => handleOrderSubmissionFlow("advance"));
+  }
+  if (btnSkipPay) {
+    btnSkipPay.addEventListener("click", () => handleOrderSubmissionFlow("skip"));
+  }
+
+  // Form submit fallback
+  if (cfgOrderForm) {
+    cfgOrderForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      handleOrderSubmissionFlow("advance");
     });
   }
 
   if (btnTryAgainOrder) {
     btnTryAgainOrder.addEventListener("click", () => {
       if (cfgOrderErrorBox) cfgOrderErrorBox.style.display = "none";
-      if (btnPlaceOrder) btnPlaceOrder.focus();
+      if (btnAdvancePay) btnAdvancePay.focus();
     });
   }
 

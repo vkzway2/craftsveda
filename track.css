@@ -432,14 +432,34 @@ body.tracking-page-body {
   animation: pulseGold 1.5s infinite;
 }
 
-.status-indicator-pill.status-dispatched,
+.status-indicator-pill.status-ready {
+  background: rgba(245, 158, 11, 0.16);
+  border-color: #f59e0b;
+  color: #fbbf24;
+}
+
+.status-indicator-pill.status-ready .status-pulse-dot {
+  background: #fbbf24;
+  box-shadow: 0 0 10px #fbbf24;
+}
+
+.status-indicator-pill.status-dispatched {
+  background: rgba(59, 130, 246, 0.16);
+  border-color: #3b82f6;
+  color: #60a5fa;
+}
+
+.status-indicator-pill.status-dispatched .status-pulse-dot {
+  background: #60a5fa;
+  box-shadow: 0 0 10px #60a5fa;
+}
+
 .status-indicator-pill.status-delivered {
-  background: rgba(16, 185, 129, 0.15);
+  background: rgba(16, 185, 129, 0.16);
   border-color: var(--status-green);
   color: #34d399;
 }
 
-.status-indicator-pill.status-dispatched .status-pulse-dot,
 .status-indicator-pill.status-delivered .status-pulse-dot {
   background: #34d399;
   box-shadow: 0 0 10px #34d399;
@@ -535,15 +555,32 @@ body.tracking-page-body {
 
 .stepper-horizontal {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   position: relative;
   gap: 12px;
 }
 
-@media (max-width: 820px) {
+@media (max-width: 1100px) and (min-width: 861px) {
+  .stepper-horizontal {
+    gap: 8px;
+  }
+  .step-node {
+    width: 36px;
+    height: 36px;
+    font-size: 13px;
+  }
+  .step-title {
+    font-size: 12px;
+  }
+  .step-desc {
+    font-size: 10.5px;
+  }
+}
+
+@media (max-width: 860px) {
   .stepper-horizontal {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 18px;
   }
 }
 
@@ -555,12 +592,28 @@ body.tracking-page-body {
   align-items: center;
 }
 
-@media (max-width: 820px) {
+@media (max-width: 860px) {
   .step-item {
     flex-direction: row;
     text-align: left;
     align-items: flex-start;
-    gap: 16px;
+    gap: 14px;
+    position: relative;
+  }
+
+  .step-item:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: 19px;
+    top: 42px;
+    bottom: -14px;
+    width: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 1;
+  }
+
+  .step-item.step-completed:not(:last-child)::after {
+    background: var(--gold-deep);
   }
 }
 

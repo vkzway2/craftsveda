@@ -531,6 +531,71 @@ section,
 }
 
 /* ==========================================================================
+   CUSTOMER PORTAL NAVIGATION BUTTON
+   Rotating thin gold conic-gradient border, dark fill, subtle gold glow hover
+   ========================================================================== */
+.btn-portal-nav {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--gold-light, #f7e096);
+  text-decoration: none;
+  white-space: nowrap;
+  box-sizing: border-box;
+  background:
+    linear-gradient(#0e1422, #0e1422) padding-box,
+    linear-gradient(
+        135deg,
+        rgba(212, 175, 55, 0.35),
+        #f5e6a8,
+        #d4af37,
+        rgba(212, 175, 55, 0.35)
+      )
+      border-box;
+  background:
+    linear-gradient(#0e1422, #0e1422) padding-box,
+    conic-gradient(
+        from var(--gold-conic-angle, 0deg),
+        rgba(212, 175, 55, 0.15) 0%,
+        rgba(245, 230, 168, 0.85) 25%,
+        rgba(212, 175, 55, 0.25) 50%,
+        #d4af37 75%,
+        rgba(212, 175, 55, 0.15) 100%
+      )
+      border-box;
+  border: 1.2px solid transparent;
+  animation: goldConicSpin 6s linear infinite;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+.btn-portal-nav:hover {
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 16px rgba(212, 175, 55, 0.38),
+    0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+.btn-portal-nav:active {
+  transform: translateY(1px) scale(0.985);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.gold-conic-js-fallback .btn-portal-nav {
+  animation: none !important;
+}
+
+/* ==========================================================================
    RGB / LUMINOUS BORDER & RADIANT GLOW SYSTEM (ZERO FILL, FLAWLESS GLOW)
    - Inside Card / Content Area: 100% solid dark interior (#0e1422), ZERO RGB fill!
    - On the Border: Crisp 1.5px continuous rotating RGB / luminous laser line
@@ -927,13 +992,26 @@ section,
   gap: 12px;
 }
 
+.header-actions .desktop-action-btn {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
 .mobile-toggle {
   display: none;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 5px;
   background: transparent;
   border: 1px solid var(--border-subtle);
   padding: 8px;
+  min-height: 44px;
+  min-width: 44px;
+  box-sizing: border-box;
   border-radius: var(--radius-sm);
   cursor: pointer;
 }
@@ -3520,6 +3598,85 @@ select.form-control {
   box-shadow: 0 6px 18px rgba(37, 211, 102, 0.4);
 }
 
+/* Portal Quick Order Banner (Below Baat karni hai?) */
+.portal-order-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 10px 16px;
+  background: rgba(14, 20, 34, 0.65);
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  box-sizing: border-box;
+  transition: var(--transition-smooth);
+}
+
+.portal-order-banner:hover {
+  border-color: rgba(212, 175, 55, 0.35);
+  background: rgba(14, 20, 34, 0.85);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.portal-order-banner-text {
+  color: var(--text-secondary, #b8c1d1);
+  font-size: 0.84rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.portal-order-sparkle {
+  color: var(--gold-primary, #d4af37);
+  font-size: 0.75rem;
+}
+
+.portal-order-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  min-height: 36px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--gold-light, #f7e096);
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid var(--gold-border, rgba(212, 175, 55, 0.35));
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  white-space: nowrap;
+  box-sizing: border-box;
+  transition: var(--transition-smooth);
+}
+
+.portal-order-link-btn:hover {
+  background: rgba(212, 175, 55, 0.2);
+  border-color: var(--gold-primary);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+}
+
+.portal-order-link-btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+@media (max-width: 480px) {
+  .portal-order-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px 14px;
+  }
+  .portal-order-link-btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+  }
+}
+
 /* ==========================================================================
    FOOTER
    ========================================================================== */
@@ -4117,6 +4274,11 @@ select.form-control {
     display: flex !important;
     flex-shrink: 0;
     padding: 8px;
+    min-height: 44px;
+    min-width: 44px;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
   }
 
   /* Mobile Slide-down Navigation Drawer */
@@ -4155,9 +4317,13 @@ select.form-control {
 
   .mobile-nav-cta .btn {
     width: 100%;
+    min-height: 44px;
     padding: 12px;
     text-align: center;
     box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   /* 4. Hero Section */
@@ -5231,8 +5397,100 @@ select.form-control {
 }
 
 @media (max-width: 991px) {
+  .site-header {
+    height: auto;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+  }
+
+  .header-inner {
+    height: 64px;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: calc(100% - 56px);
+  }
+
+  .header-actions .btn,
+  .header-actions .btn-outline-gold,
+  .header-actions .btn-whatsapp,
+  .header-actions .desktop-action-btn,
+  .desktop-action-btn {
+    display: none !important;
+  }
+
   .header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
     gap: 8px !important;
+  }
+
+  .mobile-toggle {
+    display: flex !important;
+    flex-shrink: 0;
+    padding: 8px;
+    min-height: 44px;
+    min-width: 44px;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .main-nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    background: rgba(11, 15, 23, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--gold-border);
+    padding: 24px 20px;
+    display: none;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    z-index: 999;
+  }
+
+  .main-nav.open {
+    display: block;
+  }
+
+  .main-nav .nav-list {
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .mobile-nav-cta {
+    display: block !important;
+    margin-top: 6px;
+  }
+
+  .mobile-nav-cta .btn {
+    width: 100%;
+    min-height: 44px;
+    padding: 12px;
+    text-align: center;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .btn-call-mobile {
@@ -5262,6 +5520,36 @@ select.form-control {
     background: rgba(212, 175, 55, 0.24);
     border-color: var(--gold-base);
     color: #fff;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1240px) {
+  .header-inner {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .main-nav .nav-list {
+    gap: clamp(10px, 1.4vw, 18px);
+  }
+
+  .nav-link {
+    font-size: 0.85rem;
+  }
+
+  .header-actions {
+    gap: 8px;
+  }
+
+  .btn-portal-nav {
+    padding: 0 12px;
+    font-size: 0.82rem;
+  }
+
+  .header-actions .desktop-action-btn.btn-sm,
+  .header-actions .btn-sm {
+    padding: 8px 12px;
+    font-size: 0.82rem;
   }
 }
 
@@ -7785,5 +8073,341 @@ body.cv-modal-open {
 .summary-secure-note svg {
   color: var(--gold-tint);
 }
+
+/* ==========================================================================
+   ADVANCE PAYMENT & DUAL CHECKOUT BUTTONS SYSTEM
+   ========================================================================== */
+.checkout-two-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.btn-advance-pay {
+  position: relative;
+  overflow: hidden;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: linear-gradient(135deg, #d4af37 0%, #f5e6a8 50%, #d4af37 100%);
+  background-size: 200% auto;
+  color: #0b0f1a;
+  border: none;
+  box-shadow: 0 4px 18px rgba(212, 175, 55, 0.38), 0 0 20px rgba(212, 175, 55, 0.2);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.btn-advance-pay:hover {
+  background-position: right center;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(212, 175, 55, 0.55), 0 0 30px rgba(245, 230, 168, 0.3);
+}
+
+.btn-advance-pay:active {
+  transform: translateY(0);
+}
+
+.btn-advance-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.btn-skip-pay {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--gold-tint, #f5e6a8);
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  font-weight: 600;
+  padding: 12px 24px;
+  transition: all 0.25s ease;
+}
+
+.btn-skip-pay:hover {
+  background: rgba(212, 175, 55, 0.12);
+  border-color: var(--gold-base, #d4af37);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.skip-pay-hint {
+  text-align: center;
+  font-size: 0.76rem;
+  color: var(--text-dim, #8c877b);
+  margin-top: -4px;
+  margin-bottom: 4px;
+  line-height: 1.35;
+}
+
+/* Payment Panel (Advance 50% flow) */
+.cfg-payment-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 8px 0;
+  animation: cvPanelFadeIn 0.35s ease-out;
+}
+
+.payment-header-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  flex-wrap: wrap;
+}
+
+.payment-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--gold-bright, #ffdf73);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.payment-order-id-chip {
+  font-size: 0.82rem;
+  color: var(--text-sub, #b9b4a6);
+}
+
+.payment-order-id-chip strong {
+  color: #fff;
+  font-family: var(--font-serif, "Playfair Display", serif);
+  letter-spacing: 0.05em;
+}
+
+/* Amount Highlight Box */
+.payment-amount-box {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(17, 23, 38, 0.95) 100%);
+  border: 1.5px solid rgba(212, 175, 55, 0.5);
+  border-radius: 12px;
+  padding: 18px 16px;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45), inset 0 0 20px rgba(212, 175, 55, 0.08);
+}
+
+.payment-amount-label {
+  display: block;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--gold-base, #d4af37);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.payment-amount-val {
+  font-family: var(--font-serif, "Playfair Display", serif);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.02em;
+  margin: 4px 0 8px;
+  text-shadow: 0 2px 14px rgba(212, 175, 55, 0.35);
+  font-variant-numeric: tabular-nums;
+}
+
+.payment-paise-alert {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.76rem;
+  color: #fef08a;
+  line-height: 1.4;
+  text-align: left;
+}
+
+/* UPI Details Card */
+.payment-upi-details-card {
+  background: rgba(17, 23, 38, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.upi-id-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(212, 175, 55, 0.35);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.upi-id-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.upi-id-label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim, #8c877b);
+}
+
+.upi-id-text {
+  font-size: 0.95rem;
+  color: var(--gold-tint, #f5e6a8);
+  font-family: monospace;
+  word-break: break-all;
+}
+
+.btn-copy-upi {
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--gold-bright, #ffdf73);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.btn-copy-upi:hover {
+  background: var(--gold-base, #d4af37);
+  color: #0b0f1a;
+}
+
+.btn-copy-upi.copied {
+  background: #10b981;
+  color: #fff;
+  border-color: #10b981;
+}
+
+/* Mobile UPI Deep Link */
+.upi-mobile-pay {
+  display: none;
+}
+
+.btn-upi-app {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #fff !important;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+  border: none;
+}
+
+.btn-upi-app:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(16, 185, 129, 0.5);
+}
+
+/* Desktop QR Code */
+.upi-qr-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+}
+
+.qr-box {
+  background: #ffffff;
+  padding: 14px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6), 0 0 16px rgba(212, 175, 55, 0.25);
+  border: 2px solid var(--gold-base, #d4af37);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr-canvas-holder {
+  width: 180px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr-canvas-holder canvas,
+.qr-canvas-holder img {
+  display: block;
+  width: 180px !important;
+  height: 180px !important;
+  border-radius: 4px;
+}
+
+.qr-caption {
+  font-size: 0.76rem;
+  color: var(--text-sub, #b9b4a6);
+  max-width: 280px;
+  line-height: 1.35;
+}
+
+/* Maine Pay Kar Diya Action Wrap */
+.payment-actions-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border: none;
+  box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-success:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+  box-shadow: 0 6px 24px rgba(16, 185, 129, 0.5);
+}
+
+.btn-success:active {
+  transform: translateY(0);
+}
+
+.payment-no-utr-hint {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-dim, #8c877b);
+  line-height: 1.35;
+}
+
+/* Responsive adjustments for mobile UPI experience */
+@media (max-width: 768px) {
+  .upi-mobile-pay {
+    display: block;
+  }
+  .upi-qr-section {
+    padding-top: 6px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.08);
+  }
+  .qr-canvas-holder {
+    width: 150px;
+    height: 150px;
+  }
+  .qr-canvas-holder canvas,
+  .qr-canvas-holder img {
+    width: 150px !important;
+    height: 150px !important;
+  }
+}
+
 
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Dashboard — CraftsVeda Luxury Studio</title>
+  <title>Admin Dashboard — CraftsVeda Premium Studio</title>
   <meta name="robots" content="noindex, nofollow" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -346,24 +346,79 @@
     </div>
   </div>
 
-  <!-- MODAL 4: PAYMENT / DEADLINE / ARTWORK (NEW) -->
+  <!-- MODAL 4: PAYMENT / DEADLINE / ARTWORK -->
   <div id="metaModal" class="admin-modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="metaTitle">
-    <div class="admin-modal-box">
+    <div class="admin-modal-box meta-payment-modal-box">
       <div class="modal-header">
-        <h3 class="modal-heading" id="metaTitle">Payment, Deadline &amp; Artwork</h3>
+        <h3 class="modal-heading" id="metaTitle">Edit Payment &amp; Production Meta</h3>
         <button type="button" class="modal-close-btn" id="btnCloseMetaModal" aria-label="Close">✕</button>
       </div>
       <div class="modal-body">
-        <p class="modal-desc">Order <strong id="metaOrderIdText" class="gold-text">CV-xxx</strong> — Total: <strong id="metaTotalText">₹0</strong></p>
+        <p class="modal-desc">Order <strong id="metaOrderIdText" class="gold-text">CV-xxx</strong> — Customer: <span id="metaCustomerNameText" class="gold-text">—</span></p>
 
-        <div class="form-group-modal">
-          <label for="metaFinalInput" class="modal-field-label">Final Total (₹) <span class="mini-muted">— "Needs Quote" orders ka rate yahan daalo</span></label>
-          <input type="number" min="0" step="1" id="metaFinalInput" class="modal-field-input" />
+        <!-- Payment KPI Summary Strip -->
+        <div class="payment-summary-strip">
+          <div class="pay-stat-item">
+            <span class="pay-stat-label">Order Total</span>
+            <strong class="pay-stat-val" id="metaSummaryTotal">₹0</strong>
+          </div>
+          <div class="pay-stat-item">
+            <span class="pay-stat-label">Total Paid</span>
+            <strong class="pay-stat-val text-success" id="metaSummaryPaid">₹0</strong>
+          </div>
+          <div class="pay-stat-item">
+            <span class="pay-stat-label">Remaining Bal</span>
+            <strong class="pay-stat-val text-warning" id="metaSummaryBalance">₹0</strong>
+          </div>
         </div>
 
         <div class="form-group-modal">
-          <label for="metaPaidInput" class="modal-field-label">Amount Received (₹)</label>
-          <input type="number" min="0" step="1" id="metaPaidInput" class="modal-field-input" />
+          <label for="metaFinalInput" class="modal-field-label">Order Final Total (₹) <span class="mini-muted">— Quote pending orders ka rate yahan set karein</span></label>
+          <input type="number" min="0" step="any" id="metaFinalInput" class="modal-field-input" />
+        </div>
+
+        <!-- Payment History Box (Multiple Payments in an Order) -->
+        <div class="form-group-modal">
+          <label class="modal-field-label">Payment History <span class="mini-muted">— Is order me record kiye gaye payments</span></label>
+          <div id="metaPaymentsList" class="meta-payments-list">
+            <!-- Dynamic entries loaded here -->
+          </div>
+        </div>
+
+        <!-- + Add Payment Entry Card -->
+        <div class="add-payment-card">
+          <div class="add-payment-header">
+            <h4 class="add-payment-title">+ Add New Payment Entry</h4>
+            <span class="mini-muted">Multiple installments allowed</span>
+          </div>
+          <div class="add-pay-grid">
+            <div class="form-group-modal" style="margin:0;">
+              <label for="metaAddAmount" class="modal-field-label">Amount (₹)</label>
+              <input type="number" min="1" step="any" id="metaAddAmount" class="modal-field-input" placeholder="e.g. 300" />
+            </div>
+            <div class="form-group-modal" style="margin:0;">
+              <label for="metaAddMode" class="modal-field-label">Payment Mode</label>
+              <select id="metaAddMode" class="modal-field-select">
+                <option value="UPI">UPI</option>
+                <option value="Cash">Cash</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group-modal" style="margin-top:8px; margin-bottom:8px;">
+            <label for="metaAddNote" class="modal-field-label">Note / Ref (Optional)</label>
+            <input type="text" id="metaAddNote" class="modal-field-input" placeholder="e.g. GPay ref / Cash received at studio" />
+          </div>
+          <button type="button" class="btn btn-outline-gold btn-sm" id="btnAddPaymentEntry" style="width:100%;">
+            + Add Payment Entry
+          </button>
+        </div>
+
+        <!-- Total Paid Field (auto-calculated from entries, but editable) -->
+        <div class="form-group-modal" style="margin-top:14px;">
+          <label for="metaPaidInput" class="modal-field-label">Total Paid So Far (₹) <small class="mini-muted">(Entries ka sum, manually bhi edit kar sakte hain)</small></label>
+          <input type="number" min="0" step="any" id="metaPaidInput" class="modal-field-input" />
           <small class="field-help" id="metaBalanceHelp">Balance: ₹0</small>
         </div>
 
@@ -383,7 +438,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-gold" id="btnCancelMetaModal">Cancel</button>
-        <button type="button" class="btn btn-gold" id="btnSaveMeta">Save</button>
+        <button type="button" class="btn btn-gold" id="btnSaveMeta">Save Payment &amp; Details</button>
       </div>
     </div>
   </div>

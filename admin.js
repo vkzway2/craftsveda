@@ -92,7 +92,7 @@
       if (state.filter !== 'ALL' && o.status !== state.filter) return false;
       if (state.pay !== 'ALL' && payState(o) !== state.pay) return false;
       if (!q) return true;
-      return [o.orderId, o.name, o.phone, o.email, o.city].join(' ').toLowerCase().indexOf(q) !== -1;
+      return [o.orderId, o.name, o.phone, o.email, o.city, o.advanceDue || '', o.paymentMode || '', o.status, o.paymentStatus || ''].join(' ').toLowerCase().indexOf(q) !== -1;
     });
     var s = state.sort;
     list.sort(function (a, b) {
@@ -147,13 +147,21 @@
     body.innerHTML = slice.map(function (o) {
       var ps = payState(o), dl = deadlineInfo(o), bal = Math.max(0, Number(o.amount || 0) - Number(o.paid || 0));
       var art = safeUrl(o.artworkUrl);
-      return '<tr class="' + (dl.overdue ? 'row-overdue' : '') + '">' +
+      var isCustomerClaimedPaid = o.notes && o.notes.indexOf("Maine Pay Kar Diya") !== -1 && ps === 'UNPAID';
+      var rowCls = [];
+      if (dl.overdue) rowCls.push('row-overdue');
+      if (isCustomerClaimedPaid) rowCls.push('row-bank-check');
+
+      return '<tr class="' + rowCls.join(' ') + '">' +
         '<td class="col-check"><input type="checkbox" class="js-sel" data-id="' + esc(o.orderId) + '"' + (state.selected[o.orderId] ? ' checked' : '') + ' aria-label="Select ' + esc(o.orderId) + '"></td>' +
         '<td><strong class="gold-text">' + esc(o.orderId) + '</strong><div class="mini-muted">' + esc(new Date(o.date).toLocaleDateString('en-IN')) + '</div></td>' +
         '<td><strong>' + esc(o.name) + '</strong><div class="mini-muted">' + esc(o.phone) + '</div><div class="mini-muted">' + esc(o.city) + '</div></td>' +
         '<td>' + esc(o.specs) + '<div class="mini-muted">Qty: ' + esc(o.qty) + '</div></td>' +
         '<td><strong>' + (o.needsQuote ? 'Quote pending' : inr(o.amount)) + '</strong><div><span class="pay-badge pay-' + ps + '">' + ps + '</span></div>' +
+          (o.advanceDue ? '<div class="mini-muted" style="color:#d97706;font-weight:600;">Adv Due: ₹' + (typeof o.advanceDue === 'number' ? o.advanceDue.toFixed(2) : o.advanceDue) + '</div>' : '') +
+          (isCustomerClaimedPaid ? '<div style="margin-top:4px;"><span style="background:#fef08a;color:#854d0e;padding:2px 6px;border-radius:4px;font-size:0.72rem;font-weight:700;">⚡ Verify Bank Advance</span></div>' : '') +
           '<div class="mini-muted">Paid ' + inr(o.paid) + ' · Bal ' + inr(bal) + '</div>' +
+          (o.paymentMode ? '<div class="mini-muted" style="color:#10b981;font-weight:600;">Mode: ' + esc(o.paymentMode) + '</div>' : '') +
           '<button type="button" class="link-btn js-meta" data-id="' + esc(o.orderId) + '">Edit payment</button></td>' +
         '<td class="' + dl.cls + '">' + esc(dl.label) + '</td>' +
         '<td><span class="art-badge art-' + esc(o.artworkStatus || 'RECEIVED') + '">' + esc(o.artworkStatus || 'RECEIVED') + '</span>' +
@@ -322,6 +330,16 @@
   function changeStatus(o, status) {
     // DISPATCHED ke liye courier + AWB chahiye, isliye pehle dispatch form kholte hain
     if (status === 'DISPATCHED' && !o.awb) { renderTable(); openDispatch(o); return Promise.resolve(); }
+
+    // Rule: Paid hue bina production status par order nahi ja sakta
+    var isProd = status === 'PRODUCTION IN PROGRESS' || status === 'QUALITY CHECKED & READY' || status === 'DISPATCHED' || status === 'DELIVERED';
+    var isPaid = Number(o.paid || 0) > 0 || o.paymentStatus === 'Paid' || o.paymentStatus === 'Advance Received' || o.paymentStatus === 'Received';
+    if (isProd && !isPaid) {
+      renderTable();
+      toast('Rule: Paid / Advance Received hue bina order production status par nahi ja sakta', 'error');
+      return Promise.resolve();
+    }
+
     var prev = o.status;
     return api('updateStatus', { orderId: o.orderId, status: status, notify: autoNotify() }).then(function (j) {
       o.status = status; renderAll(); toast(o.orderId + ' → ' + status, 'success'); reportNotify(j.notify);
@@ -371,33 +389,178 @@
     }).catch(function (e) { toast(e.message, 'error'); });
   }
 
+  /* ---------- payment & meta (multiple payments & mode support) ---------- */
+
+  function parsePaymentHistory(o) {
+    if (!o) return [];
+    if (o.paymentHistory) {
+      try {
+        var parsed = JSON.parse(o.paymentHistory);
+        if (Array.isArray(parsed)) return parsed;
+      } catch (e) {}
+    }
+    // Backward compatibility: If no history exists yet but there is an existing paid amount, show as initial entry
+    var paid = Number(o.paid || 0);
+    if (paid > 0) {
+      return [{
+        amount: paid,
+        mode: o.paymentMode || 'UPI',
+        date: o.date ? new Date(o.date).toLocaleDateString('en-IN') : 'Initial',
+        note: 'Previous recorded payment'
+      }];
+    }
+    return [];
+  }
+
+  function renderPaymentsList() {
+    var o = state.current;
+    if (!o) return;
+    var listEl = $('metaPaymentsList');
+    if (!listEl) return;
+
+    var payments = state.currentPayments || [];
+    if (payments.length === 0) {
+      listEl.innerHTML = '<div class="meta-payments-empty">No payment entries recorded yet. Add installment with mode below.</div>';
+    } else {
+      listEl.innerHTML = payments.map(function (p, idx) {
+        var modeClass = 'pay-mode-' + String(p.mode || 'Other').replace(/\s+/g, '-');
+        return '<div class="payment-entry-row">' +
+          '<div class="pay-entry-left">' +
+            '<span class="pay-entry-amt">₹' + Number(p.amount || 0).toLocaleString('en-IN') + '</span>' +
+            '<span class="pay-mode-pill ' + modeClass + '">' + esc(p.mode || 'Other') + '</span>' +
+            '<span class="pay-entry-meta">' + esc(p.date || '') + (p.note ? ' • ' + esc(p.note) : '') + '</span>' +
+          '</div>' +
+          '<button type="button" class="btn-del-entry" data-idx="' + idx + '" title="Remove this payment entry">✕</button>' +
+        '</div>';
+      }).join('');
+    }
+
+    // Recalculate total paid from entries
+    var sumPaid = payments.reduce(function (acc, p) { return acc + Number(p.amount || 0); }, 0);
+    $('metaPaidInput').value = sumPaid;
+    updateBalanceHelp();
+  }
+
+  function addPaymentEntry() {
+    var amtInput = $('metaAddAmount');
+    var modeInput = $('metaAddMode');
+    var noteInput = $('metaAddNote');
+
+    var amt = Number(amtInput.value);
+    if (isNaN(amt) || amt <= 0) {
+      toast('Please enter a valid payment amount (> 0)', 'error');
+      if (amtInput) amtInput.focus();
+      return;
+    }
+
+    var mode = (modeInput && modeInput.value) ? modeInput.value.trim() : 'UPI';
+    var note = (noteInput && noteInput.value) ? noteInput.value.trim() : '';
+
+    var now = new Date();
+    var dateStr = now.toLocaleDateString('en-IN') + ' ' + now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+
+    if (!state.currentPayments) state.currentPayments = [];
+
+    var newEntry = {
+      amount: amt,
+      mode: mode,
+      date: dateStr,
+      note: note
+    };
+
+    state.currentPayments.push(newEntry);
+    state.lastAddedPayment = newEntry; // track for server notes audit
+
+    // Clear add inputs
+    amtInput.value = '';
+    if (noteInput) noteInput.value = '';
+
+    renderPaymentsList();
+    toast('Added ₹' + amt.toLocaleString('en-IN') + ' via ' + mode + ' to paid total', 'success');
+  }
+
+  function removePaymentEntry(idx) {
+    if (!state.currentPayments || !state.currentPayments[idx]) return;
+    state.currentPayments.splice(idx, 1);
+    renderPaymentsList();
+  }
+
   function openMeta(o) {
     state.current = o;
+    state.lastAddedPayment = null;
+    state.currentPayments = parsePaymentHistory(o);
+
     $('metaOrderIdText').textContent = o.orderId;
-    $('metaTotalText').textContent = o.needsQuote ? 'Quote pending' : inr(o.amount);
+    if ($('metaCustomerNameText')) $('metaCustomerNameText').textContent = o.name || 'Customer';
+
     $('metaFinalInput').value = o.needsQuote ? '' : Number(o.amount || 0);
     $('metaPaidInput').value = Number(o.paid || 0);
     $('metaDeadlineInput').value = o.deadline || '';
     $('metaArtworkStatus').value = o.artworkStatus || 'RECEIVED';
-    updateBalanceHelp();
+
+    // Clear add payment inputs
+    if ($('metaAddAmount')) $('metaAddAmount').value = '';
+    if ($('metaAddNote')) $('metaAddNote').value = '';
+    if ($('metaAddMode')) $('metaAddMode').value = (o.paymentMode && o.paymentMode.indexOf(',') === -1) ? o.paymentMode : 'UPI';
+
+    renderPaymentsList();
     openModal('metaModal');
   }
+
   function updateBalanceHelp() {
     var o = state.current; if (!o) return;
     var total = $('metaFinalInput').value !== '' ? Number($('metaFinalInput').value) : Number(o.amount || 0);
-    $('metaBalanceHelp').textContent = 'Balance: ' + inr(Math.max(0, total - Number($('metaPaidInput').value || 0)));
+    var paid = Number($('metaPaidInput').value || 0);
+    var bal = Math.max(0, total - paid);
+
+    if ($('metaSummaryTotal')) $('metaSummaryTotal').textContent = inr(total);
+    if ($('metaSummaryPaid')) $('metaSummaryPaid').textContent = inr(paid);
+    if ($('metaSummaryBalance')) $('metaSummaryBalance').textContent = inr(bal);
+    $('metaBalanceHelp').textContent = 'Remaining Balance: ' + inr(bal);
   }
+
   function saveMeta() {
     var o = state.current, paid = Number($('metaPaidInput').value || 0);
     if (paid < 0) { toast('Amount negative nahi ho sakta', 'error'); return; }
-    var payload = { orderId: o.orderId, paid: paid, finalTotal: $('metaFinalInput').value, deadline: $('metaDeadlineInput').value,
-      artworkStatus: $('metaArtworkStatus').value, notify: autoNotify() };
+
+    // Aggregate unique payment modes from entries
+    var modes = [];
+    if (state.currentPayments && state.currentPayments.length > 0) {
+      state.currentPayments.forEach(function (p) {
+        if (p.mode && modes.indexOf(p.mode) === -1) modes.push(p.mode);
+      });
+    }
+    if (modes.length === 0 && $('metaAddMode')) {
+      modes.push($('metaAddMode').value || 'UPI');
+    }
+    var combinedMode = modes.join(', ');
+
+    var payload = {
+      orderId: o.orderId,
+      paid: paid,
+      paymentMode: combinedMode,
+      paymentHistory: state.currentPayments || [],
+      newPayment: state.lastAddedPayment || null,
+      finalTotal: $('metaFinalInput').value,
+      deadline: $('metaDeadlineInput').value,
+      artworkStatus: $('metaArtworkStatus').value,
+      notify: autoNotify()
+    };
+
     api('saveMeta', payload).then(function (j) {
-      o.paid = paid; o.deadline = payload.deadline; o.artworkStatus = payload.artworkStatus;
+      o.paid = paid;
+      o.paymentMode = j.paymentMode || combinedMode;
+      o.paymentHistory = JSON.stringify(state.currentPayments || []);
+      o.advanceDue = ""; // Requirement 2: pending advance due released!
+      o.deadline = payload.deadline;
+      o.artworkStatus = payload.artworkStatus;
       if (payload.finalTotal !== '') { o.amount = Number(payload.finalTotal); o.needsQuote = false; }
       if (j.status) o.status = j.status;
       if (j.paymentStatus) o.paymentStatus = j.paymentStatus;
-      closeModal('metaModal'); renderAll(); toast('Saved', 'success'); reportNotify(j.notify);
+      closeModal('metaModal');
+      renderAll();
+      toast('Payment saved! Mode: ' + o.paymentMode + ' • Advance Due released.', 'success');
+      reportNotify(j.notify);
     }).catch(function (e) { toast(e.message, 'error'); });
   }
 
@@ -547,9 +710,19 @@
     $('btnSaveNotes').addEventListener('click', saveNotes);
     ['btnCloseNotesModal', 'btnCancelNotesModal'].forEach(function (id) { $(id).addEventListener('click', function () { closeModal('notesModal'); }); });
 
-    // meta
+    // meta & payments
     $('metaPaidInput').addEventListener('input', updateBalanceHelp);
     $('metaFinalInput').addEventListener('input', updateBalanceHelp);
+    if ($('btnAddPaymentEntry')) $('btnAddPaymentEntry').addEventListener('click', addPaymentEntry);
+    if ($('metaPaymentsList')) {
+      $('metaPaymentsList').addEventListener('click', function (e) {
+        var btn = e.target.closest('.btn-del-entry');
+        if (btn) {
+          var idx = Number(btn.getAttribute('data-idx'));
+          removePaymentEntry(idx);
+        }
+      });
+    }
     $('btnSaveMeta').addEventListener('click', saveMeta);
     ['btnCloseMetaModal', 'btnCancelMetaModal'].forEach(function (id) { $(id).addEventListener('click', function () { closeModal('metaModal'); }); });
 
