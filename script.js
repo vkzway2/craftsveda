@@ -3633,7 +3633,7 @@ function initCardCalculator() {
           const advNum = parseFloat(resData.advanceAmount);
           payScreenAmount.textContent = !isNaN(advNum) ? `₹${advNum.toFixed(2)}` : `₹${resData.advanceAmount}`;
         }
-        if (payScreenUpiId) payScreenUpiId.textContent = resData.upiId || "YOUR_UPI_ID_HERE";
+        if (payScreenUpiId) payScreenUpiId.textContent = resData.upiId || "8840035249@kotak811";
         if (btnUpiDeepLink) btnUpiDeepLink.href = resData.upiLink;
 
         // Render QR Code for desktop
@@ -3642,7 +3642,7 @@ function initCardCalculator() {
         // Copy UPI ID button
         if (btnCopyUpiId) {
           btnCopyUpiId.onclick = () => {
-            const upiToCopy = resData.upiId || "YOUR_UPI_ID_HERE";
+            const upiToCopy = resData.upiId || "8840035249@kotak811";
             if (navigator.clipboard && navigator.clipboard.writeText) {
               navigator.clipboard.writeText(upiToCopy);
             }
