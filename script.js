@@ -39,7 +39,7 @@ const FINISH_DATA = {
     val1: "Single-level, Multi-level & Sculpted 3D Brass Dies",
     val2: "500+ GSM Heavyweight Cotton & Textured Linen",
     val3: "100 pieces",
-    img: "assets/Emboss vs Deboss_ CraftsVeda Logo Mockup.png",
+    img: "assets/luxury-business-card-emboss-deboss.webp",
   },
   velvet: {
     badge: "SURFACE PROTECTION",
@@ -48,7 +48,7 @@ const FINISH_DATA = {
     val1: "Matte Velvet Soft-Touch & Anti-Scratch Finish",
     val2: "Rigid Boxes, Pocket Folders, Book Covers & Cards",
     val3: "100 pieces",
-    img: "assets/Velvet Soft-Touch Card Showcase.png",
+    img: "assets/luxury-business-card-finishing.webp",
   },
   gilding: {
     badge: "ARTISANAL DETAIL",
