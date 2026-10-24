@@ -3674,7 +3674,7 @@ function initCardCalculator() {
             if (cfgPaidAckPanel) cfgPaidAckPanel.style.display = "flex";
             if (ackOrderId) ackOrderId.textContent = activeSubmittedOrderId;
             if (btnAckTrackOrder) {
-              btnAckTrackOrder.href = `track-order.html?orderId=${encodeURIComponent(activeSubmittedOrderId)}`;
+              btnAckTrackOrder.href = `track-order.html?orderId=${encodeURIComponent(activeSubmittedOrderId)}&phone=${encodeURIComponent(cleanPhone)}`;
             }
             if (btnAckWa) {
               btnAckWa.href = `https://wa.me/918840035249?text=${encodeURIComponent("Namaste, I have paid the advance amount of ₹" + resData.advanceAmount + " for Order " + activeSubmittedOrderId + ". Please verify.")}`;
@@ -3692,7 +3692,7 @@ function initCardCalculator() {
           cfgConfirmSubtitle.textContent = "Your order has been saved in Pending status. Sales team phone par baat karke details verify karegi.";
         }
         if (btnTrackOrder) {
-          btnTrackOrder.href = `track-order.html?orderId=${encodeURIComponent(orderId)}`;
+          btnTrackOrder.href = `track-order.html?orderId=${encodeURIComponent(orderId)}&phone=${encodeURIComponent(cleanPhone)}`;
         }
         if (btnConfirmedWa) {
           btnConfirmedWa.href = `https://wa.me/918840035249?text=${encodeURIComponent(buildOrderText(orderId, nameVal, cleanPhone, cityVal, notesVal))}`;
