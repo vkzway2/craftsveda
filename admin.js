@@ -158,7 +158,7 @@
         '<td><strong>' + esc(o.name) + '</strong><div class="mini-muted">' + esc(o.phone) + '</div><div class="mini-muted">' + esc(o.city) + '</div></td>' +
         '<td>' + esc(o.specs) + '<div class="mini-muted">Qty: ' + esc(o.qty) + '</div></td>' +
         '<td><strong>' + (o.needsQuote ? 'Quote pending' : inr(o.amount)) + '</strong><div><span class="pay-badge pay-' + ps + '">' + ps + '</span></div>' +
-          (o.advanceDue ? '<div class="mini-muted" style="color:#d97706;font-weight:600;">Adv Due: ₹' + (typeof o.advanceDue === 'number' ? o.advanceDue.toFixed(2) : o.advanceDue) + '</div>' : '') +
+          (o.advanceDue ? '<div class="mini-muted" style="color:#d97706;font-weight:600;">Adv Due: ₹' + esc(typeof o.advanceDue === 'number' ? o.advanceDue.toFixed(2) : o.advanceDue) + '</div>' : '') +
           (isCustomerClaimedPaid ? '<div style="margin-top:4px;"><span style="background:#fef08a;color:#854d0e;padding:2px 6px;border-radius:4px;font-size:0.72rem;font-weight:700;">⚡ Verify Bank Advance</span></div>' : '') +
           '<div class="mini-muted">Paid ' + inr(o.paid) + ' · Bal ' + inr(bal) + '</div>' +
           (o.paymentMode ? '<div class="mini-muted" style="color:#10b981;font-weight:600;">Mode: ' + esc(o.paymentMode) + '</div>' : '') +
@@ -423,7 +423,7 @@
       listEl.innerHTML = '<div class="meta-payments-empty">No payment entries recorded yet. Add installment with mode below.</div>';
     } else {
       listEl.innerHTML = payments.map(function (p, idx) {
-        var modeClass = 'pay-mode-' + String(p.mode || 'Other').replace(/\s+/g, '-');
+        var modeClass = 'pay-mode-' + esc(String(p.mode || 'Other').replace(/[^a-zA-Z0-9_-]/g, '-'));
         return '<div class="payment-entry-row">' +
           '<div class="pay-entry-left">' +
             '<span class="pay-entry-amt">₹' + Number(p.amount || 0).toLocaleString('en-IN') + '</span>' +
