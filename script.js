@@ -1126,6 +1126,8 @@ function initSmoothScroll() {
    10. GSAP ENTRANCE TIMELINE, SVG STROKE DRAWINGS & NUMBER COUNTERS
    ========================================================================== */
 function initHeroGSAPReveal() {
+  if (!document.getElementById("heroBadge")) return;
+
   const prefersReduced =
     window.matchMedia &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
