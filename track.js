@@ -172,17 +172,54 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 2. Parse URL Search Parameters (e.g. ?orderId=CV-161026-0001&phone=9820012345)
   const urlParams = new URLSearchParams(window.location.search);
-  const qOrderId = urlParams.get("orderId") || urlParams.get("id");
-  const qPhone = urlParams.get("phone") || urlParams.get("tel");
-  const qEmail = urlParams.get("email");
+  const qOrderId = (urlParams.get("orderId") || urlParams.get("id") || "").trim();
+  let qPhone = (urlParams.get("phone") || urlParams.get("tel") || "").trim();
+  let qEmail = (urlParams.get("email") || "").trim();
+
+  // If phone or email were provided in URL, cache them for the session and clean address bar immediately
+  if (qOrderId && (qPhone || qEmail)) {
+    try {
+      const auth = { orderId: qOrderId, phone: qPhone, email: qEmail };
+      sessionStorage.setItem("cv_track_auth_" + qOrderId.toUpperCase(), JSON.stringify(auth));
+      localStorage.setItem("cv_last_order", JSON.stringify(auth));
+    } catch (e) {}
+
+    // Clean phone and email from the address bar, keeping orderId
+    if (window.history && window.history.replaceState) {
+      try {
+        const cleanParams = new URLSearchParams();
+        cleanParams.set("orderId", qOrderId);
+        const newUrl = window.location.pathname + "?" + cleanParams.toString() + window.location.hash;
+        window.history.replaceState(null, "", newUrl);
+      } catch (e) {}
+    }
+  } else if (qOrderId) {
+    // If only orderId is present (e.g. after refresh or direct link), check cached credentials
+    try {
+      const stored = sessionStorage.getItem("cv_track_auth_" + qOrderId.toUpperCase()) ||
+                     localStorage.getItem("cv_track_auth_" + qOrderId.toUpperCase());
+      let cached = stored ? JSON.parse(stored) : null;
+      if (!cached) {
+        const last = JSON.parse(localStorage.getItem("cv_last_order") || "null");
+        if (last && last.orderId && last.orderId.toUpperCase() === qOrderId.toUpperCase()) {
+          cached = last;
+        }
+      }
+      if (cached && (cached.phone || cached.email)) {
+        if (!qPhone) qPhone = cached.phone || "";
+        if (!qEmail) qEmail = cached.email || "";
+      }
+    } catch (e) {}
+  }
 
   if (qOrderId) {
-    trackOrderIdInput.value = qOrderId.trim();
+    trackOrderIdInput.value = qOrderId;
   }
   if (qPhone || qEmail) {
-    trackContactInput.value = (qPhone || qEmail).trim();
+    trackContactInput.value = qPhone || qEmail;
   }
-  // Auto-submit if both are present in URL
+
+  // Auto-submit if both are available
   if (qOrderId && (qPhone || qEmail)) {
     setTimeout(() => {
       trackOrderForm.dispatchEvent(new Event("submit"));
@@ -338,6 +375,19 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!orderData) {
         throw new Error("Order not found or contact verification failed. Please check your details.");
       }
+
+      // Cache verified credentials for seamless page refresh
+      try {
+        const authData = { orderId: orderId, phone: cleanPhone, email: isEmail ? contact.toLowerCase() : "" };
+        sessionStorage.setItem("cv_track_auth_" + normId, JSON.stringify(authData));
+        localStorage.setItem("cv_last_order", JSON.stringify(authData));
+        if (window.history && window.history.replaceState) {
+          const cleanParams = new URLSearchParams();
+          cleanParams.set("orderId", orderId);
+          const newUrl = window.location.pathname + "?" + cleanParams.toString() + window.location.hash;
+          window.history.replaceState(null, "", newUrl);
+        }
+      } catch (e) {}
 
       // Render Order Tracking View
       renderTrackingResult(orderData);
