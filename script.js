@@ -3657,18 +3657,65 @@ function initCardCalculator() {
           };
         }
 
+        // Initialize UTR field in payment panel
+        const utrInput = document.getElementById("paymentUtrInput");
+        const utrError = document.getElementById("paymentUtrError");
+        if (utrInput) {
+          utrInput.value = "";
+          utrInput.style.borderColor = "";
+          if (utrError) utrError.style.display = "none";
+          utrInput.oninput = () => {
+            utrInput.value = utrInput.value.replace(/\D/g, "").slice(0, 12);
+            if (utrInput.value.length === 12) {
+              if (utrError) utrError.style.display = "none";
+              utrInput.style.borderColor = "";
+            }
+          };
+        }
+
         // Single-tap "Maine Pay Kar Diya" button
         if (btnMainePayKarDiya) {
           btnMainePayKarDiya.onclick = async () => {
+            const utrEl = document.getElementById("paymentUtrInput");
+            const errEl = document.getElementById("paymentUtrError");
+            const utrRaw = utrEl ? utrEl.value.trim() : "";
+            const cleanUtr = utrRaw.replace(/\D/g, "");
+
+            if (cleanUtr.length !== 12) {
+              if (errEl) {
+                errEl.textContent = "Please enter a valid 12-digit numeric UTR / Transaction ID.";
+                errEl.style.display = "block";
+              }
+              if (utrEl) {
+                utrEl.focus();
+                utrEl.style.borderColor = "#ef4444";
+              }
+              return;
+            } else {
+              if (errEl) errEl.style.display = "none";
+              if (utrEl) utrEl.style.borderColor = "";
+            }
+
             btnMainePayKarDiya.disabled = true;
             if (btnMainePaySpinner) btnMainePaySpinner.style.display = "inline-block";
             if (btnMainePayText) btnMainePayText.textContent = "Recording...";
+
+            // Append "UTR: <value>" to the existing notes field that is already sent to the backend
+            if (orderCustomerNotes) {
+              const currentNotes = orderCustomerNotes.value.trim();
+              orderCustomerNotes.value = currentNotes ? `${currentNotes} | UTR: ${cleanUtr}` : `UTR: ${cleanUtr}`;
+            }
 
             try {
               await fetch(WEB_APP_URL, {
                 method: "POST",
                 headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: JSON.stringify({ action: "markCustomerPaid", orderId: activeSubmittedOrderId })
+                body: JSON.stringify({
+                  action: "markCustomerPaid",
+                  orderId: activeSubmittedOrderId,
+                  notes: `UTR: ${cleanUtr}`,
+                  utr: cleanUtr
+                })
               });
             } catch (payNotifyErr) {
               console.warn("Could not notify server of payment tap:", payNotifyErr);
@@ -3681,7 +3728,7 @@ function initCardCalculator() {
               btnAckTrackOrder.href = `track-order.html?orderId=${encodeURIComponent(activeSubmittedOrderId)}&phone=${encodeURIComponent(cleanPhone)}`;
             }
             if (btnAckWa) {
-              btnAckWa.href = `https://wa.me/918840035249?text=${encodeURIComponent("Namaste, I have paid the advance amount of ₹" + resData.advanceAmount + " for Order " + activeSubmittedOrderId + ". Please verify.")}`;
+              btnAckWa.href = `https://wa.me/918840035249?text=${encodeURIComponent("Namaste, I have paid the advance amount of ₹" + resData.advanceAmount + " for Order " + activeSubmittedOrderId + " with UTR: " + cleanUtr + ". Please verify.")}`;
             }
           };
         }
@@ -3717,11 +3764,11 @@ function initCardCalculator() {
     } finally {
       if (btnAdvancePay) btnAdvancePay.disabled = false;
       if (btnAdvancePaySpinner) btnAdvancePaySpinner.style.display = "none";
-      if (btnAdvancePayText) btnAdvancePayText.textContent = "Advance Pay Karo (50%)";
+      if (btnAdvancePayText) btnAdvancePayText.textContent = "Pay 50% Advance via UPI";
 
       if (btnSkipPay) btnSkipPay.disabled = false;
       if (btnSkipPaySpinner) btnSkipPaySpinner.style.display = "none";
-      if (btnSkipPayText) btnSkipPayText.textContent = "Skip Payment, Order Place Karo";
+      if (btnSkipPayText) btnSkipPayText.textContent = "Place Order & Pay Later";
     }
   }
 

@@ -8080,8 +8080,22 @@ body.cv-modal-open {
 .checkout-two-buttons {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   margin-top: 18px;
+}
+
+.checkout-option-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.checkout-option-hint {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-dim, #8c877b);
+  line-height: 1.35;
+  padding: 0 4px;
 }
 
 .btn-advance-pay {
@@ -8357,8 +8371,14 @@ body.cv-modal-open {
 .payment-actions-wrap {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   margin-top: 6px;
+}
+
+.utr-field-wrap {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
 }
 
 .btn-success {

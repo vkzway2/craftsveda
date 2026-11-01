@@ -3721,19 +3721,24 @@
 
           <!-- Checkout 2 Action Buttons -->
           <div class="modal-actions-group checkout-two-buttons">
-            <!-- Button 1: Advance Pay Karo -->
-            <button type="button" class="btn btn-gold btn-block btn-lg btn-advance-pay" id="btnAdvancePay">
-              <span id="btnAdvancePaySpinner" class="btn-spinner" style="display:none;"></span>
-              <span class="btn-advance-icon">⚡</span>
-              <span id="btnAdvancePayText">Advance Pay Karo (50%)</span>
-            </button>
+            <!-- Option 1: Advance Pay -->
+            <div class="checkout-option-block">
+              <button type="button" class="btn btn-gold btn-block btn-lg btn-advance-pay" id="btnAdvancePay">
+                <span id="btnAdvancePaySpinner" class="btn-spinner" style="display:none;"></span>
+                <span class="btn-advance-icon">⚡</span>
+                <span id="btnAdvancePayText">Pay 50% Advance via UPI</span>
+              </button>
+              <div class="checkout-option-hint advance-pay-hint">Pay 50% advance now via UPI for instant confirmation and priority production.</div>
+            </div>
 
-            <!-- Button 2: Skip Payment, Order Place Karo -->
-            <button type="button" class="btn btn-outline-gold btn-block btn-skip-pay" id="btnSkipPay">
-              <span id="btnSkipPaySpinner" class="btn-spinner" style="display:none;"></span>
-              <span id="btnSkipPayText">Skip Payment, Order Place Karo</span>
-            </button>
-            <div class="skip-pay-hint">Sales team aapse phone par baat karegi • Order Pending rahega</div>
+            <!-- Option 2: Place Order & Pay Later -->
+            <div class="checkout-option-block">
+              <button type="button" class="btn btn-outline-gold btn-block btn-skip-pay" id="btnSkipPay">
+                <span id="btnSkipPaySpinner" class="btn-spinner" style="display:none;"></span>
+                <span id="btnSkipPayText">Place Order & Pay Later</span>
+              </button>
+              <div class="checkout-option-hint skip-pay-hint">Place order without advance • Sales team will call you to confirm before printing.</div>
+            </div>
 
             <a href="https://wa.me/918840035249" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-block" id="modalDirectWaBtn">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -3798,13 +3803,30 @@
             </div>
           </div>
 
-          <!-- Single-tap "Maine Pay Kar Diya" button -->
+          <!-- Required UTR / Transaction ID Input & "Maine Pay Kar Diya" button -->
           <div class="payment-actions-wrap">
+            <div class="cv-modal-field utr-field-wrap">
+              <label for="paymentUtrInput" class="cv-field-label">Bank UTR / UPI Transaction ID (12 Digits) <span style="color:#ef4444;">*</span></label>
+              <input
+                type="text"
+                id="paymentUtrInput"
+                name="utr"
+                class="cv-field-input"
+                maxlength="12"
+                inputmode="numeric"
+                pattern="[0-9]{12}"
+                placeholder="Enter 12-digit UTR (e.g. 4289XXXXXXXX)"
+                required
+                autocomplete="off"
+              />
+              <div id="paymentUtrError" class="cv-field-error" style="display:none; color:#ef4444; font-size:0.8rem; margin-top:4px;">Please enter a valid 12-digit numeric UTR / Transaction ID.</div>
+              <div class="payment-utr-hint" style="font-size:0.75rem; color:var(--text-dim, #8c877b); margin-top:4px;">Payment complete karne ke baad apne UPI app (GPay/PhonePe/Paytm) se 12-digit UTR / UPI Ref number yahan darj karein.</div>
+            </div>
+
             <button type="button" class="btn btn-success btn-block btn-lg" id="btnMainePayKarDiya">
               <span id="btnMainePaySpinner" class="btn-spinner" style="display:none;"></span>
               <span id="btnMainePayText">Maine Pay Kar Diya ✓</span>
             </button>
-            <div class="payment-no-utr-hint">Sirf ek tap karein — koi UTR ya screenshot upload karne ki zaroorat nahi hai.</div>
           </div>
         </div>
 
