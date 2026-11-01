@@ -1146,6 +1146,10 @@ function initHeroGSAPReveal() {
     const duration = 1400; // ms
     const startTime = performance.now();
 
+    if (statGsm) statGsm.textContent = "0";
+    if (statPantone) statPantone.textContent = "0";
+    if (statRush) statRush.textContent = "0-0";
+
     function easeOutExpo(t) {
       return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
     }
