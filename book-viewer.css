@@ -511,11 +511,11 @@ body.book-viewer-body {
   display: flex;
   align-items: stretch;
   justify-content: center;
-  width: min(92vw, 980px);
-  aspect-ratio: var(--spread-aspect-ratio);
+  width: var(--handbook-width, min(92vw, 980px));
+  aspect-ratio: var(--active-aspect-ratio, var(--spread-aspect-ratio, 1.414));
   max-height: calc(82vh - 210px);
   transform-style: preserve-3d;
-  transition: transform 0.3s ease, width 0.3s ease;
+  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), aspect-ratio 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   transform: scale(var(--zoom-level, 1));
 }
 
@@ -589,7 +589,7 @@ body.book-viewer-body {
   box-shadow: 4px 0 8px rgba(0, 0, 0, 0.4);
 }
 
-/* Open Handbook 2-Page Spread */
+/* Open Handbook Spread */
 .book-spread {
   position: relative;
   width: 100%;
@@ -600,58 +600,83 @@ body.book-viewer-body {
   overflow: visible;
   z-index: 5;
   background: var(--page-paper-bg);
-  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
 }
 
-/* --- CLOSED BOOK MODES (Front Cover Page 1 & Back Cover Page N) --- */
-.handbook-assembly[data-spread-mode="closed-front"] .book-spread {
-  /* Shift spread right so Page 1 is centered in the viewport */
-  transform: translateX(-25%);
+/* --- CLOSED FRONT COVER (PAGE 1) --- */
+.handbook-assembly[data-spread-mode="closed-front"] {
+  width: var(--single-width, min(48vw, 490px)) !important;
+  aspect-ratio: var(--single-aspect-ratio, 0.707) !important;
 }
 
 .handbook-assembly[data-spread-mode="closed-front"] .page-left {
-  visibility: hidden !important;
-  pointer-events: none;
-  opacity: 0;
+  display: none !important;
+}
+
+.handbook-assembly[data-spread-mode="closed-front"] .center-gutter-hardware {
+  display: none !important;
 }
 
 .handbook-assembly[data-spread-mode="closed-front"] .stack-left {
-  display: none;
+  display: none !important;
 }
 
-.handbook-assembly[data-spread-mode="closed-front"] .gutter-left {
-  display: none;
+.handbook-assembly[data-spread-mode="closed-front"] .stack-right {
+  display: block;
+  left: 100%;
 }
 
-.handbook-assembly[data-spread-mode="closed-front"] .hardcover-back-board {
-  opacity: 0;
+.handbook-assembly[data-spread-mode="closed-front"] .page-right {
+  border-radius: 4px;
+  border-left: 2px solid rgba(0, 0, 0, 0.2);
+  box-shadow: -4px 0 10px rgba(0, 0, 0, 0.35), inset 0 0 20px rgba(0, 0, 0, 0.05);
 }
 
+.handbook-assembly[data-spread-mode="closed-front"] .hardcover-back-board,
 .handbook-assembly[data-spread-mode="closed-front"] .hardcover-spine {
-  transform: translateX(-100%);
+  display: none !important;
 }
 
-.handbook-assembly[data-spread-mode="closed-back"] .book-spread {
-  /* Shift spread left so Back Cover is centered in the viewport */
-  transform: translateX(25%);
+.handbook-assembly[data-spread-mode="closed-front"] .hardcover-front-board {
+  border-radius: 8px;
+}
+
+/* --- CLOSED BACK COVER (PAGE N) --- */
+.handbook-assembly[data-spread-mode="closed-back"] {
+  width: var(--single-width, min(48vw, 490px)) !important;
+  aspect-ratio: var(--single-aspect-ratio, 0.707) !important;
 }
 
 .handbook-assembly[data-spread-mode="closed-back"] .page-right {
-  visibility: hidden !important;
-  pointer-events: none;
-  opacity: 0;
+  display: none !important;
+}
+
+.handbook-assembly[data-spread-mode="closed-back"] .center-gutter-hardware {
+  display: none !important;
 }
 
 .handbook-assembly[data-spread-mode="closed-back"] .stack-right {
-  display: none;
+  display: none !important;
 }
 
-.handbook-assembly[data-spread-mode="closed-back"] .gutter-right {
-  display: none;
+.handbook-assembly[data-spread-mode="closed-back"] .stack-left {
+  display: block;
+  right: 100%;
 }
 
-.handbook-assembly[data-spread-mode="closed-back"] .hardcover-front-board {
-  opacity: 0;
+.handbook-assembly[data-spread-mode="closed-back"] .page-left {
+  border-radius: 4px;
+  border-right: 2px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.35), inset 0 0 20px rgba(0, 0, 0, 0.05);
+}
+
+.handbook-assembly[data-spread-mode="closed-back"] .hardcover-front-board,
+.handbook-assembly[data-spread-mode="closed-back"] .hardcover-spine {
+  display: none !important;
+}
+
+.handbook-assembly[data-spread-mode="closed-back"] .hardcover-back-board {
+  border-radius: 8px;
 }
 
 /* Left & Right Pages */

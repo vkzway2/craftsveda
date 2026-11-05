@@ -140,10 +140,10 @@
     btnCloseToc: document.getElementById('btnCloseToc')
   };
 
-  // --- COMPUTE SPREAD ASPECT RATIO ---
-  function computeSpreadRatio() {
-    if (state.sizePreset === 'auto' && state.autoDetectedRatio) {
-      return state.autoDetectedRatio;
+  // --- COMPUTE ASPECT RATIOS (Single Page & 2-Page Spread) ---
+  function computeSingleRatio() {
+    if (state.sizePreset === 'auto' && state.autoDetectedSingleRatio) {
+      return state.autoDetectedSingleRatio;
     }
 
     const dims = PRESET_DIMENSIONS[state.sizePreset] || PRESET_DIMENSIONS.a4;
@@ -157,18 +157,41 @@
       singleH = Math.min(dims.w, dims.h);
     }
 
-    // Two pages open side-by-side
-    return (2 * singleW) / singleH;
+    return singleW / singleH;
+  }
+
+  function computeSpreadRatio() {
+    if (state.sizePreset === 'auto' && state.autoDetectedRatio) {
+      return state.autoDetectedRatio;
+    }
+
+    const singleRatio = computeSingleRatio();
+    return 2 * singleRatio;
   }
 
   function applyGeometry() {
-    const ratio = computeSpreadRatio();
-    el.assembly.style.setProperty('--spread-aspect-ratio', ratio.toFixed(3));
+    const singleRatio = computeSingleRatio();
+    const spreadRatio = computeSpreadRatio();
 
-    if (ratio > 2.2) {
-      el.assembly.style.maxWidth = '1120px';
+    el.assembly.style.setProperty('--single-aspect-ratio', singleRatio.toFixed(3));
+    el.assembly.style.setProperty('--spread-aspect-ratio', spreadRatio.toFixed(3));
+
+    if (state.orientation === 'landscape') {
+      el.assembly.style.setProperty('--spread-width', 'min(94vw, 1120px)');
+      el.assembly.style.setProperty('--single-width', 'min(58vw, 620px)');
     } else {
-      el.assembly.style.maxWidth = '980px';
+      el.assembly.style.setProperty('--spread-width', 'min(92vw, 980px)');
+      el.assembly.style.setProperty('--single-width', 'min(48vw, 490px)');
+    }
+
+    // Refresh active mode geometry
+    const currentSpreadObj = state.spreads[state.currentSpread];
+    if (currentSpreadObj && (currentSpreadObj.mode === 'closed-front' || currentSpreadObj.mode === 'closed-back')) {
+      el.assembly.style.setProperty('--active-aspect-ratio', singleRatio.toFixed(3));
+      el.assembly.style.setProperty('--handbook-width', 'var(--single-width)');
+    } else {
+      el.assembly.style.setProperty('--active-aspect-ratio', spreadRatio.toFixed(3));
+      el.assembly.style.setProperty('--handbook-width', 'var(--spread-width)');
     }
   }
 
@@ -404,6 +427,17 @@
     // Set layout mode attribute for CSS positioning (closed-front, open, closed-back)
     el.assembly.setAttribute('data-spread-mode', currentSpreadObj.mode);
 
+    // Apply single vs spread aspect ratio dynamically
+    const singleRatio = computeSingleRatio();
+    const spreadRatio = computeSpreadRatio();
+    if (currentSpreadObj.mode === 'closed-front' || currentSpreadObj.mode === 'closed-back') {
+      el.assembly.style.setProperty('--active-aspect-ratio', singleRatio.toFixed(3));
+      el.assembly.style.setProperty('--handbook-width', 'var(--single-width)');
+    } else {
+      el.assembly.style.setProperty('--active-aspect-ratio', spreadRatio.toFixed(3));
+      el.assembly.style.setProperty('--handbook-width', 'var(--spread-width)');
+    }
+
     el.leftArt.innerHTML = '';
     el.rightArt.innerHTML = '';
 
@@ -499,6 +533,7 @@
       const pageWidth = vp.width;
       const pageHeight = vp.height;
 
+      state.autoDetectedSingleRatio = pageWidth / pageHeight;
       state.autoDetectedRatio = (2 * pageWidth) / pageHeight;
 
       if (pageWidth > pageHeight) {
