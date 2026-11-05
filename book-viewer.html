@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D PageFlip Book & Handbook Viewer | CraftsVeda™ Mumbai</title>
-  <meta name="description" content="Realistic 3D PageFlip handbook and book previewer with auto aspect ratio, Center Pin, Hard Case Silai, and Back-to-Back Pasting Layflat binding simulation. 100% in-browser private rendering.">
+  <title>3D PageFlip Book Viewer | CraftsVeda™ Mumbai</title>
+  <meta name="description" content="Interactive FlippingBook-style 3D PageFlip book previewer with realistic paper physics, audio page flips, thumbnails drawer, full zoom, and Center Pin / Silai / Layflat binding simulation.">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="book-viewer.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +15,7 @@
 </head>
 <body class="book-viewer-body">
 
-  <!-- TOP MINIMAL BAR: Phone, Logo, Email ONLY (Strict User Requirement) -->
+  <!-- TOP MINIMAL BAR: Phone, Brand Logo, Email ONLY -->
   <header class="top-minimal-bar">
     <div class="top-bar-inner">
       <a href="tel:+918840035249" class="top-contact-item">
@@ -25,7 +25,7 @@
 
       <a href="index.html" class="top-brand-logo">
         <span class="logo-txt">CraftsVeda<span class="gold-dot">.</span></span>
-        <span class="logo-sub">3D HANDBOOK VIEWER</span>
+        <span class="logo-sub">FLIPPINGBOOK 3D VIEWER</span>
       </a>
 
       <a href="mailto:vkzway2@gmail.com" class="top-contact-item">
@@ -35,165 +35,237 @@
     </div>
   </header>
 
-  <!-- MAIN WORKSPACE -->
-  <main class="viewer-workspace">
+  <!-- FLIPPINGBOOK-STYLE MAIN STAGE & MODAL CONTAINER -->
+  <main class="viewer-main-canvas" id="fullscreenContainer">
 
-    <!-- COMPACT TOP CONTROLS: Upload / Ratio & Orientation / Binding Finishing -->
-    <div class="control-panel-strip">
-      <div class="panel-section upload-section">
-        <input type="file" id="pdfFileInput" accept="application/pdf,image/png,image/jpeg,image/webp" multiple style="display:none;">
-        <button type="button" class="btn-ctrl btn-upload" id="btnUploadTrigger">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          <span>Upload PDF / Images</span>
-        </button>
-        <button type="button" class="btn-ctrl btn-ghost" id="btnLoadA4Demo" title="Load sample 20-Page A4 Handbook">
-          <span>Demo 20-Page A4</span>
-        </button>
-        <span class="file-badge" id="fileInfoBadge">Sample Handbook Loaded</span>
-      </div>
-
-      <!-- RATIO & ORIENTATION SELECTOR (Auto, A4, A5, A3, 8.5x11, 9x11, Square) -->
-      <div class="panel-section size-section">
-        <div class="pill-group">
-          <label class="group-label">Size / Ratio:</label>
-          <select id="sizePresetSelect" class="styled-select">
-            <option value="auto">Auto (File Aspect Ratio)</option>
-            <option value="a4" selected>A4 (210 × 297 mm)</option>
-            <option value="a5">A5 (148 × 210 mm)</option>
-            <option value="a3">A3 (297 × 420 mm)</option>
-            <option value="letter">8.5" × 11" (Letter)</option>
-            <option value="album">9" × 11" (Photo Book)</option>
-            <option value="square">Square (8" × 8")</option>
-          </select>
-        </div>
-
-        <div class="pill-group">
-          <button type="button" class="btn-toggle active" id="btnPortrait" data-orient="portrait">Portrait</button>
-          <button type="button" class="btn-toggle" id="btnLandscape" data-orient="landscape">Landscape</button>
-        </div>
-      </div>
-
-      <!-- BINDING FINISHING SELECTOR (The 3 Specific Types) -->
-      <div class="panel-section binding-section">
-        <label class="group-label">Binding Finishing:</label>
-        <div class="binding-button-group">
-          <button type="button" class="btn-binding active" data-binding="center-pin">
-            <span class="b-icon">📌</span>
-            <span class="b-txt">Center Pin</span>
-            <span class="b-sub">Saddle Stitch (Pins)</span>
-          </button>
-          <button type="button" class="btn-binding" data-binding="hardcase-silai">
-            <span class="b-icon">🧵</span>
-            <span class="b-txt">Hard Case Silai</span>
-            <span class="b-sub">Section Sewn Hardcover</span>
-          </button>
-          <button type="button" class="btn-binding" data-binding="hardcase-layflat">
-            <span class="b-icon">📖</span>
-            <span class="b-txt">Back-to-Back Pasting</span>
-            <span class="b-sub">100% Flat (No Pin / Silai)</span>
-          </button>
-        </div>
-      </div>
+    <!-- AMBIENT SOFT BLUR BACKGROUND -->
+    <div class="ambient-backdrop">
+      <div class="ambient-glow glow-1"></div>
+      <div class="ambient-glow glow-2"></div>
     </div>
 
-    <!-- DRAG & DROP ZONE (Overlaid or clickable) -->
-    <div class="drag-drop-bar" id="dragDropZone">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="drop-icon"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/></svg>
-      <span>Drag & Drop your <strong>PDF</strong> or <strong>Images</strong> anywhere to preview instantly (100% Private, In-Browser)</span>
-    </div>
+    <!-- VIEWER WRAPPER WINDOW (FlippingBook Frame) -->
+    <div class="fb-modal-window">
+      
+      <!-- TOP INNER BAR: Title, Current Pages, File Upload & Controls -->
+      <div class="fb-top-bar">
+        <div class="fb-doc-meta">
+          <span class="fb-doc-title" id="fbDocTitle">CraftsVeda Master Handbook</span>
+          <span class="fb-page-counter" id="fbPageCounter">pages 1 - 2 of 20</span>
+        </div>
 
-    <!-- 3D BOOK STAGE -->
-    <div class="book-viewport-stage" id="bookStage">
+        <div class="fb-top-actions">
+          <input type="file" id="pdfFileInput" accept="application/pdf,image/png,image/jpeg,image/webp" multiple style="display:none;">
+          <button type="button" class="fb-pill-btn upload-trigger" id="btnUploadTrigger" title="Upload your PDF or Images">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-sm"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span>Upload PDF</span>
+          </button>
+          <button type="button" class="fb-pill-btn ghost" id="btnLoadA4Demo" title="Load sample 20-Page A4 Handbook">
+            <span>Demo A4</span>
+          </button>
 
-      <!-- Physical 3D Handbook Container -->
-      <div class="handbook-assembly" id="handbookAssembly" data-binding="center-pin" data-orientation="portrait">
+          <!-- Aspect Ratio & Size Dropdown -->
+          <div class="fb-select-pill">
+            <span class="select-label">Size:</span>
+            <select id="sizePresetSelect" class="fb-native-select">
+              <option value="auto">Auto (File Ratio)</option>
+              <option value="a4" selected>A4 (210×297)</option>
+              <option value="a5">A5 (148×210)</option>
+              <option value="a3">A3 (297×420)</option>
+              <option value="letter">8.5"×11" Letter</option>
+              <option value="album">9"×11" Album</option>
+              <option value="square">Square 8"×8"</option>
+            </select>
+          </div>
+
+          <!-- Orientation Toggle -->
+          <div class="fb-orientation-toggle">
+            <button type="button" class="btn-orient active" id="btnPortrait" data-orient="portrait" title="Portrait Mode">Portrait</button>
+            <button type="button" class="btn-orient" id="btnLandscape" data-orient="landscape" title="Landscape Mode">Landscape</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BINDING SELECTION STRIP (Directly above the book) -->
+      <div class="fb-binding-bar">
+        <span class="binding-bar-title">Book Finishing:</span>
+        <div class="binding-chips">
+          <button type="button" class="chip-binding active" data-binding="center-pin">
+            <span class="chip-dot"></span>
+            <strong>Center Pin</strong>
+            <small>(Saddle Stitch Staples)</small>
+          </button>
+          <button type="button" class="chip-binding" data-binding="hardcase-silai">
+            <span class="chip-dot"></span>
+            <strong>Hard Case Silai</strong>
+            <small>(Section Sewn Thread)</small>
+          </button>
+          <button type="button" class="chip-binding" data-binding="hardcase-layflat">
+            <span class="chip-dot"></span>
+            <strong>Back-to-Back Pasting</strong>
+            <small>(100% Flat • No Pin / Silai)</small>
+          </button>
+        </div>
+        <div class="drag-drop-hint" id="dragDropHint">
+          <span>💡 Or drag &amp; drop PDF anywhere to open instantly</span>
+        </div>
+      </div>
+
+      <!-- 3D BOOK STAGE WITH FLOATING SIDE ARROWS -->
+      <div class="fb-stage-viewport" id="fbStageViewport">
         
-        <!-- Outer Hardcover Spine & Boards (Visually active when Hard Case is chosen) -->
-        <div class="hardcover-chassis" id="hardcoverChassis">
-          <div class="hardcover-back-board"></div>
-          <div class="hardcover-spine"></div>
-          <div class="hardcover-front-board"></div>
-        </div>
+        <!-- Left Side Flip Arrow (Previous) -->
+        <button type="button" class="fb-side-arrow arrow-left" id="btnSidePrev" aria-label="Previous Page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 19 8 12 15 5"/></svg>
+        </button>
 
-        <!-- Left Page Stack (Simulates thickness of passed pages) -->
-        <div class="page-thickness-stack stack-left" id="stackLeft">
-          <div class="stack-edge-lines"></div>
-        </div>
+        <!-- Jump to First Page |< -->
+        <button type="button" class="fb-first-last-btn jump-first" id="btnJumpFirst" title="First Page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="5" x2="6" y2="19"/><polyline points="18 19 11 12 18 5"/></svg>
+        </button>
 
-        <!-- The Interactive 2-Page Spread -->
-        <div class="book-spread" id="bookSpread">
+        <!-- Physical 3D Handbook Container -->
+        <div class="handbook-assembly" id="handbookAssembly" data-binding="center-pin" data-orientation="portrait">
           
-          <!-- LEFT PAGE -->
-          <div class="book-page page-left" id="pageLeft">
-            <div class="page-sheet-content" id="leftSheetContent">
-              <div class="page-inner-art" id="leftInnerArt"></div>
-              <div class="page-corner-fold" title="Flip Previous"></div>
-            </div>
-            <div class="paper-gutter-shadow gutter-left"></div>
-            <span class="page-num-tag" id="leftPageNum">1</span>
+          <!-- Outer Hardcover Chassis (Silai & Layflat modes) -->
+          <div class="hardcover-chassis" id="hardcoverChassis">
+            <div class="hardcover-back-board"></div>
+            <div class="hardcover-spine"></div>
+            <div class="hardcover-front-board"></div>
           </div>
 
-          <!-- CENTER GUTTER / BINDING HARDWARE SIMULATION -->
-          <div class="center-gutter-hardware" id="gutterHardware">
-            <!-- Saddle Stitch Staples (Center Pin) -->
-            <div class="staple-wire staple-top"></div>
-            <div class="staple-wire staple-bottom"></div>
+          <!-- Left Page Stack (Thickness of passed pages) -->
+          <div class="page-thickness-stack stack-left" id="stackLeft"></div>
 
-            <!-- Section Sewing Thread Stitches (Silai) -->
-            <div class="thread-stitch-line">
-              <span class="stitch-loop"></span>
-              <span class="stitch-loop"></span>
-              <span class="stitch-loop"></span>
-              <span class="stitch-loop"></span>
-              <span class="stitch-loop"></span>
+          <!-- Open 2-Page Spread -->
+          <div class="book-spread" id="bookSpread">
+            
+            <!-- LEFT PAGE -->
+            <div class="book-page page-left" id="pageLeft">
+              <div class="page-sheet-content" id="leftSheetContent">
+                <div class="page-inner-art" id="leftInnerArt"></div>
+                <div class="page-corner-fold" title="Turn Left"></div>
+              </div>
+              <div class="paper-gutter-shadow gutter-left"></div>
+              <span class="page-num-tag" id="leftPageNum">1</span>
             </div>
 
-            <!-- Layflat Back-to-Back Pasting Seamless Joint Indicator -->
-            <div class="layflat-seam">
-              <span class="layflat-badge">180° Seamless Layflat</span>
+            <!-- CENTER GUTTER / BINDING HARDWARE SIMULATION -->
+            <div class="center-gutter-hardware" id="gutterHardware">
+              <!-- Center Pin Staples -->
+              <div class="staple-wire staple-top"></div>
+              <div class="staple-wire staple-bottom"></div>
+
+              <!-- Section Sewing Thread Stitches -->
+              <div class="thread-stitch-line">
+                <span class="stitch-loop"></span>
+                <span class="stitch-loop"></span>
+                <span class="stitch-loop"></span>
+                <span class="stitch-loop"></span>
+                <span class="stitch-loop"></span>
+              </div>
+
+              <!-- Layflat Back-to-Back Pasting Indicator -->
+              <div class="layflat-seam">
+                <span class="layflat-badge">180° Seamless Layflat</span>
+              </div>
             </div>
+
+            <!-- RIGHT PAGE -->
+            <div class="book-page page-right" id="pageRight">
+              <div class="page-sheet-content" id="rightSheetContent">
+                <div class="page-inner-art" id="rightInnerArt"></div>
+                <div class="page-corner-fold" title="Turn Right"></div>
+              </div>
+              <div class="paper-gutter-shadow gutter-right"></div>
+              <span class="page-num-tag" id="rightPageNum">2</span>
+            </div>
+
           </div>
 
-          <!-- RIGHT PAGE -->
-          <div class="book-page page-right" id="pageRight">
-            <div class="page-sheet-content" id="rightSheetContent">
-              <div class="page-inner-art" id="rightInnerArt"></div>
-              <div class="page-corner-fold" title="Flip Next"></div>
-            </div>
-            <div class="paper-gutter-shadow gutter-right"></div>
-            <span class="page-num-tag" id="rightPageNum">2</span>
-          </div>
+          <!-- Right Page Stack (Thickness of remaining pages) -->
+          <div class="page-thickness-stack stack-right" id="stackRight"></div>
 
+          <!-- Drop shadow on table -->
+          <div class="handbook-shadow"></div>
         </div>
 
-        <!-- Right Page Stack (Simulates thickness of upcoming pages) -->
-        <div class="page-thickness-stack stack-right" id="stackRight">
-          <div class="stack-edge-lines"></div>
+        <!-- Jump to Last Page >| -->
+        <button type="button" class="fb-first-last-btn jump-last" id="btnJumpLast" title="Last Page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="5" x2="18" y2="19"/><polyline points="6 5 13 12 6 19"/></svg>
+        </button>
+
+        <!-- Right Side Flip Arrow (Next) -->
+        <button type="button" class="fb-side-arrow arrow-right" id="btnSideNext" aria-label="Next Page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 5 16 12 9 19"/></svg>
+        </button>
+
+      </div>
+
+      <!-- BOTTOM FLIPPINGBOOK-STYLE TOOLBAR -->
+      <div class="fb-bottom-toolbar">
+        <div class="toolbar-left-group">
+          <!-- Table of contents -->
+          <button type="button" class="tool-btn" id="btnToggleToc" title="Table of Contents">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          </button>
+          <!-- Thumbnails Drawer -->
+          <button type="button" class="tool-btn" id="btnToggleThumbnails" title="Page Thumbnails">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          </button>
+          <!-- Auto-Play Slideshow -->
+          <button type="button" class="tool-btn" id="btnAutoPlay" title="Auto Page-Turn Slideshow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="autoPlayIcon"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </button>
         </div>
 
-        <!-- Realistic handbook table drop shadow -->
-        <div class="handbook-shadow"></div>
+        <!-- Center Slider Scrubber -->
+        <div class="toolbar-center-scrubber">
+          <input type="range" id="fbPageScrubber" min="1" max="10" value="1" class="fb-scrub-input">
+        </div>
+
+        <div class="toolbar-right-group">
+          <!-- Audio Page-Turn Sound Effect Toggle -->
+          <button type="button" class="tool-btn" id="btnToggleSound" title="Page Flip Sound (On/Off)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="soundIcon"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+          </button>
+          <!-- Zoom In / Reset -->
+          <button type="button" class="tool-btn" id="btnToggleZoom" title="Zoom In / Fit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="zoomIcon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+          </button>
+          <!-- Fullscreen Toggle -->
+          <button type="button" class="tool-btn" id="btnToggleFullscreen" title="Fullscreen">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="fsIcon"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+          </button>
+          <!-- Watermark / Brand Badge -->
+          <div class="fb-watermark-tag">
+            <span>CraftsVeda™ Atelier</span>
+          </div>
+        </div>
       </div>
 
-    </div>
-
-    <!-- BOTTOM READER NAVIGATION STRIP -->
-    <div class="reader-nav-strip">
-      <button type="button" class="nav-arrow-btn" id="btnPrevPage" aria-label="Previous Page">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-        <span>Prev</span>
-      </button>
-
-      <div class="page-scrubber-wrap">
-        <span class="scrub-label" id="scrubberText">Spread 1-2 of 20</span>
-        <input type="range" id="pageScrubber" min="1" max="10" value="1" class="scrub-range">
-        <span class="ratio-indicator" id="ratioIndicatorBadge">A4 Portrait (Spread 1.41 : 1)</span>
+      <!-- SLIDE-UP THUMBNAIL DRAWER -->
+      <div class="fb-thumbnails-drawer" id="thumbnailsDrawer">
+        <div class="drawer-header">
+          <span>All Pages Overview</span>
+          <button type="button" class="drawer-close" id="btnCloseThumbnails">&times;</button>
+        </div>
+        <div class="drawer-grid" id="thumbnailsGrid">
+          <!-- Dynamically populated page cards -->
+        </div>
       </div>
 
-      <button type="button" class="nav-arrow-btn" id="btnNextPage" aria-label="Next Page">
-        <span>Next</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
+      <!-- SLIDE-OUT TABLE OF CONTENTS DRAWER -->
+      <div class="fb-toc-drawer" id="tocDrawer">
+        <div class="drawer-header">
+          <span>Table of Contents</span>
+          <button type="button" class="drawer-close" id="btnCloseToc">&times;</button>
+        </div>
+        <div class="toc-list" id="tocList">
+          <!-- Dynamically populated TOC items -->
+        </div>
+      </div>
+
     </div>
 
   </main>
@@ -203,10 +275,10 @@
     <svg viewBox="0 0 32 32" class="wa-icon" fill="currentColor">
       <path d="M16 2a13.9 13.9 0 0 0-12 21L2 30l7.2-1.9A13.9 13.9 0 1 0 16 2zm0 25.5a11.5 11.5 0 0 1-5.9-1.6l-.4-.2-4.3 1.1 1.2-4.2-.3-.5A11.5 11.5 0 1 1 16 27.5zm6.3-8.6c-.3-.2-2-.9-2.3-1s-.6-.2-.8.2-.9 1-1.1 1.2-.4.2-.7 0a9.2 9.2 0 0 1-2.7-1.7 10.2 10.2 0 0 1-1.9-2.3c-.2-.3 0-.5.1-.7s.3-.4.5-.6.2-.3.3-.5a.6.6 0 0 0 0-.6c-.1-.2-.8-2-1.1-2.7s-.6-.6-.8-.6h-.7a1.4 1.4 0 0 0-1 .5 4.3 4.3 0 0 0-1.3 3.2 7.5 7.5 0 0 0 1.6 4 17.2 17.2 0 0 0 6.6 5.8c2.4 1 2.9.8 3.5.7a3 3 0 0 0 2-1.4 2.5 2.5 0 0 0 .2-1.4c-.1-.3-.4-.4-.7-.6z"/>
     </svg>
-    <span class="wa-tooltip">Order & Print on WhatsApp</span>
+    <span class="wa-tooltip">Order &amp; Print on WhatsApp</span>
   </a>
 
-  <!-- ORIGINAL CRAFTSVEDA FOOTER (PRESERVED AS REQUESTED) -->
+  <!-- ORIGINAL CRAFTSVEDA FOOTER (PRESERVED INTACT) -->
   <footer class="site-footer">
     <div class="container footer-content">
       <div class="footer-brand">
@@ -224,7 +296,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
             vkzway2@gmail.com
           </a>
-          <span class="footer-addr">Lower Parel & Fort Atelier, Mumbai, Maharashtra 400013</span>
+          <span class="footer-addr">Lower Parel &amp; Fort Atelier, Mumbai, Maharashtra 400013</span>
         </div>
       </div>
       <div class="footer-links">
@@ -232,28 +304,28 @@
           <h4>Atelier Crafts</h4>
           <a href="luxury-business-cards.html">Luxury Business Cards</a>
           <a href="book-viewer.html">3D Handbook Viewer</a>
-          <a href="luxury-business-cards.html#pricing-matrix">Price Matrix & Calculator</a>
+          <a href="luxury-business-cards.html#pricing-matrix">Price Matrix &amp; Calculator</a>
           <a href="track.html">Live Order Tracking</a>
         </div>
         <div class="footer-col">
           <h4>Binding Formats</h4>
-          <a href="book-viewer.html" onclick="window.selectBindingPreset && window.selectBindingPreset('center-pin')">Center Pin (Saddle Stitch)</a>
-          <a href="book-viewer.html" onclick="window.selectBindingPreset && window.selectBindingPreset('hardcase-silai')">Hard Case Section Silai</a>
-          <a href="book-viewer.html" onclick="window.selectBindingPreset && window.selectBindingPreset('hardcase-layflat')">Back-to-Back Pasting Layflat</a>
+          <a href="book-viewer.html" onclick="window.selectBindingPreset &amp;&amp; window.selectBindingPreset('center-pin')">Center Pin (Saddle Stitch)</a>
+          <a href="book-viewer.html" onclick="window.selectBindingPreset &amp;&amp; window.selectBindingPreset('hardcase-silai')">Hard Case Section Silai</a>
+          <a href="book-viewer.html" onclick="window.selectBindingPreset &amp;&amp; window.selectBindingPreset('hardcase-layflat')">Back-to-Back Pasting Layflat</a>
           <a href="https://wa.me/918840035249?text=Custom%20Book%20Binding%20Quote" target="_blank" rel="noopener">Custom Atelier Quote</a>
         </div>
         <div class="footer-col">
           <h4>Production Standards</h4>
           <span>• Zero Server Upload (Client-Side Rendering)</span>
           <span>• A3, A4, A5, 9x11, 8.5x11 Presets</span>
-          <span>• Portrait & Landscape 2:3 / 4:1 Spreads</span>
+          <span>• Portrait &amp; Landscape 2:3 / 4:1 Spreads</span>
           <span>• FSC Certified European Stocks</span>
         </div>
       </div>
     </div>
     <div class="footer-bottom">
       <div class="container footer-bottom-inner">
-        <p>&copy; 2026 CraftsVeda Atelier Mumbai. All rights reserved. Master Printing & Bookbinding Guild.</p>
+        <p>&copy; 2026 CraftsVeda Atelier Mumbai. All rights reserved. Master Printing &amp; Bookbinding Guild.</p>
         <p class="footer-note">Handcrafted with precision for brand directors, architects, and designers.</p>
       </div>
     </div>

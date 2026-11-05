@@ -1,35 +1,33 @@
 /* ==========================================================================
-   CraftsVeda™ 3D PageFlip Handbook Viewer Styles
-   Supports: A4, A5, A3, 8.5x11", 9x11", Square (Portrait & Landscape)
-   Dynamic Spread Ratios (e.g., 1.41:1 portrait spread, 2.83:1 landscape spread)
-   Realistic Hand Book Physics: Page stack thickness, shadow gradients, 
-   Center Pin staples, Section Silai thread, and Back-to-Back Layflat.
+   CraftsVeda™ FlippingBook-Style 3D PageFlip Viewer
+   Aesthetic: Premium Editorial Glass & Velvet Backdrop (Inspired by FlippingBook)
+   Features:
+     - Ambient soft-focus background
+     - Minimal top title & page indicator
+     - 3D open spread with realistic page stacks
+     - Floating left (<) and right (>) page-turn arrows
+     - Jump to first (|<) and last (>|) controls
+     - Center Pin staples / Section Silai thread / 180° Layflat Pasting
+     - Bottom toolbar (TOC, Thumbnails, Autoplay, Scrubber, Sound, Zoom, Fullscreen)
+     - Slide-up thumbnails drawer & Slide-out TOC
    ========================================================================== */
 
 :root {
-  --handbook-bg: #0d0f12;
-  --panel-bg: #14171d;
-  --panel-border: rgba(212, 175, 55, 0.2);
-  --gold-accent: #d4af37;
-  --gold-glow: rgba(212, 175, 55, 0.35);
+  --fb-accent: #d4af37;
+  --fb-accent-glow: rgba(212, 175, 55, 0.4);
+  --fb-window-bg: rgba(20, 24, 33, 0.88);
+  --fb-bar-bg: rgba(15, 18, 25, 0.95);
+  --fb-border: rgba(255, 255, 255, 0.1);
   --page-paper-bg: #fdfbf7;
-  --paper-grain: #f5f0e6;
-  --page-border: #e3ded5;
-  --gutter-shadow-color: rgba(0, 0, 0, 0.35);
-  
-  /* Dynamic spread aspect ratio: width / height (defaults to A4 Portrait spread: 210*2 / 297 = 1.414) */
-  --spread-aspect-ratio: 1.414;
-  --spread-max-width: 960px;
-  --spread-max-height: 680px;
-
-  /* Dynamic stack thickness in px */
+  --spread-aspect-ratio: 1.414; /* A4 Portrait open spread: 210*2 / 297 */
   --stack-l-depth: 4px;
   --stack-r-depth: 14px;
+  --zoom-level: 1;
 }
 
 body.book-viewer-body {
-  background: radial-gradient(circle at 50% 20%, #1a1e27 0%, #0d0f12 70%);
-  color: #f0f2f5;
+  background: #0b0d13;
+  color: #f1f5f9;
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   margin: 0;
   padding: 0;
@@ -43,17 +41,17 @@ body.book-viewer-body {
    1. TOP MINIMAL BAR: Phone, Logo, Email ONLY
    ========================================================================== */
 .top-minimal-bar {
-  background: rgba(13, 15, 18, 0.95);
+  background: rgba(11, 13, 19, 0.96);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(212, 175, 55, 0.18);
-  padding: 12px 24px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  padding: 10px 24px;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
 }
 
 .top-bar-inner {
-  max-width: 1320px;
+  max-width: 1400px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -61,10 +59,10 @@ body.book-viewer-body {
 }
 
 .top-contact-item {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #d1d5db;
+  color: #cbd5e1;
   text-decoration: none;
   font-size: 0.88rem;
   font-weight: 500;
@@ -72,13 +70,13 @@ body.book-viewer-body {
 }
 
 .top-contact-item:hover {
-  color: var(--gold-accent);
+  color: var(--fb-accent);
 }
 
 .top-icon {
   width: 16px;
   height: 16px;
-  color: var(--gold-accent);
+  color: var(--fb-accent);
 }
 
 .top-brand-logo {
@@ -90,286 +88,441 @@ body.book-viewer-body {
 
 .top-brand-logo .logo-txt {
   font-family: 'Cinzel', serif;
-  font-size: 1.35rem;
+  font-size: 1.3rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   color: #fff;
 }
 
 .top-brand-logo .logo-sub {
-  font-size: 0.65rem;
-  letter-spacing: 0.2em;
-  color: var(--gold-accent);
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  color: var(--fb-accent);
   text-transform: uppercase;
   margin-top: -2px;
 }
 
 .gold-dot {
-  color: var(--gold-accent);
+  color: var(--fb-accent);
 }
 
 /* ==========================================================================
-   2. MAIN WORKSPACE & CONTROL TOOLBAR
+   2. FLIPPINGBOOK MAIN STAGE & AMBIENT CANVAS
    ========================================================================== */
-.viewer-workspace {
+.viewer-main-canvas {
   flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 20px 24px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Ambient Soft Focus Backdrop (matches sunset lavender blur from FlippingBook screenshot) */
+.ambient-backdrop {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 15%, #2a354c 0%, #151a26 50%, #0b0d13 100%);
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.ambient-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+.glow-1 {
+  width: 600px;
+  height: 600px;
+  background: #7c8ba1;
+  top: -100px;
+  left: 15%;
+}
+
+.glow-2 {
+  width: 500px;
+  height: 500px;
+  background: #b59f77;
+  bottom: -150px;
+  right: 15%;
+}
+
+/* FlippingBook Modal Window Frame */
+.fb-modal-window {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 1360px;
+  background: var(--fb-window-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--fb-border);
+  border-radius: 14px;
+  box-shadow: 0 25px 65px rgba(0, 0, 0, 0.65), 0 0 1px rgba(255, 255, 255, 0.2);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 16px 20px 24px;
-  max-width: 1400px;
-  width: 100%;
-  margin: 0 auto;
-  box-sizing: border-box;
+  overflow: hidden;
 }
 
-/* Control Panel Strip */
-.control-panel-strip {
-  width: 100%;
-  background: rgba(20, 23, 29, 0.85);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 12px 18px;
+/* Fullscreen mode override */
+.viewer-main-canvas:fullscreen .fb-modal-window,
+.viewer-main-canvas:-webkit-full-screen .fb-modal-window {
+  max-width: 100vw;
+  height: 100vh;
+  border-radius: 0;
+  border: none;
+}
+
+/* ==========================================================================
+   3. TOP INNER BAR: Title, Page Counter & File Controls
+   ========================================================================== */
+.fb-top-bar {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  padding: 12px 20px;
+  background: var(--fb-bar-bg);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   gap: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-  margin-bottom: 12px;
+  flex-wrap: wrap;
 }
 
-.panel-section {
+.fb-doc-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.fb-doc-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.04em;
+}
+
+.fb-page-counter {
+  font-size: 0.82rem;
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-weight: 500;
+}
+
+.fb-top-actions {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
 }
 
-.group-label {
-  font-size: 0.78rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #9ca3af;
-}
-
-/* Button & Select styling */
-.btn-ctrl {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 16px;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
-  outline: none;
-}
-
-.btn-upload {
-  background: linear-gradient(135deg, #d4af37 0%, #b89728 100%);
-  color: #0d0f12;
-  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.3);
-}
-
-.btn-upload:hover {
-  background: linear-gradient(135deg, #dfbc45 0%, #c4a12f 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(212, 175, 55, 0.45);
-}
-
-.btn-ghost {
-  background: rgba(255, 255, 255, 0.05);
-  color: #e5e7eb;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: var(--gold-accent);
-}
-
-.btn-icon {
-  width: 16px;
-  height: 16px;
-}
-
-.file-badge {
-  font-size: 0.75rem;
-  background: rgba(212, 175, 55, 0.12);
-  color: var(--gold-accent);
-  padding: 4px 10px;
-  border-radius: 20px;
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  max-width: 220px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.pill-group {
+.fb-pill-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(0, 0, 0, 0.3);
-  padding: 3px 6px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: linear-gradient(135deg, #d4af37 0%, #b89728 100%);
+  color: #0d0f14;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.styled-select {
-  background: #191c24;
-  color: #fff;
-  border: 1px solid rgba(212, 175, 55, 0.3);
+.fb-pill-btn:hover {
+  background: linear-gradient(135deg, #dfbc45 0%, #c4a12f 100%);
+  transform: translateY(-1px);
+}
+
+.fb-pill-btn.ghost {
+  background: rgba(255, 255, 255, 0.07);
+  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.fb-pill-btn.ghost:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--fb-accent);
+}
+
+.icon-sm {
+  width: 15px;
+  height: 15px;
+}
+
+.fb-select-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 6px;
-  padding: 6px 10px;
-  font-size: 0.82rem;
-  font-weight: 500;
+  padding: 3px 8px;
+}
+
+.select-label {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.fb-native-select {
+  background: transparent;
+  color: #f1f5f9;
+  border: none;
+  font-size: 0.8rem;
+  font-weight: 600;
   outline: none;
   cursor: pointer;
 }
 
-.styled-select:focus {
-  border-color: var(--gold-accent);
-}
-
-.btn-toggle {
-  background: transparent;
-  color: #9ca3af;
-  border: none;
-  padding: 6px 12px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-toggle.active {
-  background: var(--gold-accent);
-  color: #0d0f12;
-}
-
-/* Binding Finishing Buttons */
-.binding-button-group {
-  display: flex;
-  gap: 8px;
-}
-
-.btn-binding {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #d1d5db;
-  border-radius: 8px;
-  padding: 6px 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-align: left;
-}
-
-.btn-binding .b-icon {
-  font-size: 0.95rem;
-  margin-bottom: 2px;
-}
-
-.btn-binding .b-txt {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #f3f4f6;
-}
-
-.btn-binding .b-sub {
-  font-size: 0.68rem;
-  color: #9ca3af;
-}
-
-.btn-binding:hover {
-  border-color: rgba(212, 175, 55, 0.4);
-  background: rgba(212, 175, 55, 0.05);
-}
-
-.btn-binding.active {
-  background: rgba(212, 175, 55, 0.15);
-  border-color: var(--gold-accent);
-  box-shadow: 0 0 14px rgba(212, 175, 55, 0.25);
-}
-
-.btn-binding.active .b-txt {
-  color: var(--gold-accent);
-}
-
-/* Drag & Drop Bar */
-.drag-drop-bar {
-  width: 100%;
-  padding: 8px 16px;
-  margin-bottom: 12px;
-  border: 1px dashed rgba(212, 175, 55, 0.35);
-  border-radius: 8px;
-  background: rgba(212, 175, 55, 0.03);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  font-size: 0.82rem;
-  color: #cbd5e1;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.drag-drop-bar:hover,
-.drag-drop-bar.dragover {
-  background: rgba(212, 175, 55, 0.1);
-  border-color: var(--gold-accent);
+.fb-native-select option {
+  background: #191d28;
   color: #fff;
 }
 
-.drop-icon {
-  width: 18px;
-  height: 18px;
-  color: var(--gold-accent);
+.fb-orientation-toggle {
+  display: inline-flex;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.btn-orient {
+  background: transparent;
+  color: #94a3b8;
+  border: none;
+  padding: 6px 10px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-orient.active {
+  background: var(--fb-accent);
+  color: #0b0d13;
 }
 
 /* ==========================================================================
-   3. 3D HANDBOOK VIEWPORT STAGE & ASSEMBLY
+   4. BINDING SELECTION STRIP (Directly above viewport)
    ========================================================================== */
-.book-viewport-stage {
-  flex: 1;
-  width: 100%;
+.fb-binding-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.binding-bar-title {
+  font-size: 0.76rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+
+.binding-chips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip-binding {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #d1d5db;
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chip-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #64748b;
+  transition: background 0.2s ease;
+}
+
+.chip-binding strong {
+  font-weight: 600;
+}
+
+.chip-binding small {
+  color: #94a3b8;
+  font-size: 0.7rem;
+}
+
+.chip-binding:hover {
+  background: rgba(212, 175, 55, 0.08);
+  border-color: rgba(212, 175, 55, 0.35);
+}
+
+.chip-binding.active {
+  background: rgba(212, 175, 55, 0.16);
+  border-color: var(--fb-accent);
+  color: #fff;
+}
+
+.chip-binding.active .chip-dot {
+  background: var(--fb-accent);
+  box-shadow: 0 0 6px var(--fb-accent-glow);
+}
+
+.chip-binding.active strong {
+  color: var(--fb-accent);
+}
+
+.drag-drop-hint {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+/* ==========================================================================
+   5. 3D BOOK STAGE VIEWPORT & FLOATING ARROWS
+   ========================================================================== */
+.fb-stage-viewport {
+  position: relative;
+  min-height: 520px;
   display: flex;
   align-items: center;
   justify-content: center;
-  perspective: 2400px;
-  padding: 20px 10px 30px;
+  perspective: 2600px;
+  padding: 24px 70px;
   box-sizing: border-box;
-  min-height: 480px;
-  position: relative;
+  overflow: visible;
 }
 
-/* Physical Handbook Assembly */
+/* Floating Side Flip Arrows (FlippingBook style < and >) */
+.fb-side-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 68px;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 50;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+}
+
+.fb-side-arrow svg {
+  width: 24px;
+  height: 24px;
+}
+
+.fb-side-arrow.arrow-left {
+  left: 14px;
+}
+
+.fb-side-arrow.arrow-right {
+  right: 14px;
+}
+
+.fb-side-arrow:hover:not(:disabled) {
+  background: var(--fb-accent);
+  color: #0d0f14;
+  border-color: var(--fb-accent);
+  transform: translateY(-50%) scale(1.08);
+}
+
+.fb-side-arrow:disabled {
+  opacity: 0.18;
+  cursor: not-allowed;
+}
+
+/* Jump to First |< and Last >| buttons */
+.fb-first-last-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 45;
+  transition: all 0.2s ease;
+}
+
+.fb-first-last-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.fb-first-last-btn.jump-first {
+  left: 4px;
+}
+
+.fb-first-last-btn.jump-last {
+  right: 4px;
+}
+
+.fb-first-last-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+.fb-first-last-btn:disabled {
+  opacity: 0.15;
+  cursor: not-allowed;
+}
+
+/* 3D Handbook Assembly */
 .handbook-assembly {
   position: relative;
   display: flex;
   align-items: stretch;
   justify-content: center;
-  /* Aspect ratio matches 2-page open handbook spread */
-  width: min(94vw, var(--spread-max-width));
+  width: min(92vw, 980px);
   aspect-ratio: var(--spread-aspect-ratio);
-  max-height: calc(85vh - 220px);
+  max-height: calc(82vh - 210px);
   transform-style: preserve-3d;
   transition: transform 0.3s ease, width 0.3s ease;
+  transform: scale(var(--zoom-level, 1));
 }
 
 /* Outer Hardcover Chassis (Silai & Layflat modes) */
 .hardcover-chassis {
   position: absolute;
-  inset: -12px -16px -12px -16px;
+  inset: -10px -14px -10px -14px;
   border-radius: 8px;
   pointer-events: none;
   opacity: 0;
@@ -385,9 +538,9 @@ body.book-viewer-body {
 .hardcover-back-board,
 .hardcover-front-board {
   flex: 1;
-  background: linear-gradient(135deg, #1f232c 0%, #11141a 100%);
+  background: linear-gradient(135deg, #20242d 0%, #101319 100%);
   border: 1.5px solid rgba(212, 175, 55, 0.35);
-  box-shadow: inset 0 0 15px rgba(0,0,0,0.8), 0 15px 35px rgba(0, 0, 0, 0.7);
+  box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.8), 0 16px 36px rgba(0, 0, 0, 0.7);
 }
 
 .hardcover-back-board {
@@ -399,8 +552,8 @@ body.book-viewer-body {
 }
 
 .hardcover-spine {
-  width: 20px;
-  background: linear-gradient(90deg, #171a21 0%, #0c0e12 50%, #171a21 100%);
+  width: 18px;
+  background: linear-gradient(90deg, #181c24 0%, #0d0f14 50%, #181c24 100%);
   border-top: 1.5px solid rgba(212, 175, 55, 0.35);
   border-bottom: 1.5px solid rgba(212, 175, 55, 0.35);
 }
@@ -408,16 +561,16 @@ body.book-viewer-body {
 /* Page Thickness Stacks (Left & Right) */
 .page-thickness-stack {
   position: absolute;
-  top: 4px;
-  bottom: 4px;
+  top: 3px;
+  bottom: 3px;
   background: repeating-linear-gradient(
     to bottom,
-    #e8e4dc 0px,
-    #e8e4dc 1.5px,
-    #d1cbbf 1.5px,
-    #d1cbbf 3px
+    #ebe6dc 0px,
+    #ebe6dc 1.5px,
+    #d4cebe 1.5px,
+    #d4cebe 3px
   );
-  box-shadow: inset 0 0 4px rgba(0,0,0,0.3);
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
   z-index: 2;
   transition: width 0.3s ease;
 }
@@ -426,14 +579,14 @@ body.book-viewer-body {
   right: 100%;
   width: var(--stack-l-depth, 6px);
   border-radius: 3px 0 0 3px;
-  box-shadow: -4px 0 8px rgba(0,0,0,0.4);
+  box-shadow: -4px 0 8px rgba(0, 0, 0, 0.4);
 }
 
 .stack-right {
   left: 100%;
   width: var(--stack-r-depth, 14px);
   border-radius: 0 3px 3px 0;
-  box-shadow: 4px 0 8px rgba(0,0,0,0.4);
+  box-shadow: 4px 0 8px rgba(0, 0, 0, 0.4);
 }
 
 /* Open Handbook 2-Page Spread */
@@ -464,19 +617,19 @@ body.book-viewer-body {
 
 .page-left {
   border-radius: 4px 0 0 4px;
-  border-right: 1px solid rgba(0,0,0,0.1);
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
   transform-origin: right center;
   box-shadow: inset -10px 0 25px rgba(0, 0, 0, 0.08);
 }
 
 .page-right {
   border-radius: 0 4px 4px 0;
-  border-left: 1px solid rgba(0,0,0,0.1);
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
   transform-origin: left center;
   box-shadow: inset 10px 0 25px rgba(0, 0, 0, 0.08);
 }
 
-/* Inner Page Art / Canvas Wrapper */
+/* Page Content Art Wrapper */
 .page-sheet-content {
   position: relative;
   width: 100%;
@@ -506,7 +659,7 @@ body.book-viewer-body {
   display: block;
 }
 
-/* Dynamic Page Content Layouts for Sample Handbook */
+/* Sample editorial sheets */
 .sample-page-sheet {
   width: 100%;
   height: 100%;
@@ -523,7 +676,7 @@ body.book-viewer-body {
 .sample-page-sheet.cover {
   background: radial-gradient(circle at 50% 35%, #1e2530 0%, #0d1117 100%);
   color: #fff;
-  border: 8px solid #d4af37;
+  border: 8px solid var(--fb-accent);
   text-align: center;
   justify-content: center;
   gap: 16px;
@@ -532,8 +685,8 @@ body.book-viewer-body {
 .sample-cover-badge {
   display: inline-block;
   padding: 6px 14px;
-  border: 1px solid #d4af37;
-  color: #d4af37;
+  border: 1px solid var(--fb-accent);
+  color: var(--fb-accent);
   font-size: 0.72rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
@@ -575,7 +728,7 @@ body.book-viewer-body {
 
 .sample-folio {
   font-size: 0.7rem;
-  color: #d4af37;
+  color: var(--fb-accent);
   font-weight: 700;
 }
 
@@ -606,7 +759,7 @@ body.book-viewer-body {
 .sample-feature-card {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
-  border-left: 3px solid #d4af37;
+  border-left: 3px solid var(--fb-accent);
   padding: 10px 14px;
   border-radius: 4px;
   font-size: 0.78rem;
@@ -635,13 +788,13 @@ body.book-viewer-body {
 .page-left .page-corner-fold {
   bottom: 0;
   left: 0;
-  background: linear-gradient(135deg, rgba(0,0,0,0.15) 0%, transparent 60%);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.15) 0%, transparent 60%);
 }
 
 .page-right .page-corner-fold {
   bottom: 0;
   right: 0;
-  background: linear-gradient(225deg, rgba(0,0,0,0.15) 0%, transparent 60%);
+  background: linear-gradient(225deg, rgba(0, 0, 0, 0.15) 0%, transparent 60%);
 }
 
 .book-page:hover .page-corner-fold {
@@ -673,24 +826,23 @@ body.book-viewer-body {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 40px;
+  width: 36px;
   pointer-events: none;
   z-index: 4;
 }
 
 .gutter-left {
   right: 0;
-  background: linear-gradient(to right, transparent, rgba(0,0,0,0.18));
+  background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.16));
 }
 
 .gutter-right {
   left: 0;
-  background: linear-gradient(to left, transparent, rgba(0,0,0,0.18));
+  background: linear-gradient(to left, transparent, rgba(0, 0, 0, 0.16));
 }
 
 /* ==========================================================================
-   4. BINDING FINISHING HARDWARE SIMULATION
-   (Center Pin Staples vs Section Silai Thread vs 180° Layflat Pasting)
+   6. BINDING FINISHING HARDWARE (Center Pin vs Silai vs Layflat)
    ========================================================================== */
 .center-gutter-hardware {
   position: absolute;
@@ -717,11 +869,11 @@ body.book-viewer-body {
   transform: translateX(-50%);
   width: 2px;
   background: rgba(0, 0, 0, 0.4);
-  box-shadow: 0 0 6px rgba(0,0,0,0.5);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
   transition: all 0.3s ease;
 }
 
-/* --- OPTION 1: CENTER PIN (SADDLE STITCH STAPLES) --- */
+/* Saddle Stitch Staples */
 .staple-wire {
   position: absolute;
   width: 4px;
@@ -745,7 +897,7 @@ body.book-viewer-body {
   opacity: 1;
 }
 
-/* --- OPTION 2: HARD CASE SECTION SILAI (THREAD STITCHES) --- */
+/* Hard Case Section Silai Thread */
 .thread-stitch-line {
   position: absolute;
   top: 10%;
@@ -770,8 +922,8 @@ body.book-viewer-body {
     #b45309 4px
   );
   border-radius: 1px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.6);
-  border: 0.5px solid rgba(0,0,0,0.3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  border: 0.5px solid rgba(0, 0, 0, 0.3);
 }
 
 .handbook-assembly[data-binding="hardcase-silai"] .thread-stitch-line {
@@ -783,7 +935,7 @@ body.book-viewer-body {
   background: rgba(0, 0, 0, 0.6);
 }
 
-/* --- OPTION 3: HARD CASE BACK-TO-BACK PASTING (LAYFLAT - NO PIN, NO SILAI) --- */
+/* Layflat Back-to-Back Pasting */
 .layflat-seam {
   position: absolute;
   top: 12px;
@@ -795,13 +947,13 @@ body.book-viewer-body {
 }
 
 .layflat-badge {
-  background: rgba(16, 185, 129, 0.85);
+  background: rgba(16, 185, 129, 0.88);
   color: #fff;
   font-size: 0.65rem;
   font-weight: 700;
   padding: 3px 8px;
   border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -810,14 +962,13 @@ body.book-viewer-body {
   opacity: 1;
 }
 
-/* In Layflat mode: ZERO gutter crease, seamless flush join! */
 .handbook-assembly[data-binding="hardcase-layflat"] .center-gutter-hardware::before {
   opacity: 0;
 }
 
 .handbook-assembly[data-binding="hardcase-layflat"] .gutter-left,
 .handbook-assembly[data-binding="hardcase-layflat"] .gutter-right {
-  opacity: 0.12; /* Subtle paper join shadow only */
+  opacity: 0.1;
 }
 
 /* Handbook Table Drop Shadow */
@@ -833,9 +984,7 @@ body.book-viewer-body {
   pointer-events: none;
 }
 
-/* ==========================================================================
-   5. PAGE FLIP 3D ANIMATION CLASSES
-   ========================================================================== */
+/* Page flip 3D animations */
 .flipping-forward {
   animation: flipRightToLeft 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
@@ -845,107 +994,243 @@ body.book-viewer-body {
 }
 
 @keyframes flipRightToLeft {
-  0% {
-    transform: rotateY(0deg);
-  }
-  50% {
-    box-shadow: -20px 20px 40px rgba(0,0,0,0.5);
-  }
-  100% {
-    transform: rotateY(-180deg);
-  }
+  0% { transform: rotateY(0deg); }
+  50% { box-shadow: -20px 20px 40px rgba(0, 0, 0, 0.5); }
+  100% { transform: rotateY(-180deg); }
 }
 
 @keyframes flipLeftToRight {
-  0% {
-    transform: rotateY(0deg);
-  }
-  50% {
-    box-shadow: 20px 20px 40px rgba(0,0,0,0.5);
-  }
-  100% {
-    transform: rotateY(180deg);
-  }
+  0% { transform: rotateY(0deg); }
+  50% { box-shadow: 20px 20px 40px rgba(0, 0, 0, 0.5); }
+  100% { transform: rotateY(180deg); }
 }
 
 /* ==========================================================================
-   6. BOTTOM READER NAVIGATION STRIP
+   7. BOTTOM FLIPPINGBOOK-STYLE TOOLBAR
    ========================================================================== */
-.reader-nav-strip {
-  width: 100%;
-  max-width: 680px;
+.fb-bottom-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(20, 23, 29, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 10px 18px;
-  margin-top: 10px;
-  box-shadow: 0 4px 18px rgba(0,0,0,0.3);
+  padding: 10px 20px;
+  background: var(--fb-bar-bg);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   gap: 16px;
 }
 
-.nav-arrow-btn {
-  display: inline-flex;
+.toolbar-left-group,
+.toolbar-right-group {
+  display: flex;
   align-items: center;
-  gap: 6px;
-  background: rgba(212, 175, 55, 0.12);
-  color: #f3f4f6;
-  border: 1px solid rgba(212, 175, 55, 0.35);
-  border-radius: 8px;
-  padding: 8px 16px;
-  font-size: 0.85rem;
-  font-weight: 600;
+  gap: 8px;
+}
+
+.tool-btn {
+  background: transparent;
+  color: #94a3b8;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.nav-arrow-btn svg {
-  width: 16px;
-  height: 16px;
+.tool-btn svg {
+  width: 19px;
+  height: 19px;
 }
 
-.nav-arrow-btn:hover:not(:disabled) {
-  background: var(--gold-accent);
-  color: #0d0f12;
-  transform: translateY(-1px);
-}
-
-.nav-arrow-btn:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-  border-color: rgba(255,255,255,0.1);
-}
-
-.page-scrubber-wrap {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-.scrub-label {
-  font-size: 0.82rem;
-  font-weight: 600;
+.tool-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
   color: #fff;
 }
 
-.scrub-range {
-  width: 100%;
-  accent-color: var(--gold-accent);
-  cursor: pointer;
+.tool-btn.active {
+  color: var(--fb-accent);
+  background: rgba(212, 175, 55, 0.15);
 }
 
-.ratio-indicator {
-  font-size: 0.68rem;
-  color: #9ca3af;
-  letter-spacing: 0.03em;
+.toolbar-center-scrubber {
+  flex: 1;
+  max-width: 440px;
+  display: flex;
+  align-items: center;
+}
+
+.fb-scrub-input {
+  width: 100%;
+  accent-color: var(--fb-accent);
+  cursor: pointer;
+  height: 4px;
+}
+
+.fb-watermark-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  text-transform: uppercase;
+  padding-left: 8px;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* ==========================================================================
-   7. FLOATING WHATSAPP BUTTON (Mandatory direct link)
+   8. SLIDE-UP THUMBNAILS DRAWER & TOC DRAWER
+   ========================================================================== */
+.fb-thumbnails-drawer {
+  position: absolute;
+  bottom: 56px;
+  left: 0;
+  right: 0;
+  background: rgba(15, 18, 25, 0.98);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 14px 20px;
+  z-index: 100;
+  transform: translateY(120%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  max-height: 220px;
+  display: flex;
+  flex-direction: column;
+}
+
+.fb-thumbnails-drawer.open {
+  transform: translateY(0);
+}
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--fb-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+
+.drawer-close {
+  background: transparent;
+  color: #94a3b8;
+  border: none;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.drawer-close:hover {
+  color: #fff;
+}
+
+.drawer-grid {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.thumb-card {
+  flex: 0 0 90px;
+  height: 120px;
+  background: #242a38;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #cbd5e1;
+  font-size: 0.72rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.thumb-card:hover {
+  border-color: var(--fb-accent);
+  transform: translateY(-2px);
+}
+
+.thumb-card.active {
+  border-color: var(--fb-accent);
+  box-shadow: 0 0 12px var(--fb-accent-glow);
+  color: var(--fb-accent);
+}
+
+.thumb-mini-label {
+  position: absolute;
+  bottom: 4px;
+  background: rgba(0, 0, 0, 0.75);
+  padding: 1px 6px;
+  border-radius: 8px;
+  font-size: 0.65rem;
+}
+
+/* Slide-out TOC Drawer */
+.fb-toc-drawer {
+  position: absolute;
+  top: 52px;
+  bottom: 56px;
+  left: 0;
+  width: 320px;
+  background: rgba(15, 18, 25, 0.98);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 16px;
+  z-index: 100;
+  transform: translateX(-105%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+}
+
+.fb-toc-drawer.open {
+  transform: translateX(0);
+}
+
+.toc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.toc-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  color: #cbd5e1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toc-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--fb-accent);
+}
+
+.toc-item.active {
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--fb-accent);
+  font-weight: 600;
+}
+
+.toc-page-num {
+  font-size: 0.72rem;
+  color: #64748b;
+}
+
+/* ==========================================================================
+   9. FLOATING WHATSAPP BUTTON (Mandatory direct link)
    ========================================================================== */
 .floating-whatsapp-btn {
   position: fixed;
@@ -986,7 +1271,7 @@ body.book-viewer-body {
   font-weight: 600;
   white-space: nowrap;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
   pointer-events: none;
   opacity: 0;
   transform: translateX(8px);
@@ -999,24 +1284,26 @@ body.book-viewer-body {
 }
 
 /* ==========================================================================
-   8. RESPONSIVE BREAKPOINTS
+   10. RESPONSIVE BREAKPOINTS
    ========================================================================== */
 @media (max-width: 900px) {
-  .control-panel-strip {
+  .fb-top-bar {
     flex-direction: column;
     align-items: stretch;
-    gap: 12px;
   }
-  .panel-section {
-    justify-content: center;
+  .fb-top-actions {
+    justify-content: flex-start;
   }
-  .binding-button-group {
-    width: 100%;
-    justify-content: center;
+  .fb-stage-viewport {
+    padding: 16px 45px;
+    min-height: 400px;
   }
-  .btn-binding {
-    flex: 1;
-    padding: 6px 8px;
+  .fb-side-arrow {
+    width: 38px;
+    height: 54px;
+  }
+  .fb-first-last-btn {
+    display: none;
   }
 }
 
@@ -1026,31 +1313,26 @@ body.book-viewer-body {
     gap: 6px;
     text-align: center;
   }
-  .top-contact-item {
-    font-size: 0.8rem;
+  .viewer-main-canvas {
+    padding: 8px 4px;
   }
-  .top-brand-logo .logo-txt {
-    font-size: 1.15rem;
+  .fb-modal-window {
+    border-radius: 8px;
   }
-  .book-viewport-stage {
-    min-height: 360px;
-    padding: 10px 4px;
+  .fb-stage-viewport {
+    padding: 10px 36px;
+    min-height: 320px;
   }
-  .reader-nav-strip {
+  .fb-bottom-toolbar {
     padding: 8px 12px;
   }
-  .nav-arrow-btn {
-    padding: 6px 10px;
-    font-size: 0.78rem;
+  .fb-watermark-tag {
+    display: none;
   }
   .floating-whatsapp-btn {
     bottom: 18px;
     right: 18px;
     width: 50px;
     height: 50px;
-  }
-  .wa-icon {
-    width: 28px;
-    height: 28px;
   }
 }
