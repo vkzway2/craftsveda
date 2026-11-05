@@ -1,471 +1,264 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>3D PageFlip Book & Album Studio — CraftsVeda Mumbai</title>
-    <meta
-      name="description"
-      content="Interactive 3D PageFlip PDF & photobook preview studio. Preview Center Pin (Saddle Stitch), Hard Case Section Silai, and Hard Case Seamless Layflat (Back-to-Back Pasting). 100% client-side in-browser rendering with zero server storage."
-    />
-    <link rel="canonical" href="https://craftsveda.in/book-viewer.html" />
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D PageFlip Book & Handbook Viewer | CraftsVeda™ Mumbai</title>
+  <meta name="description" content="Realistic 3D PageFlip handbook and book previewer with auto aspect ratio, Center Pin, Hard Case Silai, and Back-to-Back Pasting Layflat binding simulation. 100% in-browser private rendering.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="book-viewer.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- PDF.js from official cdnjs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body class="book-viewer-body">
 
-    <!-- Open Graph -->
-    <meta property="og:title" content="3D PageFlip Book & Album Studio — CraftsVeda Mumbai" />
-    <meta
-      property="og:description"
-      content="Inspect your books and albums in real-time 3D PageFlip view. Center Pin, Section Silai, and Seamless Back-to-Back Layflat binding simulation. 100% private in-browser preview."
-    />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://craftsveda.in/book-viewer.html" />
-    <meta property="og:image" content="https://craftsveda.in/assets/hero-card.webp" />
-    <meta property="og:site_name" content="CraftsVeda" />
+  <!-- TOP MINIMAL BAR: Phone, Logo, Email ONLY (Strict User Requirement) -->
+  <header class="top-minimal-bar">
+    <div class="top-bar-inner">
+      <a href="tel:+918840035249" class="top-contact-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="top-icon"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+        <span>+91 8840035249</span>
+      </a>
 
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="3D PageFlip Book & Album Studio — CraftsVeda Mumbai" />
-    <meta
-      name="twitter:description"
-      content="Interactive 3D PageFlip Book Viewer. Seamless Back-to-Back Pasting, Section Silai, and Center Pin preview. Zero server upload."
-    />
-    <meta name="twitter:image" content="https://craftsveda.in/assets/hero-card.webp" />
+      <a href="index.html" class="top-brand-logo">
+        <span class="logo-txt">CraftsVeda<span class="gold-dot">.</span></span>
+        <span class="logo-sub">3D HANDBOOK VIEWER</span>
+      </a>
 
-    <!-- Favicon -->
-    <link
-      rel="icon"
-      type="image/svg+xml"
-      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>"
-    />
+      <a href="mailto:vkzway2@gmail.com" class="top-contact-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="top-icon"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <span>vkzway2@gmail.com</span>
+      </a>
+    </div>
+  </header>
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+  <!-- MAIN WORKSPACE -->
+  <main class="viewer-workspace">
 
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="styles.css?v=3.2" />
-    <link rel="stylesheet" href="book-viewer.css?v=1.0" />
+    <!-- COMPACT TOP CONTROLS: Upload / Ratio & Orientation / Binding Finishing -->
+    <div class="control-panel-strip">
+      <div class="panel-section upload-section">
+        <input type="file" id="pdfFileInput" accept="application/pdf,image/png,image/jpeg,image/webp" multiple style="display:none;">
+        <button type="button" class="btn-ctrl btn-upload" id="btnUploadTrigger">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span>Upload PDF / Images</span>
+        </button>
+        <button type="button" class="btn-ctrl btn-ghost" id="btnLoadA4Demo" title="Load sample 20-Page A4 Handbook">
+          <span>Demo 20-Page A4</span>
+        </button>
+        <span class="file-badge" id="fileInfoBadge">Sample Handbook Loaded</span>
+      </div>
 
-    <!-- Mozilla PDF.js Library (Client-Side Rendering) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  </head>
-  <body class="book-viewer-page">
-    <!-- FIXED HEADER MASTER WRAPPER -->
-    <header class="header-master-fixed" id="headerMaster">
-      <!-- TOP CONTACT STRIP -->
-      <div class="top-bar">
-        <div class="container top-bar-inner">
-          <a href="tel:8840035249" class="top-bar-link top-bar-left">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-            </svg>
-            +91 8840035249
-          </a>
-          <a href="mailto:vkzway2@gmail.com" class="top-bar-link top-bar-right">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-              <polyline points="22,6 12,13 2,6" />
-            </svg>
-            vkzway2@gmail.com
-          </a>
+      <!-- RATIO & ORIENTATION SELECTOR (Auto, A4, A5, A3, 8.5x11, 9x11, Square) -->
+      <div class="panel-section size-section">
+        <div class="pill-group">
+          <label class="group-label">Size / Ratio:</label>
+          <select id="sizePresetSelect" class="styled-select">
+            <option value="auto">Auto (File Aspect Ratio)</option>
+            <option value="a4" selected>A4 (210 × 297 mm)</option>
+            <option value="a5">A5 (148 × 210 mm)</option>
+            <option value="a3">A3 (297 × 420 mm)</option>
+            <option value="letter">8.5" × 11" (Letter)</option>
+            <option value="album">9" × 11" (Photo Book)</option>
+            <option value="square">Square (8" × 8")</option>
+          </select>
+        </div>
+
+        <div class="pill-group">
+          <button type="button" class="btn-toggle active" id="btnPortrait" data-orient="portrait">Portrait</button>
+          <button type="button" class="btn-toggle" id="btnLandscape" data-orient="landscape">Landscape</button>
         </div>
       </div>
 
-      <!-- MAIN NAVIGATION BAR -->
-      <div class="site-header" id="siteHeader">
-        <div class="container header-inner">
-          <a href="index.html" class="brand-logo" aria-label="CraftsVeda Home">
-            <div class="logo-mark">
-              <span class="logo-initials">CV</span>
-            </div>
-            <div class="logo-text">
-              <span class="brand-name">CraftsVeda</span>
-              <span class="brand-tag">PREMIUM PRINTING STUDIO</span>
-            </div>
-          </a>
-
-          <nav class="main-nav" id="mainNav">
-            <ul class="nav-list">
-              <li><a href="index.html" class="nav-link">Home</a></li>
-              <li><a href="luxury-business-cards.html" class="nav-link">Business Cards</a></li>
-              <li><a href="index.html#what-we-print" class="nav-link">What We Print</a></li>
-              <li><a href="index.html#special-finishes" class="nav-link">Special Finishes</a></li>
-              <li><a href="track.html" class="nav-link">Track Order</a></li>
-              <li class="mobile-nav-cta">
-                <a href="https://wa.me/918840035249?text=Hi%20CraftsVeda%2C%20mujhe%20book%20printing%20ke%20baare%20me%20enquiry%20karni%20hai" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-block nav-link">
-                  Chat on WhatsApp
-                </a>
-              </li>
-            </ul>
-          </nav>
-
-          <div class="header-actions">
-            <a href="https://wa.me/918840035249?text=Hi%20CraftsVeda%2C%20mujhe%20book%20printing%20ke%20baare%20me%20enquiry%20karni%20hai" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp desktop-action-btn" style="padding: 9px 18px; font-size: 0.82rem;">
-              WhatsApp Studio
-            </a>
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <!-- MAIN CONTENT WRAPPER -->
-    <main id="mainContent" style="padding-top: 100px;">
-      <!-- HERO HEADER -->
-      <section class="viewer-hero-section">
-        <div class="container">
-          <div class="viewer-badge">
-            <span class="viewer-badge-dot"></span>
-            <span>Interactive 3D Book & Photobook Studio</span>
-          </div>
-
-          <h1 class="viewer-main-title">
-            Real-Time 3D PageFlip <span class="text-gold">Book & Album Viewer</span>
-          </h1>
-
-          <p class="viewer-subtitle">
-            Aapka customer apni PDF ya photobook file yahan upload karke live dekh sakta hai ki printing ke baad book kaisi dikhegi. Real-time realistic 3D page turn ke saath 3 core binding styles inspect karein.
-          </p>
-
-          <div class="viewer-privacy-pill">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-            </svg>
-            <span><strong>100% Client-Side Privacy:</strong> File aapke browser ki RAM me render hoti hai — kisi server par upload ya save nahi hoti.</span>
-          </div>
-
-          <!-- BINDING SELECTION SECTION (3 MODES) -->
-          <div class="binding-selector-wrap">
-            <span class="section-label-center">SELECT YOUR DESIRED BINDING STYLE</span>
-            
-            <div class="binding-cards-grid">
-              <!-- Option 1: Center Pin -->
-              <div class="binding-card" data-binding="centerpin">
-                <div>
-                  <div class="binding-card-header">
-                    <div class="binding-icon-box">
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                        <line x1="6" y1="7" x2="6" y2="9"></line>
-                        <line x1="6" y1="15" x2="6" y2="17"></line>
-                      </svg>
-                    </div>
-                    <span class="binding-badge">Saddle Stitch</span>
-                  </div>
-                  <h3 class="binding-title">Center Pin Binding</h3>
-                  <p class="binding-desc">
-                    Spine fold ke center me do metallic pins (wire staples) dikhti hain. Soft art cover ke sath flexible page curve feel.
-                  </p>
-                </div>
-                <div class="binding-feature-tag">
-                  <span>✓ 2 Silver Metallic Staples in Center Fold</span>
-                </div>
-              </div>
-
-              <!-- Option 2: Hard Case Section Silai -->
-              <div class="binding-card" data-binding="hardcase">
-                <div>
-                  <div class="binding-card-header">
-                    <div class="binding-icon-box">
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="3" width="18" height="18" rx="2" stroke-width="2.5"></rect>
-                        <path d="M12 3v18"></path>
-                        <path d="M7 8h10"></path>
-                        <path d="M7 16h10"></path>
-                      </svg>
-                    </div>
-                    <span class="binding-badge">Section Sewn</span>
-                  </div>
-                  <h3 class="binding-title">Hard Case (Section Silai)</h3>
-                  <p class="binding-desc">
-                    Rigid board hardcover casing with deep spine valley. Gutter crease me section silai (thread stitching) & ribbon bookmark dikhti hai.
-                  </p>
-                </div>
-                <div class="binding-feature-tag">
-                  <span>✓ Thread Stitching (Silai) in Center Crease</span>
-                </div>
-              </div>
-
-              <!-- Option 3: Hard Case Seamless Layflat (Back to Back Pasting) -->
-              <div class="binding-card active" data-binding="layflat">
-                <div>
-                  <div class="binding-card-header">
-                    <div class="binding-icon-box" style="background: rgba(212, 175, 55, 0.25); border-color: var(--gold-primary);">
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M2 12h20"></path>
-                        <rect x="2" y="6" width="20" height="12" rx="1"></rect>
-                        <line x1="12" y1="6" x2="12" y2="18" stroke-dasharray="2 2"></line>
-                      </svg>
-                    </div>
-                    <span class="binding-badge" style="background: var(--gold-primary); color: #07090e;">180° Layflat</span>
-                  </div>
-                  <h3 class="binding-title">Hard Case (Back-to-Back Pasting)</h3>
-                  <p class="binding-desc">
-                    Sheets ko back-to-back paste karke banaya jata hai. <strong>Center me koi pin ya silai nahi dikhti</strong>, poora spread 180° seamless layflat rehta hai!
-                  </p>
-                </div>
-                <div class="binding-feature-tag">
-                  <span>✓ 100% Flat • No Pin • No Silai in Center</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- VIEWER TOP ACTIONS & CONTROLS TOOLBAR -->
-      <div class="container">
-        <div class="viewer-topbar-panel">
-          <div class="upload-action-group">
-            <!-- Direct PDF Upload Button -->
-            <label class="btn-upload-pdf" id="btnUploadLabel">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="17 8 12 3 7 8"></polyline>
-                <line x1="12" y1="3" x2="12" y2="15"></line>
-              </svg>
-              <span>Upload PDF File</span>
-              <input type="file" id="pdfFileInput" accept="application/pdf,image/*" multiple />
-            </label>
-
-            <!-- Drag & Drop Trigger -->
-            <button type="button" class="btn-demo-load" id="btnOpenUpload">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="12"></line>
-                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-              </svg>
-              <span>Drag & Drop Zone</span>
-            </button>
-
-            <!-- Pre-loaded Demo Book Button -->
-            <button type="button" class="btn-demo-load" id="btnLoadDemo" title="Load sample luxury photobook pages">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-              </svg>
-              <span>Load Demo Album (12 Pages)</span>
-            </button>
-          </div>
-
-          <div class="viewer-status-text" id="viewerStatusText">
-            Demo Photobook ready in memory
-          </div>
-
-          <!-- Quick Toggles -->
-          <div class="viewer-view-toggles">
-            <button type="button" class="btn-icon-control" id="btnSoundToggle" title="Toggle Page Turn Sound">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-              </svg>
-            </button>
-            <button type="button" class="btn-icon-control" id="btnAutoplay" title="Auto-flip Presentation Mode">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polygon points="5 3 19 12 5 21 5 3"></polygon>
-              </svg>
-            </button>
-            <button type="button" class="btn-icon-control" id="btnFullscreen" title="Toggle Fullscreen">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- 3D BOOK STAGE VIEWPORT -->
-      <section class="book-stage-viewport" id="bookStageViewport">
-        <!-- 3D Casing with dynamic binding classes -->
-        <div class="book-casing-wrapper mode-layflat" id="bookCasingWrapper">
-          <div class="book-stage-inner" id="bookStageInner">
-            <!-- Left Page -->
-            <div class="book-page-half page-left" id="leftPageHalf">
-              <div id="leftPageContainer"></div>
-              <span class="page-corner-number" id="leftPageNum"></span>
-            </div>
-
-            <!-- Right Page -->
-            <div class="book-page-half page-right" id="rightPageHalf">
-              <div id="rightPageContainer"></div>
-              <span class="page-corner-number" id="rightPageNum"></span>
-            </div>
-
-            <!-- Center Spine Gutter Overlay (Dynamic binding elements) -->
-            <div class="spine-gutter-overlay" id="spineGutterOverlay">
-              <!-- 1. Center Pin Staples -->
-              <span class="staple-pin staple-top"></span>
-              <span class="staple-pin staple-bottom"></span>
-
-              <!-- 2. Hard Case Section Silai Threads -->
-              <span class="silai-stitch-thread silai-1"></span>
-              <span class="silai-stitch-thread silai-2"></span>
-              <span class="silai-stitch-thread silai-3"></span>
-              <span class="silai-stitch-thread silai-4"></span>
-              <span class="silai-stitch-thread silai-5"></span>
-
-              <!-- Ribbon Bookmark -->
-              <span class="ribbon-bookmark"></span>
-
-              <!-- 3. Layflat Badge Chip -->
-              <div class="layflat-badge-chip">
-                <span>180° Layflat</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- BOTTOM READER NAVIGATION TOOLBAR -->
-      <div class="container">
-        <div class="viewer-navigation-bar">
-          <button type="button" class="nav-btn-round" id="btnFirstPage" title="First Page">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="11 17 6 12 11 7"></polyline>
-              <polyline points="18 17 13 12 18 7"></polyline>
-            </svg>
+      <!-- BINDING FINISHING SELECTOR (The 3 Specific Types) -->
+      <div class="panel-section binding-section">
+        <label class="group-label">Binding Finishing:</label>
+        <div class="binding-button-group">
+          <button type="button" class="btn-binding active" data-binding="center-pin">
+            <span class="b-icon">📌</span>
+            <span class="b-txt">Center Pin</span>
+            <span class="b-sub">Saddle Stitch (Pins)</span>
           </button>
-
-          <button type="button" class="nav-btn-round" id="btnPrevPage" title="Previous Spread (or click left page)">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
+          <button type="button" class="btn-binding" data-binding="hardcase-silai">
+            <span class="b-icon">🧵</span>
+            <span class="b-txt">Hard Case Silai</span>
+            <span class="b-sub">Section Sewn Hardcover</span>
           </button>
-
-          <div class="page-counter-badge" id="pageCounterBadge">
-            Pages 1–2 of 12
-          </div>
-
-          <button type="button" class="nav-btn-round" id="btnNextPage" title="Next Spread (or click right page)">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
+          <button type="button" class="btn-binding" data-binding="hardcase-layflat">
+            <span class="b-icon">📖</span>
+            <span class="b-txt">Back-to-Back Pasting</span>
+            <span class="b-sub">100% Flat (No Pin / Silai)</span>
           </button>
-
-          <button type="button" class="nav-btn-round" id="btnLastPage" title="Last Page">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="13 17 18 12 13 7"></polyline>
-              <polyline points="6 17 11 12 6 7"></polyline>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- BINDING SPECIFICATIONS & ENQUIRY PANEL -->
-      <div class="container">
-        <div class="viewer-spec-details-panel">
-          <div class="spec-info-col">
-            <h3 id="specBindingTitle">Hard Case Seamless (Back-to-Back Pasting Layflat)</h3>
-            <p class="spec-info-desc" id="specBindingDesc">
-              The gold standard for luxury wedding albums and panoramic fine-art photobooks. Each spread is mounted back-to-back with composite core substrate, opening 180° completely flat. No staples, no stitching thread, zero image lost in the center gutter fold.
-            </p>
-
-            <div class="spec-chips-row">
-              <div class="spec-chip">
-                <strong>Pages:</strong> <span id="specPagesCount">12 Pages</span>
-              </div>
-              <div class="spec-chip">
-                <strong>Paper Options:</strong> <span id="specGsmRec">250 to 350 GSM Photographic Board Core</span>
-              </div>
-              <div class="spec-chip">
-                <strong>Spine Thickness:</strong> <span id="specSpineEst">~15mm - 40mm (Flush Layflat)</span>
-              </div>
-              <div class="spec-chip">
-                <strong>Studio Production:</strong> <span>Saki Naka, Mumbai</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="spec-action-col">
-            <div>
-              <span class="spec-action-title">PRINTING ESTIMATE INQUIRY</span>
-              <div class="spec-action-price-est">Custom Direct Studio Rate</div>
-              <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px;">
-                Send your page count and binding choice directly to our Mumbai studio for paper swatches & exact pricing.
-              </p>
-            </div>
-
-            <a href="https://wa.me/918840035249" target="_blank" rel="noopener noreferrer" class="btn-whatsapp-inquire" id="btnWaInquire">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
-              </svg>
-              <span>Inquire on WhatsApp</span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <!-- DRAG & DROP MODAL -->
-    <div class="upload-dropzone-modal" id="uploadDropzoneModal">
-      <div class="dropzone-box" id="dropzoneBox">
-        <button type="button" class="dropzone-close-btn" id="dropzoneCloseBtn" aria-label="Close Modal">&times;</button>
-        <svg class="dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-          <polyline points="14 2 14 8 20 8"></polyline>
-          <line x1="12" y1="18" x2="12" y2="12"></line>
-          <line x1="9" y1="15" x2="12" y2="12"></line>
-          <line x1="15" y1="15" x2="12" y2="12"></line>
-        </svg>
-        <h3 class="dropzone-title">Drop your PDF or Images here</h3>
-        <p class="dropzone-subtitle">Multi-page PDF or image files drop karein. File turant 3D Flip book ban kar load ho jayegi.</p>
-        
-        <label class="btn-upload-pdf" style="margin: 0 auto; display: inline-flex;">
-          <span>Browse Files</span>
-          <input type="file" onchange="document.getElementById('pdfFileInput').files = this.files; document.getElementById('pdfFileInput').dispatchEvent(new Event('change'));" accept="application/pdf,image/*" multiple />
-        </label>
-
-        <div class="dropzone-privacy-note">
-          🔒 Zero Server Storage: File is strictly processed in your device's memory.
         </div>
       </div>
     </div>
 
-    <!-- FOOTER -->
-    <footer class="site-footer" style="margin-top: auto;">
-      <div class="container footer-inner">
-        <div class="footer-top">
-          <div class="footer-brand-col">
-            <div class="logo-text">
-              <span class="brand-name">CraftsVeda</span>
-              <span class="brand-tag">PREMIUM PRINTING STUDIO</span>
-            </div>
-            <p class="footer-tagline">
-              Premium Printing. Made to Be Remembered. Turning concepts into premium tactile experiences with uncompromised precision in Saki Naka, Mumbai.
-            </p>
-          </div>
-          <div class="footer-nav-col">
-            <h3 class="footer-heading">Studio Services</h3>
-            <ul class="footer-links">
-              <li><a href="book-viewer.html">3D Book & Album Preview</a></li>
-              <li><a href="luxury-business-cards.html">Luxury Business Cards</a></li>
-              <li><a href="index.html#what-we-print">Rigid Boxes & Packaging</a></li>
-              <li><a href="index.html#special-finishes">Hot Foil & Spot UV Finishes</a></li>
-            </ul>
-          </div>
-          <div class="footer-nav-col">
-            <h3 class="footer-heading">Direct Contact</h3>
-            <ul class="footer-links">
-              <li><a href="tel:8840035249">+91 88400 35249</a></li>
-              <li><a href="mailto:vkzway2@gmail.com">vkzway2@gmail.com</a></li>
-              <li><span>Studio: Saki Naka, Mumbai</span></li>
-              <li><a href="track.html">Track Existing Order</a></li>
-            </ul>
-          </div>
+    <!-- DRAG & DROP ZONE (Overlaid or clickable) -->
+    <div class="drag-drop-bar" id="dragDropZone">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="drop-icon"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/></svg>
+      <span>Drag & Drop your <strong>PDF</strong> or <strong>Images</strong> anywhere to preview instantly (100% Private, In-Browser)</span>
+    </div>
+
+    <!-- 3D BOOK STAGE -->
+    <div class="book-viewport-stage" id="bookStage">
+
+      <!-- Physical 3D Handbook Container -->
+      <div class="handbook-assembly" id="handbookAssembly" data-binding="center-pin" data-orientation="portrait">
+        
+        <!-- Outer Hardcover Spine & Boards (Visually active when Hard Case is chosen) -->
+        <div class="hardcover-chassis" id="hardcoverChassis">
+          <div class="hardcover-back-board"></div>
+          <div class="hardcover-spine"></div>
+          <div class="hardcover-front-board"></div>
         </div>
-        <div class="footer-bottom">
-          <p class="copyright-text">
-            &copy; 2026 CraftsVeda Printing Studio. All Rights Reserved. Artisanal print production in Mumbai.
-          </p>
+
+        <!-- Left Page Stack (Simulates thickness of passed pages) -->
+        <div class="page-thickness-stack stack-left" id="stackLeft">
+          <div class="stack-edge-lines"></div>
+        </div>
+
+        <!-- The Interactive 2-Page Spread -->
+        <div class="book-spread" id="bookSpread">
+          
+          <!-- LEFT PAGE -->
+          <div class="book-page page-left" id="pageLeft">
+            <div class="page-sheet-content" id="leftSheetContent">
+              <div class="page-inner-art" id="leftInnerArt"></div>
+              <div class="page-corner-fold" title="Flip Previous"></div>
+            </div>
+            <div class="paper-gutter-shadow gutter-left"></div>
+            <span class="page-num-tag" id="leftPageNum">1</span>
+          </div>
+
+          <!-- CENTER GUTTER / BINDING HARDWARE SIMULATION -->
+          <div class="center-gutter-hardware" id="gutterHardware">
+            <!-- Saddle Stitch Staples (Center Pin) -->
+            <div class="staple-wire staple-top"></div>
+            <div class="staple-wire staple-bottom"></div>
+
+            <!-- Section Sewing Thread Stitches (Silai) -->
+            <div class="thread-stitch-line">
+              <span class="stitch-loop"></span>
+              <span class="stitch-loop"></span>
+              <span class="stitch-loop"></span>
+              <span class="stitch-loop"></span>
+              <span class="stitch-loop"></span>
+            </div>
+
+            <!-- Layflat Back-to-Back Pasting Seamless Joint Indicator -->
+            <div class="layflat-seam">
+              <span class="layflat-badge">180° Seamless Layflat</span>
+            </div>
+          </div>
+
+          <!-- RIGHT PAGE -->
+          <div class="book-page page-right" id="pageRight">
+            <div class="page-sheet-content" id="rightSheetContent">
+              <div class="page-inner-art" id="rightInnerArt"></div>
+              <div class="page-corner-fold" title="Flip Next"></div>
+            </div>
+            <div class="paper-gutter-shadow gutter-right"></div>
+            <span class="page-num-tag" id="rightPageNum">2</span>
+          </div>
+
+        </div>
+
+        <!-- Right Page Stack (Simulates thickness of upcoming pages) -->
+        <div class="page-thickness-stack stack-right" id="stackRight">
+          <div class="stack-edge-lines"></div>
+        </div>
+
+        <!-- Realistic handbook table drop shadow -->
+        <div class="handbook-shadow"></div>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM READER NAVIGATION STRIP -->
+    <div class="reader-nav-strip">
+      <button type="button" class="nav-arrow-btn" id="btnPrevPage" aria-label="Previous Page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        <span>Prev</span>
+      </button>
+
+      <div class="page-scrubber-wrap">
+        <span class="scrub-label" id="scrubberText">Spread 1-2 of 20</span>
+        <input type="range" id="pageScrubber" min="1" max="10" value="1" class="scrub-range">
+        <span class="ratio-indicator" id="ratioIndicatorBadge">A4 Portrait (Spread 1.41 : 1)</span>
+      </div>
+
+      <button type="button" class="nav-arrow-btn" id="btnNextPage" aria-label="Next Page">
+        <span>Next</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+
+  </main>
+
+  <!-- FLOATING WHATSAPP BUTTON (Mandatory direct link) -->
+  <a href="https://wa.me/918840035249?text=Hi%20CraftsVeda,%20I%20am%20reviewing%20my%20book%20preview%20in%20the%203D%20viewer%20and%20want%20to%20discuss%20printing%20and%20binding." target="_blank" rel="noopener noreferrer" class="floating-whatsapp-btn" aria-label="Chat on WhatsApp">
+    <svg viewBox="0 0 32 32" class="wa-icon" fill="currentColor">
+      <path d="M16 2a13.9 13.9 0 0 0-12 21L2 30l7.2-1.9A13.9 13.9 0 1 0 16 2zm0 25.5a11.5 11.5 0 0 1-5.9-1.6l-.4-.2-4.3 1.1 1.2-4.2-.3-.5A11.5 11.5 0 1 1 16 27.5zm6.3-8.6c-.3-.2-2-.9-2.3-1s-.6-.2-.8.2-.9 1-1.1 1.2-.4.2-.7 0a9.2 9.2 0 0 1-2.7-1.7 10.2 10.2 0 0 1-1.9-2.3c-.2-.3 0-.5.1-.7s.3-.4.5-.6.2-.3.3-.5a.6.6 0 0 0 0-.6c-.1-.2-.8-2-1.1-2.7s-.6-.6-.8-.6h-.7a1.4 1.4 0 0 0-1 .5 4.3 4.3 0 0 0-1.3 3.2 7.5 7.5 0 0 0 1.6 4 17.2 17.2 0 0 0 6.6 5.8c2.4 1 2.9.8 3.5.7a3 3 0 0 0 2-1.4 2.5 2.5 0 0 0 .2-1.4c-.1-.3-.4-.4-.7-.6z"/>
+    </svg>
+    <span class="wa-tooltip">Order & Print on WhatsApp</span>
+  </a>
+
+  <!-- ORIGINAL CRAFTSVEDA FOOTER (PRESERVED AS REQUESTED) -->
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-brand">
+        <a href="index.html" class="logo">
+          <span class="logo-mark">CV</span>
+          <span class="logo-text">CraftsVeda<span class="gold-dot">.</span></span>
+        </a>
+        <p>Bespoke luxury print atelier based in Mumbai. Precision Pantone offset, artisanal foil guilding, letterpress, and master bookbinding.</p>
+        <div class="footer-contact">
+          <a href="tel:+918840035249" class="phone-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+            +91 8840035249
+          </a>
+          <a href="mailto:vkzway2@gmail.com" class="phone-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            vkzway2@gmail.com
+          </a>
+          <span class="footer-addr">Lower Parel & Fort Atelier, Mumbai, Maharashtra 400013</span>
         </div>
       </div>
-    </footer>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Atelier Crafts</h4>
+          <a href="luxury-business-cards.html">Luxury Business Cards</a>
+          <a href="book-viewer.html">3D Handbook Viewer</a>
+          <a href="luxury-business-cards.html#pricing-matrix">Price Matrix & Calculator</a>
+          <a href="track.html">Live Order Tracking</a>
+        </div>
+        <div class="footer-col">
+          <h4>Binding Formats</h4>
+          <a href="book-viewer.html" onclick="window.selectBindingPreset && window.selectBindingPreset('center-pin')">Center Pin (Saddle Stitch)</a>
+          <a href="book-viewer.html" onclick="window.selectBindingPreset && window.selectBindingPreset('hardcase-silai')">Hard Case Section Silai</a>
+          <a href="book-viewer.html" onclick="window.selectBindingPreset && window.selectBindingPreset('hardcase-layflat')">Back-to-Back Pasting Layflat</a>
+          <a href="https://wa.me/918840035249?text=Custom%20Book%20Binding%20Quote" target="_blank" rel="noopener">Custom Atelier Quote</a>
+        </div>
+        <div class="footer-col">
+          <h4>Production Standards</h4>
+          <span>• Zero Server Upload (Client-Side Rendering)</span>
+          <span>• A3, A4, A5, 9x11, 8.5x11 Presets</span>
+          <span>• Portrait & Landscape 2:3 / 4:1 Spreads</span>
+          <span>• FSC Certified European Stocks</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container footer-bottom-inner">
+        <p>&copy; 2026 CraftsVeda Atelier Mumbai. All rights reserved. Master Printing & Bookbinding Guild.</p>
+        <p class="footer-note">Handcrafted with precision for brand directors, architects, and designers.</p>
+      </div>
+    </div>
+  </footer>
 
-    <!-- Scripts -->
-    <script src="book-viewer.js?v=1.0"></script>
-  </body>
+  <script src="book-viewer.js"></script>
+</body>
 </html>

@@ -1,620 +1,662 @@
 /**
- * CraftsVeda 3D PageFlip Book & Album Studio (book-viewer.js)
- * 100% Client-Side In-Browser PDF & Image Flip Engine
- * Privacy Guarantee: Files are rendered locally in RAM, never sent to server.
+ * CraftsVeda™ 3D PageFlip Handbook & Book Viewer
+ * 100% In-Browser Private Processing (Zero Server Storage)
+ * Supports: A4, A5, A3, 8.5x11", 9x11", Square (Portrait & Landscape)
+ * Auto Aspect Ratio Detection from Uploaded PDF / Images
+ * 3 Binding Finishes:
+ *   1. Center Pin (Saddle Stitch with Staples)
+ *   2. Hard Case Section Silai (Hardcover with Sewn Thread)
+ *   3. Hard Case Back-to-Back Pasting (Layflat - Zero Pin / Zero Silai)
  */
 
 (function () {
-  "use strict";
+  'use strict';
 
-  // State Management
+  // Configure PDF.js Worker if available
+  if (window.pdfjsLib) {
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+
+  // --- STATE ---
   const state = {
-    bindingMode: "layflat", // 'centerpin', 'hardcase', 'layflat'
-    currentPage: 1, // 1-indexed (spread: left = currentPage, right = currentPage + 1)
-    totalPages: 0,
-    pages: [], // Array of Canvas/Image elements
-    isFlipping: false,
-    autoplayTimer: null,
-    zoomLevel: 1.0,
-    soundEnabled: true
+    pages: [],               // Array of page rendering descriptors { type: 'canvas'|'html', render: fn, label: string }
+    totalPages: 20,
+    currentSpread: 1,        // 1-based index: Spread 1 shows page 1 & 2
+    totalSpreads: 10,
+    sizePreset: 'a4',        // 'auto', 'a4', 'a5', 'a3', 'letter', 'album', 'square'
+    orientation: 'portrait', // 'portrait' | 'landscape'
+    binding: 'center-pin',   // 'center-pin' | 'hardcase-silai' | 'hardcase-layflat'
+    autoDetectedRatio: null, // Spread aspect ratio (2 * W / H) if detected from file
+    pdfDoc: null,
+    isFlipping: false
   };
 
-  // DOM Elements
-  const casingWrapper = document.getElementById("bookCasingWrapper");
-  const stageInner = document.getElementById("bookStageInner");
-  const leftPageEl = document.getElementById("leftPageContainer");
-  const rightPageEl = document.getElementById("rightPageContainer");
-  const leftPageNum = document.getElementById("leftPageNum");
-  const rightPageNum = document.getElementById("rightPageNum");
-  const pageCounterBadge = document.getElementById("pageCounterBadge");
+  // Dimensions in points/units (Width, Height in Portrait)
+  const PRESET_DIMENSIONS = {
+    a4: { w: 210, h: 297, name: 'A4 (210 × 297 mm)' },
+    a5: { w: 148, h: 210, name: 'A5 (148 × 210 mm)' },
+    a3: { w: 297, h: 420, name: 'A3 (297 × 420 mm)' },
+    letter: { w: 8.5, h: 11, name: '8.5" × 11" (Letter)' },
+    album: { w: 9, h: 11, name: '9" × 11" (Photo Book)' },
+    square: { w: 8, h: 8, name: 'Square (8" × 8")' }
+  };
 
-  const btnPrev = document.getElementById("btnPrevPage");
-  const btnNext = document.getElementById("btnNextPage");
-  const btnFirst = document.getElementById("btnFirstPage");
-  const btnLast = document.getElementById("btnLastPage");
-  const btnAutoplay = document.getElementById("btnAutoplay");
-  const btnFullscreen = document.getElementById("btnFullscreen");
-  const btnSound = document.getElementById("btnSoundToggle");
-  const pdfFileInput = document.getElementById("pdfFileInput");
-  const dropzoneModal = document.getElementById("uploadDropzoneModal");
-  const dropzoneBox = document.getElementById("dropzoneBox");
-  const dropzoneCloseBtn = document.getElementById("dropzoneCloseBtn");
-  const btnOpenUpload = document.getElementById("btnOpenUpload");
-  const btnLoadDemo = document.getElementById("btnLoadDemo");
-  const viewerStatusText = document.getElementById("viewerStatusText");
+  // --- DOM ELEMENTS ---
+  const el = {
+    assembly: document.getElementById('handbookAssembly'),
+    pageLeft: document.getElementById('pageLeft'),
+    pageRight: document.getElementById('pageRight'),
+    leftArt: document.getElementById('leftInnerArt'),
+    rightArt: document.getElementById('rightInnerArt'),
+    leftPageNum: document.getElementById('leftPageNum'),
+    rightPageNum: document.getElementById('rightPageNum'),
+    stackLeft: document.getElementById('stackLeft'),
+    stackRight: document.getElementById('stackRight'),
+    fileInput: document.getElementById('pdfFileInput'),
+    btnUpload: document.getElementById('btnUploadTrigger'),
+    btnDemo: document.getElementById('btnLoadA4Demo'),
+    fileBadge: document.getElementById('fileInfoBadge'),
+    sizeSelect: document.getElementById('sizePresetSelect'),
+    btnPortrait: document.getElementById('btnPortrait'),
+    btnLandscape: document.getElementById('btnLandscape'),
+    bindingButtons: document.querySelectorAll('.btn-binding'),
+    dragDropZone: document.getElementById('dragDropZone'),
+    btnPrev: document.getElementById('btnPrevPage'),
+    btnNext: document.getElementById('btnNextPage'),
+    scrubber: document.getElementById('pageScrubber'),
+    scrubberText: document.getElementById('scrubberText'),
+    ratioIndicator: document.getElementById('ratioIndicatorBadge')
+  };
 
-  // Spec Info Elements
-  const specBindingTitle = document.getElementById("specBindingTitle");
-  const specBindingDesc = document.getElementById("specBindingDesc");
-  const specPagesCount = document.getElementById("specPagesCount");
-  const specGsmRec = document.getElementById("specGsmRec");
-  const specSpineEst = document.getElementById("specSpineEst");
-  const btnWaInquire = document.getElementById("btnWaInquire");
+  // --- ASPECT RATIO & GEOMETRY CALCULATOR ---
+  function computeSpreadRatio() {
+    if (state.sizePreset === 'auto' && state.autoDetectedRatio) {
+      return state.autoDetectedRatio;
+    }
 
-  // 1. SYNTHESIZED PAGE TURN AUDIO (Web Audio API)
-  let audioCtx = null;
-  function playPageTurnSound() {
-    if (!state.soundEnabled) return;
-    try {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === "suspended") {
-        audioCtx.resume();
-      }
-      const bufferSize = audioCtx.sampleRate * 0.15;
-      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-      const output = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) {
-        output[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.35));
-      }
-      const whiteNoise = audioCtx.createBufferSource();
-      whiteNoise.buffer = buffer;
+    const dims = PRESET_DIMENSIONS[state.sizePreset] || PRESET_DIMENSIONS.a4;
+    let singleW, singleH;
 
-      const filter = audioCtx.createBiquadFilter();
-      filter.type = "bandpass";
-      filter.frequency.setValueAtTime(800, audioCtx.currentTime);
-      filter.Q.setValueAtTime(1.2, audioCtx.currentTime);
+    if (state.orientation === 'portrait') {
+      singleW = Math.min(dims.w, dims.h);
+      singleH = Math.max(dims.w, dims.h);
+    } else {
+      singleW = Math.max(dims.w, dims.h);
+      singleH = Math.min(dims.w, dims.h);
+    }
 
-      const gain = audioCtx.createGain();
-      gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.14);
+    // Two single pages open side-by-side: Spread Width = 2 * singleW
+    const spreadRatio = (2 * singleW) / singleH;
+    return spreadRatio;
+  }
 
-      whiteNoise.connect(filter);
-      filter.connect(gain);
-      gain.connect(audioCtx.destination);
-      whiteNoise.start();
-    } catch (e) {
-      // Audio not permitted or supported
+  function applyGeometry() {
+    const ratio = computeSpreadRatio();
+    el.assembly.style.setProperty('--spread-aspect-ratio', ratio.toFixed(3));
+
+    // Update ratio label badge
+    let label = '';
+    if (state.sizePreset === 'auto') {
+      label = `Auto Detected (${ratio.toFixed(2)} : 1 Spread)`;
+    } else {
+      const preset = PRESET_DIMENSIONS[state.sizePreset];
+      const orientLabel = state.orientation.charAt(0).toUpperCase() + state.orientation.slice(1);
+      label = `${preset.name} - ${orientLabel} (${ratio.toFixed(2)} : 1 Spread)`;
+    }
+    el.ratioIndicator.textContent = label;
+
+    // Adjust max width based on landscape vs portrait
+    if (ratio > 2.2) {
+      el.assembly.style.maxWidth = '1120px';
+    } else {
+      el.assembly.style.maxWidth = '920px';
     }
   }
 
-  // 2. BINDING MODE SELECTION
-  const BINDING_SPECS = {
-    centerpin: {
-      title: "Center Pin (Saddle Stitch / Staple Binding)",
-      desc: "Flexible soft-cover binding with dual metallic wire staples along the central spine fold. Best suited for high-end lookbooks, event programs, and catalogs up to 48–64 pages. Shows natural curved gutter fold with metallic staples.",
-      gsm: "130 GSM to 250 GSM Art Paper",
-      spine: "~1.5mm - 3.5mm",
-      badge: "Center Pin Active",
-      className: "mode-centerpin"
-    },
-    hardcase: {
-      title: "Hard Case Binding (Section Sewn / Section Silai)",
-      desc: "Architectural rigid hardcover board casing with traditional bookbinding thread sewing (section silai) along the gutter. Includes deep valley crease and satin ribbon bookmark. Built for coffee-table books, luxury corporate archives, and heavy volumes.",
-      gsm: "170 GSM to 300 GSM Art Card + 3mm Rigid Board",
-      spine: "~12mm - 35mm (Square Spine)",
-      badge: "Hardcase Silai Active",
-      className: "mode-hardcase"
-    },
-    layflat: {
-      title: "Hard Case Seamless (Back to Back Pasting Layflat)",
-      desc: "The gold standard for luxury wedding albums and panoramic fine-art photobooks. Each spread is mounted back-to-back with composite core substrate, opening 180° completely flat. No staples, no stitching thread, zero image lost in the center gutter fold.",
-      gsm: "250 to 350 GSM Photographic Board Core",
-      spine: "~15mm - 40mm (Flush Layflat)",
-      badge: "Seamless Layflat Active",
-      className: "mode-layflat"
-    }
-  };
+  // --- DYNAMIC PAGE STACK DEPTH PHYSICS ---
+  function updateStackDepth() {
+    const currentLeftPage = (state.currentSpread - 1) * 2;
+    const total = state.totalPages || 20;
 
-  function setBindingMode(mode) {
-    if (!BINDING_SPECS[mode]) return;
-    state.bindingMode = mode;
+    const maxDepth = 18; // px
+    const leftFraction = Math.max(0, Math.min(1, currentLeftPage / total));
+    const rightFraction = Math.max(0, Math.min(1, (total - currentLeftPage) / total));
 
-    // Update active card class
-    document.querySelectorAll(".binding-card").forEach((card) => {
-      card.classList.toggle("active", card.dataset.binding === mode);
+    const leftDepth = Math.max(2, Math.round(leftFraction * maxDepth));
+    const rightDepth = Math.max(2, Math.round(rightFraction * maxDepth));
+
+    el.assembly.style.setProperty('--stack-l-depth', `${leftDepth}px`);
+    el.assembly.style.setProperty('--stack-r-depth', `${rightDepth}px`);
+  }
+
+  // --- 20-PAGE A4 DEMO HANDBOOK GENERATOR ---
+  function generateA4DemoPages() {
+    const pages = [];
+    const chapters = [
+      {
+        title: "CraftsVeda Atelier Mumbai",
+        sub: "Master Handbook of Haute Impression & Bookbinding",
+        type: "cover"
+      },
+      {
+        ch: "Chapter 01",
+        title: "Philosophy of Bespoke Print",
+        p1: "At CraftsVeda, print is not merely ink transferred to wood pulp; it is an architectural expression of brand identity.",
+        p2: "Every GSM rating, tooth grain texture, and foil micron depth is calibrated with micron precision in our Lower Parel atelier.",
+        box: "Standard Calibration: 100% Pantone solid ink matching under D50 5000K daylight simulation."
+      },
+      {
+        ch: "Chapter 02",
+        title: "Curated European Paper Stocks",
+        p1: "We import virgin pulp stocks directly from century-old Italian and German paper mills.",
+        p2: "Explore cotton-rich Gmund, Fedrigoni Materica, and wild textured Arjowiggins Conqueror up to 1200 GSM duplexed sheets.",
+        box: "Available Finishes: Rough Felt, Linen, Laid, Smooth Vellum, and Ultra-Matt Suede."
+      },
+      {
+        ch: "Chapter 03",
+        title: "Center Pin (Saddle Stitch) Engineering",
+        p1: "The timeless booklet finishing: dual electro-plated silver staples pierced through the structural center crease.",
+        p2: "Ideal for lookbooks, catalogues, and annual profiles from 8 to 48 pages. Ultra-light, economical, and razor-sharp.",
+        box: "Pin Options: Stainless Chrome, Matte Black Wire, or Artisanal Copper-Brass."
+      },
+      {
+        ch: "Chapter 04",
+        title: "Center Pin Gutter Specifications",
+        p1: "We apply automatic page creep compensation so that outer trims remain flush without shearing interior margins.",
+        p2: "Each sheet folds naturally into the saddle fold with zero spine buckling or cracking.",
+        box: "Creep Compensation: 0.12mm stepped trim per 4-page signature."
+      },
+      {
+        ch: "Chapter 05",
+        title: "Hard Case Section Silai (Sewn)",
+        p1: "The gold standard of heirloom archival books. Folded signatures are physically sewn with high-tensile cotton-linen thread.",
+        p2: "Bound within rigid 3.5mm Dutch kappa board with head & tail bands and silk ribbon bookmarks.",
+        box: "Sewing Structure: French link stitch or Smyth sewn section signatures."
+      },
+      {
+        ch: "Chapter 06",
+        title: "Section Silai Valley Crease Dynamics",
+        p1: "Notice the deep valley fold in the center gutter. Each signature holds its own tension, allowing the book to open comfortably.",
+        p2: "Rated for 100+ years of library shelf archival life without glue brittleness.",
+        box: "Spine Hinge: Precision scored joint groove for smooth page turning."
+      },
+      {
+        ch: "Chapter 07",
+        title: "Back-to-Back Pasting (Layflat)",
+        p1: "For panoramic spreads, luxury real estate dossiers, and bridal archives where zero image detail can be lost in the fold.",
+        p2: "Each sheet is printed single-side and bonded back-to-back with neutral pH archival adhesive.",
+        box: "Key Benefit: 100% Flat 180° spread with ZERO center pin and ZERO thread silai visible."
+      },
+      {
+        ch: "Chapter 08",
+        title: "Seamless Panoramic Transition",
+        p1: "Architectural blueprints, wide-angle photography, and horizontal timeline spreads flow across both pages seamlessly.",
+        p2: "The center gutter is virtually invisible, giving an uninterrupted double-page canvas.",
+        box: "Substrate: 300 GSM Art Card bonded back-to-back into an ultra-rigid 600 GSM leaf."
+      },
+      {
+        ch: "Chapter 09",
+        title: "Artisanal Hot Foil Gilding",
+        p1: "Applied with heated magnesium and brass dies under 2.5 tons of mechanical pressure for deep dimensional bite.",
+        p2: "Available in Kurz Luxor gold, brushed champagne, deep copper, and holographic security foils.",
+        box: "Die Precision: 0.1pt ultra-fine hairline foil stamping capability."
+      },
+      {
+        ch: "Chapter 10",
+        title: "Blind Debossing & Letterpress",
+        p1: "Crisp tactile indentation that catches light and shadow without relying on pigment.",
+        p2: "Ideal for monograms, architectural emblems, and luxury brand crests.",
+        box: "Bite Depth: Up to 0.45mm deep sculptural impression."
+      },
+      {
+        ch: "Chapter 11",
+        title: "Specialty Screen Embellishments",
+        p1: "High-build tactile UV varnish, sand texture tactile effects, and pearlescent screen inks.",
+        p2: "Adds irresistible touch-and-feel contrast against velvet soft-touch laminate coatings.",
+        box: "UV Height: Up to 60-micron raised gloss polymer."
+      },
+      {
+        ch: "Chapter 12",
+        title: "Color Fidelity & Pantone Labs",
+        p1: "Our ink laboratory mixes custom Pantone inks by weight on certified Sartorius analytical scales.",
+        p2: "Guarantees identical corporate color rendition across coated, uncoated, and kraft stocks.",
+        box: "Delta-E Tolerance: ΔE < 1.5 color deviation under spectrophotometer testing."
+      },
+      {
+        ch: "Chapter 13",
+        title: "Hardcover Exterior Cloth & Leathers",
+        p1: "Wrapped with premium bookcloths from Winter & Company, Buckram, and Italian bonded leather.",
+        p2: "Water-resistant, stain-resistant, and foil-stamp receptive.",
+        box: "Spine Styles: Square spine, rounded library spine, or exposed Swiss binding."
+      },
+      {
+        ch: "Chapter 14",
+        title: "Endpapers & Dust Jackets",
+        p1: "Reinforced 180 GSM unprinted or custom illustrated endpapers connecting book block to kappa board.",
+        p2: "Optional French-fold dust jackets with matte scratch-resistant lamination.",
+        box: "Endpaper Options: Color-matched Keaykolour or metallic Sirio Pearl."
+      },
+      {
+        ch: "Chapter 15",
+        title: "Sustainability & FSC Certification",
+        p1: "All paper stocks sourced from responsibly managed forests adhering to FSC Mix and PEFC protocols.",
+        p2: "Soy-based vegetable printing inks with zero VOC emissions.",
+        box: "Eco Standard: 100% biodegradable, acid-free, and chlorine-free."
+      },
+      {
+        ch: "Chapter 16",
+        title: "Turnaround & Mumbai Atelier Dispatch",
+        p1: "Rush prototypes crafted in 24 to 48 hours for brand director approvals.",
+        p2: "Full production runs hand-inspected, wrapped in archival tissue, and delivered across Mumbai, BKC, and global destinations.",
+        box: "Direct WhatsApp hotline with master bindery supervisors."
+      },
+      {
+        ch: "Chapter 17",
+        title: "Handbook Specification Summary",
+        p1: "Dimensions: A4 / A5 / A3 / 8.5x11 / 9x11 / Square Custom.",
+        p2: "Bindings: Center Pin, Section Silai Hard Case, Back-to-Back Pasting Layflat.",
+        box: "File Requirements: High-Res 300 DPI PDF with 3mm bleed."
+      },
+      {
+        ch: "Chapter 18",
+        title: "Custom Atelier Consultations",
+        p1: "Bring your design files or meet our print masters in Lower Parel or Fort.",
+        p2: "We review paper samples, dummy mockups, and foil test cards before you commit to final print.",
+        box: "Contact: +91 8840035249 | vkzway2@gmail.com"
+      },
+      {
+        title: "CraftsVeda™ Atelier Guild",
+        sub: "Mumbai • Established 2026 • Master Printing & Fine Bookbinding",
+        type: "backcover"
+      }
+    ];
+
+    chapters.forEach((item, index) => {
+      const pageNum = index + 1;
+      pages.push({
+        type: 'html',
+        pageNum: pageNum,
+        render: (container) => {
+          if (item.type === 'cover' || item.type === 'backcover') {
+            container.innerHTML = `
+              <div class="sample-page-sheet cover">
+                <span class="sample-cover-badge">CRAFTSVEDA ATELIER</span>
+                <h1 class="sample-cover-title">${item.title}</h1>
+                <p class="sample-cover-sub">${item.sub}</p>
+                <div style="font-size:0.75rem; letter-spacing:0.1em; color:var(--gold-accent);">
+                  ${item.type === 'cover' ? 'PAGE 01 • HANDBOOK EDITION' : 'LOWER PAREL & FORT • MUMBAI'}
+                </div>
+              </div>
+            `;
+          } else {
+            container.innerHTML = `
+              <div class="sample-page-sheet">
+                <div class="sample-sheet-header">
+                  <span class="sample-chapter">${item.ch || 'CRAFTSVEDA'}</span>
+                  <span class="sample-folio">${pageNum}</span>
+                </div>
+                <div class="sample-sheet-body">
+                  <h2 class="sample-h2">${item.title}</h2>
+                  <p class="sample-p">${item.p1}</p>
+                  <p class="sample-p">${item.p2}</p>
+                  <div class="sample-feature-card">${item.box}</div>
+                </div>
+                <div class="sample-sheet-footer">
+                  <span>CraftsVeda Bookbinding Guild</span>
+                  <span>A4 Handbook Preview</span>
+                </div>
+              </div>
+            `;
+          }
+        }
+      });
     });
 
-    // Update 3D Casing element classes
-    casingWrapper.classList.remove("mode-centerpin", "mode-hardcase", "mode-layflat");
-    casingWrapper.classList.add(BINDING_SPECS[mode].className);
-
-    // Update Spec Details
-    const spec = BINDING_SPECS[mode];
-    if (specBindingTitle) specBindingTitle.textContent = spec.title;
-    if (specBindingDesc) specBindingDesc.textContent = spec.desc;
-    if (specGsmRec) specGsmRec.textContent = spec.gsm;
-    if (specSpineEst) specSpineEst.textContent = spec.spine;
-
-    // Update WhatsApp inquiry URL
-    updateWhatsAppLink();
+    state.pages = pages;
+    state.totalPages = pages.length;
+    state.totalSpreads = Math.ceil(pages.length / 2);
+    state.currentSpread = 1;
+    updateNavigationControls();
+    renderSpread(1);
+    el.fileBadge.textContent = 'Demo 20-Page A4 Handbook';
   }
 
-  function updateWhatsAppLink() {
-    if (!btnWaInquire) return;
-    const spec = BINDING_SPECS[state.bindingMode];
-    const pageCount = state.totalPages || 12;
-    const message = `Namaste CraftsVeda! I checked the 3D Book Viewer and would like an estimate for:\n• Binding Style: ${spec.title}\n• Estimated Pages: ${pageCount} pages\n• Preferred Paper: ${spec.gsm}\nPlease share quotation and sample pictures.`;
-    btnWaInquire.href = `https://wa.me/918840035249?text=${encodeURIComponent(message)}`;
-  }
+  // --- RENDER CURRENT SPREAD ---
+  function renderSpread(spreadIdx) {
+    state.currentSpread = Math.max(1, Math.min(spreadIdx, state.totalSpreads));
+    const leftPageIdx = (state.currentSpread - 1) * 2;
+    const rightPageIdx = leftPageIdx + 1;
 
-  // 3. RENDER PAGES TO SPREAD
-  function renderSpread() {
-    if (!state.pages || state.pages.length === 0) return;
+    el.leftArt.innerHTML = '';
+    el.rightArt.innerHTML = '';
 
-    const leftIdx = state.currentPage - 1;
-    const rightIdx = state.currentPage;
-
-    // Left Page
-    leftPageEl.innerHTML = "";
-    if (leftIdx >= 0 && leftIdx < state.pages.length) {
-      const leftCanvas = cloneOrWrapPage(state.pages[leftIdx]);
-      leftPageEl.appendChild(leftCanvas);
-      leftPageNum.textContent = leftIdx + 1;
-      leftPageEl.style.visibility = "visible";
+    // Render Left Page
+    if (leftPageIdx < state.pages.length) {
+      const leftPageData = state.pages[leftPageIdx];
+      el.leftPageNum.textContent = leftPageData.pageNum || (leftPageIdx + 1);
+      leftPageData.render(el.leftArt);
+      el.pageLeft.style.visibility = 'visible';
     } else {
-      leftPageEl.style.visibility = "hidden";
-      leftPageNum.textContent = "";
+      el.leftPageNum.textContent = '';
+      el.pageLeft.style.visibility = 'hidden';
     }
 
-    // Right Page
-    rightPageEl.innerHTML = "";
-    if (rightIdx >= 0 && rightIdx < state.pages.length) {
-      const rightCanvas = cloneOrWrapPage(state.pages[rightIdx]);
-      rightPageEl.appendChild(rightCanvas);
-      rightPageNum.textContent = rightIdx + 1;
-      rightPageEl.style.visibility = "visible";
+    // Render Right Page
+    if (rightPageIdx < state.pages.length) {
+      const rightPageData = state.pages[rightPageIdx];
+      el.rightPageNum.textContent = rightPageData.pageNum || (rightPageIdx + 1);
+      rightPageData.render(el.rightArt);
+      el.pageRight.style.visibility = 'visible';
     } else {
-      rightPageEl.style.visibility = "hidden";
-      rightPageNum.textContent = "";
+      el.rightPageNum.textContent = '';
+      el.pageRight.style.visibility = 'hidden';
     }
 
-    // Counter badge
-    const curEnd = Math.min(state.currentPage + 1, state.totalPages);
-    pageCounterBadge.textContent = `Pages ${state.currentPage}–${curEnd} of ${state.totalPages}`;
-
-    if (specPagesCount) specPagesCount.textContent = `${state.totalPages} Pages`;
-
-    // Button states
-    btnPrev.disabled = state.currentPage <= 1;
-    btnFirst.disabled = state.currentPage <= 1;
-    btnNext.disabled = state.currentPage + 1 >= state.totalPages;
-    btnLast.disabled = state.currentPage + 1 >= state.totalPages;
-
-    updateWhatsAppLink();
+    // Update Stack Depth & UI
+    updateStackDepth();
+    updateNavigationControls();
   }
 
-  function cloneOrWrapPage(pageItem) {
-    if (pageItem instanceof HTMLCanvasElement) {
-      const copyCanvas = document.createElement("canvas");
-      copyCanvas.width = pageItem.width;
-      copyCanvas.height = pageItem.height;
-      copyCanvas.className = "page-content-canvas";
-      const ctx = copyCanvas.getContext("2d");
-      ctx.drawImage(pageItem, 0, 0);
-      return copyCanvas;
-    } else if (pageItem instanceof HTMLImageElement) {
-      const img = document.createElement("img");
-      img.src = pageItem.src;
-      img.className = "page-content-canvas";
-      return img;
-    }
-    const div = document.createElement("div");
-    div.className = "page-content-canvas";
-    return div;
+  function updateNavigationControls() {
+    const leftNum = (state.currentSpread - 1) * 2 + 1;
+    const rightNum = Math.min(leftNum + 1, state.totalPages);
+    el.scrubberText.textContent = `Pages ${leftNum}-${rightNum} of ${state.totalPages}`;
+
+    el.scrubber.min = 1;
+    el.scrubber.max = state.totalSpreads;
+    el.scrubber.value = state.currentSpread;
+
+    el.btnPrev.disabled = (state.currentSpread <= 1);
+    el.btnNext.disabled = (state.currentSpread >= state.totalSpreads);
   }
 
-  // 4. 3D FLIP ANIMATIONS
+  // --- PAGE FLIP ANIMATIONS ---
   function flipNext() {
-    if (state.isFlipping || state.currentPage + 1 >= state.totalPages) return;
+    if (state.isFlipping || state.currentSpread >= state.totalSpreads) return;
     state.isFlipping = true;
-    playPageTurnSound();
 
-    const currentRightPage = state.pages[state.currentPage];
-    const upcomingLeftPage = state.pages[state.currentPage + 1];
-
-    // Create 3D flipping leaf
-    const leaf = document.createElement("div");
-    leaf.className = "flipping-leaf flip-forward";
-
-    const frontFace = document.createElement("div");
-    frontFace.className = "leaf-face leaf-front";
-    if (currentRightPage) frontFace.appendChild(cloneOrWrapPage(currentRightPage));
-
-    const backFace = document.createElement("div");
-    backFace.className = "leaf-face leaf-back";
-    if (upcomingLeftPage) backFace.appendChild(cloneOrWrapPage(upcomingLeftPage));
-
-    leaf.appendChild(frontFace);
-    leaf.appendChild(backFace);
-    stageInner.appendChild(leaf);
-
-    // Trigger turn
-    requestAnimationFrame(() => {
-      leaf.style.transform = "rotateY(-180deg)";
-    });
-
+    el.pageRight.classList.add('flipping-forward');
     setTimeout(() => {
-      state.currentPage += 2;
-      renderSpread();
-      if (leaf.parentNode) leaf.parentNode.removeChild(leaf);
+      renderSpread(state.currentSpread + 1);
+      el.pageRight.classList.remove('flipping-forward');
       state.isFlipping = false;
-    }, 650);
+    }, 280);
   }
 
   function flipPrev() {
-    if (state.isFlipping || state.currentPage <= 1) return;
+    if (state.isFlipping || state.currentSpread <= 1) return;
     state.isFlipping = true;
-    playPageTurnSound();
 
-    const previousRightPage = state.pages[state.currentPage - 1];
-    const currentLeftPage = state.pages[state.currentPage - 2];
-
-    const leaf = document.createElement("div");
-    leaf.className = "flipping-leaf flip-backward";
-
-    const frontFace = document.createElement("div");
-    frontFace.className = "leaf-face leaf-front";
-    if (currentLeftPage) frontFace.appendChild(cloneOrWrapPage(currentLeftPage));
-
-    const backFace = document.createElement("div");
-    backFace.className = "leaf-face leaf-back";
-    if (previousRightPage) backFace.appendChild(cloneOrWrapPage(previousRightPage));
-
-    leaf.appendChild(frontFace);
-    leaf.appendChild(backFace);
-    stageInner.appendChild(leaf);
-
-    // Start rotated
-    leaf.style.transform = "rotateY(-180deg)";
-
-    requestAnimationFrame(() => {
-      leaf.style.transform = "rotateY(0deg)";
-    });
-
+    el.pageLeft.classList.add('flipping-backward');
     setTimeout(() => {
-      state.currentPage = Math.max(1, state.currentPage - 2);
-      renderSpread();
-      if (leaf.parentNode) leaf.parentNode.removeChild(leaf);
+      renderSpread(state.currentSpread - 1);
+      el.pageLeft.classList.remove('flipping-backward');
       state.isFlipping = false;
-    }, 650);
+    }, 280);
   }
 
-  function goToFirst() {
-    if (state.currentPage === 1) return;
-    state.currentPage = 1;
-    playPageTurnSound();
-    renderSpread();
-  }
-
-  function goToLast() {
-    const target = state.totalPages % 2 === 0 ? state.totalPages - 1 : state.totalPages;
-    if (state.currentPage >= target) return;
-    state.currentPage = Math.max(1, target);
-    playPageTurnSound();
-    renderSpread();
-  }
-
-  // 5. BUILT-IN LUXURY SAMPLE BOOK GENERATOR (0 Dependencies, Instant)
-  function generateDemoBook() {
-    const demoPages = [];
-    const titles = [
-      { t: "CRAFTSVEDA", st: "PREMIUM PRINTING STUDIO • SAKI NAKA, MUMBAI", bg: "#0d131f", gold: true },
-      { t: "WEDDING MONOGRAM", st: "24K Gold Foil & Raised Spot UV Finish", bg: "#fbf9f4", gold: false },
-      { t: "PANORAMIC LAYFLAT", st: "Continuous 180° Seamless Spread across Spine", bg: "#161b26", gold: true },
-      { t: "NO GUTTER LOSS", st: "Karizma Back-to-Back Pasted Substrate Core", bg: "#f8f5ee", gold: false },
-      { t: "SECTION SILAI", st: "Section Sewn Threads & Rigid Case Binding", bg: "#111827", gold: true },
-      { t: "CENTRE PIN FINISH", st: "Saddle-Stitched Double Wire Staples", bg: "#faf8f5", gold: false },
-      { t: "HAUTE HORLOGERIE", st: "Velvet Soft-Touch Lamination 350 GSM", bg: "#090d16", gold: true },
-      { t: "SCULPTED EMBOSSING", st: "Tactile Multi-Level Brass Plate Die", bg: "#f5f2e9", gold: false },
-      { t: "COFFEE TABLE BOOKS", st: "Artisanal Hardcover Casing & Gilding", bg: "#1c140c", gold: true },
-      { t: "LUXURY PACKAGING", st: "Handcrafted Rigid Boxes & Drawers", bg: "#faf6ed", gold: false },
-      { t: "CLIENT TESTIMONIALS", st: "Mumbai's Trusted Studio for Premium Print", bg: "#0f172a", gold: true },
-      { t: "CRAFTSVEDA STUDIO", st: "+91 88400 35249 • vkzway2@gmail.com", bg: "#0a0f1d", gold: true }
-    ];
-
-    titles.forEach((item, index) => {
-      const canvas = document.createElement("canvas");
-      canvas.width = 900;
-      canvas.height = 1120;
-      const ctx = canvas.getContext("2d");
-
-      // Background
-      ctx.fillStyle = item.bg;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Ornate Border
-      ctx.strokeStyle = item.gold ? "#d4af37" : "#c4b58c";
-      ctx.lineWidth = 4;
-      ctx.strokeRect(36, 36, canvas.width - 72, canvas.height - 72);
-
-      ctx.lineWidth = 1;
-      ctx.strokeRect(44, 44, canvas.width - 88, canvas.height - 88);
-
-      // Studio Crest / Watermark
-      ctx.textAlign = "center";
-      ctx.fillStyle = item.gold ? "rgba(212, 175, 55, 0.15)" : "rgba(180, 160, 120, 0.15)";
-      ctx.font = "bold 90px Cinzel, Georgia, serif";
-      ctx.fillText("CV", canvas.width / 2, canvas.height / 2 - 40);
-
-      // Header Tag
-      ctx.fillStyle = item.gold ? "#f5e6a8" : "#8c7e68";
-      ctx.font = "600 22px Cinzel, Georgia, serif";
-      ctx.fillText(`CRAFTSVEDA • PAGE ${index + 1}`, canvas.width / 2, 110);
-
-      // Main Title
-      ctx.fillStyle = item.gold ? "#ffffff" : "#1a1612";
-      ctx.font = "bold 44px 'Playfair Display', Georgia, serif";
-      ctx.fillText(item.t, canvas.width / 2, canvas.height / 2 + 30);
-
-      // Subtitle
-      ctx.fillStyle = item.gold ? "#d4af37" : "#6b5d49";
-      ctx.font = "500 24px 'Plus Jakarta Sans', sans-serif";
-      ctx.fillText(item.st, canvas.width / 2, canvas.height / 2 + 80);
-
-      // Decorative Rule
-      ctx.strokeStyle = item.gold ? "#d4af37" : "#c4b58c";
-      ctx.beginPath();
-      ctx.moveTo(canvas.width / 2 - 120, canvas.height / 2 + 120);
-      ctx.lineTo(canvas.width / 2 + 120, canvas.height / 2 + 120);
-      ctx.stroke();
-
-      // Footer note
-      ctx.fillStyle = item.gold ? "#9ba1b0" : "#8a8175";
-      ctx.font = "18px 'Plus Jakarta Sans', sans-serif";
-      ctx.fillText("Client-Side 3D Photobook Viewer • Zero Server Upload Required", canvas.width / 2, canvas.height - 70);
-
-      demoPages.push(canvas);
-    });
-
-    state.pages = demoPages;
-    state.totalPages = demoPages.length;
-    state.currentPage = 1;
-    if (viewerStatusText) {
-      viewerStatusText.textContent = `Demo Photobook loaded (${demoPages.length} Pages)`;
-    }
-    renderSpread();
-  }
-
-  // 6. CLIENT-SIDE PDF PARSER (Mozilla PDF.js)
+  // --- PDF FILE PARSER (100% IN-BROWSER VIA PDF.JS) ---
   async function loadPdfFile(file) {
-    if (!file || file.type !== "application/pdf") {
-      alert("Kripya valid PDF file select karein.");
+    if (!window.pdfjsLib) {
+      alert('PDF viewer engine is initializing. Please try again in a few seconds.');
       return;
     }
 
-    if (viewerStatusText) {
-      viewerStatusText.textContent = `Loading "${file.name}" locally in browser...`;
-    }
-
     try {
+      el.fileBadge.textContent = 'Rendering PDF...';
       const arrayBuffer = await file.arrayBuffer();
+      const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      state.pdfDoc = pdf;
 
-      // Ensure PDF.js is available
-      if (typeof pdfjsLib === "undefined") {
-        throw new Error("PDF.js library could not be loaded. Please check your internet connection.");
+      const numPages = pdf.numPages;
+      const pages = [];
+
+      // Detect Aspect Ratio from Page 1
+      const firstPage = await pdf.getPage(1);
+      const vp = firstPage.getViewport({ scale: 1.0 });
+      const pageWidth = vp.width;
+      const pageHeight = vp.height;
+
+      // Single page ratio = W / H. Open spread ratio = (2 * W) / H
+      const detectedSpreadRatio = (2 * pageWidth) / pageHeight;
+      state.autoDetectedRatio = detectedSpreadRatio;
+
+      // Auto detect orientation
+      if (pageWidth > pageHeight) {
+        state.orientation = 'landscape';
+        el.btnLandscape.classList.add('active');
+        el.btnPortrait.classList.remove('active');
+      } else {
+        state.orientation = 'portrait';
+        el.btnPortrait.classList.add('active');
+        el.btnLandscape.classList.remove('active');
       }
 
-      pdfjsLib.GlobalWorkerOptions.workerSrc =
-        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-
-      const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-      const pdf = await loadingTask.promise;
-      const numPages = pdf.numPages;
-
-      const loadedPages = [];
+      // Set size select to Auto
+      state.sizePreset = 'auto';
+      el.sizeSelect.value = 'auto';
+      applyGeometry();
 
       for (let i = 1; i <= numPages; i++) {
-        if (viewerStatusText) {
-          viewerStatusText.textContent = `Rendering page ${i} of ${numPages} in RAM...`;
-        }
-        const page = await pdf.getPage(i);
-        const viewport = page.getViewport({ scale: 1.5 });
+        const pageNumber = i;
+        pages.push({
+          type: 'canvas',
+          pageNum: pageNumber,
+          render: async (container) => {
+            const page = await pdf.getPage(pageNumber);
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Render at high crispness for retina displays
+            const scale = 1.8;
+            const viewport = page.getViewport({ scale: scale });
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            canvas.style.width = '100%';
+            canvas.style.height = '100%';
+            canvas.style.objectFit = 'contain';
 
-        const canvas = document.createElement("canvas");
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        const ctx = canvas.getContext("2d");
-
-        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
-        loadedPages.push(canvas);
-      }
-
-      state.pages = loadedPages;
-      state.totalPages = loadedPages.length;
-      state.currentPage = 1;
-
-      if (viewerStatusText) {
-        viewerStatusText.textContent = `Loaded "${file.name}" (${numPages} pages) • 100% In-Browser`;
-      }
-      renderSpread();
-    } catch (err) {
-      console.error("PDF Parsing Error:", err);
-      alert("PDF load karne me samasya aayi: " + err.message);
-      if (viewerStatusText) {
-        viewerStatusText.textContent = "Error loading PDF. Please try another file.";
-      }
-    }
-  }
-
-  // 7. MULTI-IMAGE UPLOADER
-  async function loadImages(fileList) {
-    const loadedPages = [];
-    const files = Array.from(fileList).filter((f) => f.type.startsWith("image/"));
-    if (files.length === 0) return;
-
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const img = new Image();
-      const objectUrl = URL.createObjectURL(file);
-      await new Promise((resolve) => {
-        img.onload = resolve;
-        img.src = objectUrl;
-      });
-      loadedPages.push(img);
-    }
-
-    state.pages = loadedPages;
-    state.totalPages = loadedPages.length;
-    state.currentPage = 1;
-
-    if (viewerStatusText) {
-      viewerStatusText.textContent = `Loaded ${loadedPages.length} images as pages • 100% In-Browser`;
-    }
-    renderSpread();
-  }
-
-  // 8. EVENT LISTENERS SETUP
-  function setupListeners() {
-    // Binding Card Selection
-    document.querySelectorAll(".binding-card").forEach((card) => {
-      card.addEventListener("click", () => {
-        setBindingMode(card.dataset.binding);
-      });
-    });
-
-    // Navigation Controls
-    btnNext.addEventListener("click", flipNext);
-    btnPrev.addEventListener("click", flipPrev);
-    btnFirst.addEventListener("click", goToFirst);
-    btnLast.addEventListener("click", goToLast);
-
-    // Click on Left/Right page to flip
-    leftPageEl.addEventListener("click", flipPrev);
-    rightPageEl.addEventListener("click", flipNext);
-
-    // Keyboard navigation
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowRight" || e.key === "PageDown") {
-        flipNext();
-      } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
-        flipPrev();
-      } else if (e.key === "Home") {
-        goToFirst();
-      } else if (e.key === "End") {
-        goToLast();
-      }
-    });
-
-    // Sound toggle
-    btnSound.addEventListener("click", () => {
-      state.soundEnabled = !state.soundEnabled;
-      btnSound.style.opacity = state.soundEnabled ? "1" : "0.4";
-      btnSound.setAttribute("title", state.soundEnabled ? "Mute Page Flip Sound" : "Enable Page Flip Sound");
-    });
-
-    // Autoplay toggle
-    btnAutoplay.addEventListener("click", () => {
-      if (state.autoplayTimer) {
-        clearInterval(state.autoplayTimer);
-        state.autoplayTimer = null;
-        btnAutoplay.style.background = "";
-        btnAutoplay.setAttribute("title", "Start Auto Flip");
-      } else {
-        btnAutoplay.style.background = "var(--gold-primary)";
-        btnAutoplay.style.color = "#07090e";
-        btnAutoplay.setAttribute("title", "Pause Auto Flip");
-        state.autoplayTimer = setInterval(() => {
-          if (state.currentPage + 1 >= state.totalPages) {
-            goToFirst();
-          } else {
-            flipNext();
+            await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+            container.appendChild(canvas);
           }
-        }, 3600);
+        });
       }
+
+      state.pages = pages;
+      state.totalPages = numPages;
+      state.totalSpreads = Math.ceil(numPages / 2);
+      state.currentSpread = 1;
+
+      el.fileBadge.textContent = `${file.name} (${numPages} Pages)`;
+      renderSpread(1);
+
+    } catch (err) {
+      console.error('Error rendering PDF:', err);
+      alert('Could not render PDF. Please ensure the file is not password protected.');
+      el.fileBadge.textContent = 'Error Loading PDF';
+    }
+  }
+
+  // --- IMAGE FILES PARSER (Multiple Images to Book) ---
+  function loadImages(files) {
+    const validImages = Array.from(files).filter(f => f.type.startsWith('image/'));
+    if (!validImages.length) return;
+
+    el.fileBadge.textContent = `Loading ${validImages.length} Images...`;
+    const pages = [];
+
+    // Sort files by name naturally
+    validImages.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+
+    validImages.forEach((imgFile, index) => {
+      const pageNum = index + 1;
+      const objectUrl = URL.createObjectURL(imgFile);
+
+      pages.push({
+        type: 'image',
+        pageNum: pageNum,
+        render: (container) => {
+          const img = document.createElement('img');
+          img.src = objectUrl;
+          img.alt = `Page ${pageNum}`;
+          img.style.width = '100%';
+          img.style.height = '100%';
+          img.style.objectFit = 'contain';
+          container.appendChild(img);
+        }
+      });
     });
 
-    // Fullscreen toggle
-    btnFullscreen.addEventListener("click", () => {
-      if (!document.fullscreenElement) {
-        casingWrapper.requestFullscreen().catch(() => {});
+    state.pages = pages;
+    state.totalPages = pages.length;
+    state.totalSpreads = Math.ceil(pages.length / 2);
+    state.currentSpread = 1;
+
+    el.fileBadge.textContent = `${validImages.length} Images Loaded`;
+    renderSpread(1);
+  }
+
+  // --- BINDING SWITCHER ---
+  function setBinding(bindingName) {
+    state.binding = bindingName;
+    el.assembly.setAttribute('data-binding', bindingName);
+
+    el.bindingButtons.forEach(btn => {
+      if (btn.getAttribute('data-binding') === bindingName) {
+        btn.classList.add('active');
       } else {
-        document.exitFullscreen().catch(() => {});
+        btn.classList.remove('active');
       }
     });
+  }
 
-    // File Input change
-    pdfFileInput.addEventListener("change", (e) => {
+  // Global helper for footer links
+  window.selectBindingPreset = function (bindingName) {
+    setBinding(bindingName);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // --- EVENT LISTENERS ---
+  function initEvents() {
+    // Upload triggers
+    el.btnUpload.addEventListener('click', () => el.fileInput.click());
+    el.dragDropZone.addEventListener('click', () => el.fileInput.click());
+
+    el.fileInput.addEventListener('change', (e) => {
       const files = e.target.files;
-      if (!files || files.length === 0) return;
-      if (files[0].type === "application/pdf") {
+      if (!files || !files.length) return;
+
+      if (files[0].type === 'application/pdf') {
         loadPdfFile(files[0]);
       } else {
         loadImages(files);
       }
-      closeDropzone();
     });
 
     // Demo button
-    btnLoadDemo.addEventListener("click", generateDemoBook);
-
-    // Dropzone Modal controls
-    if (btnOpenUpload) {
-      btnOpenUpload.addEventListener("click", () => {
-        dropzoneModal.classList.add("active");
-      });
-    }
-
-    if (dropzoneCloseBtn) {
-      dropzoneCloseBtn.addEventListener("click", closeDropzone);
-    }
-
-    dropzoneModal.addEventListener("click", (e) => {
-      if (e.target === dropzoneModal) closeDropzone();
+    el.btnDemo.addEventListener('click', () => {
+      state.sizePreset = 'a4';
+      state.orientation = 'portrait';
+      el.sizeSelect.value = 'a4';
+      el.btnPortrait.classList.add('active');
+      el.btnLandscape.classList.remove('active');
+      applyGeometry();
+      generateA4DemoPages();
     });
 
-    function closeDropzone() {
-      dropzoneModal.classList.remove("active");
-    }
-
-    // Drag and Drop on Dropzone
-    ["dragenter", "dragover"].forEach((evt) => {
-      dropzoneBox.addEventListener(evt, (e) => {
+    // Drag and Drop
+    ['dragenter', 'dragover'].forEach(eventName => {
+      document.body.addEventListener(eventName, (e) => {
         e.preventDefault();
-        dropzoneBox.classList.add("dragover");
-      });
+        e.stopPropagation();
+        el.dragDropZone.classList.add('dragover');
+      }, false);
     });
 
-    ["dragleave", "drop"].forEach((evt) => {
-      dropzoneBox.addEventListener(evt, (e) => {
+    ['dragleave', 'drop'].forEach(eventName => {
+      document.body.addEventListener(eventName, (e) => {
         e.preventDefault();
-        dropzoneBox.classList.remove("dragover");
-      });
+        e.stopPropagation();
+        el.dragDropZone.classList.remove('dragover');
+      }, false);
     });
 
-    dropzoneBox.addEventListener("drop", (e) => {
-      const files = e.dataTransfer.files;
-      if (!files || files.length === 0) return;
-      if (files[0].type === "application/pdf") {
+    document.body.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      if (!files || !files.length) return;
+
+      if (files[0].type === 'application/pdf') {
         loadPdfFile(files[0]);
       } else {
         loadImages(files);
       }
-      closeDropzone();
+    });
+
+    // Size Preset change
+    el.sizeSelect.addEventListener('change', (e) => {
+      state.sizePreset = e.target.value;
+      applyGeometry();
+    });
+
+    // Orientation toggle
+    el.btnPortrait.addEventListener('click', () => {
+      state.orientation = 'portrait';
+      el.btnPortrait.classList.add('active');
+      el.btnLandscape.classList.remove('active');
+      applyGeometry();
+    });
+
+    el.btnLandscape.addEventListener('click', () => {
+      state.orientation = 'landscape';
+      el.btnLandscape.classList.add('active');
+      el.btnPortrait.classList.remove('active');
+      applyGeometry();
+    });
+
+    // Binding selection
+    el.bindingButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const binding = btn.getAttribute('data-binding');
+        setBinding(binding);
+      });
+    });
+
+    // Page flip clicks
+    el.pageLeft.addEventListener('click', flipPrev);
+    el.pageRight.addEventListener('click', flipNext);
+    el.btnPrev.addEventListener('click', flipPrev);
+    el.btnNext.addEventListener('click', flipNext);
+
+    // Keyboard navigation (Arrow keys)
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+        flipNext();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        flipPrev();
+      }
+    });
+
+    // Scrubber
+    el.scrubber.addEventListener('input', (e) => {
+      renderSpread(parseInt(e.target.value, 10));
     });
   }
 
-  // 9. INITIALIZATION
+  // --- INITIALIZATION ---
   function init() {
-    setupListeners();
-    setBindingMode("layflat"); // Default to the requested Back to Back Pasting
-    generateDemoBook(); // Pre-load high quality demo album
+    applyGeometry();
+    setBinding('center-pin');
+    generateA4DemoPages();
+    initEvents();
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
+  // Start on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
   } else {
     init();
   }
+
 })();
