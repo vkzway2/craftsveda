@@ -73,9 +73,10 @@
   // --- STATE ---
   const state = {
     pages: [],
+    spreads: [],             // Array of spread definitions { mode: 'closed-front'|'open'|'closed-back', left: pageNum|null, right: pageNum|null, label: string }
     totalPages: 20,
-    currentSpread: 1,
-    totalSpreads: 10,
+    currentSpread: 0,        // 0-based index: Spread 0 = Page 1 (Cover), Spread 1 = Pages 2-3, etc.
+    totalSpreads: 11,
     sizePreset: 'a4',
     orientation: 'portrait',
     binding: 'center-pin',
@@ -171,17 +172,68 @@
     }
   }
 
+  // --- COMPUTE REAL BOOK SPREADS (Page 1 Closed, 2-3 Open, ..., Last Page Closed) ---
+  function computeSpreadsList(total) {
+    const list = [];
+    if (total <= 1) {
+      list.push({ mode: 'closed-front', left: null, right: 1, label: `page 1 of ${total} (Cover)` });
+      return list;
+    }
+
+    // 1. Front Cover (Book Closed - Page 1)
+    list.push({
+      mode: 'closed-front',
+      left: null,
+      right: 1,
+      label: `page 1 of ${total} (Front Cover)`
+    });
+
+    // 2. Interior 2-page open spreads: Pages 2-3, 4-5, etc.
+    let current = 2;
+    while (current < total) {
+      const left = current;
+      const right = current + 1;
+      if (right < total) {
+        list.push({
+          mode: 'open',
+          left: left,
+          right: right,
+          label: `pages ${left} - ${right} of ${total}`
+        });
+        current += 2;
+      } else if (right === total) {
+        // Last 2 pages together as an open spread
+        list.push({
+          mode: 'open',
+          left: left,
+          right: right,
+          label: `pages ${left} - ${right} of ${total}`
+        });
+        current += 2;
+      }
+    }
+
+    // 3. Back Cover (Book Closed - Page N)
+    if (current === total) {
+      list.push({
+        mode: 'closed-back',
+        left: total,
+        right: null,
+        label: `page ${total} of ${total} (Back Cover)`
+      });
+    }
+
+    return list;
+  }
+
   // --- DYNAMIC PAGE STACK DEPTH ---
   function updateStackDepth() {
-    const currentLeftPage = (state.currentSpread - 1) * 2;
-    const total = state.totalPages || 20;
+    const totalSpreads = state.spreads.length || 1;
+    const progress = state.currentSpread / Math.max(1, totalSpreads - 1); // 0.0 at cover, 1.0 at back cover
 
     const maxDepth = 18;
-    const leftFraction = Math.max(0, Math.min(1, currentLeftPage / total));
-    const rightFraction = Math.max(0, Math.min(1, (total - currentLeftPage) / total));
-
-    const leftDepth = Math.max(2, Math.round(leftFraction * maxDepth));
-    const rightDepth = Math.max(2, Math.round(rightFraction * maxDepth));
+    const leftDepth = Math.max(2, Math.round(progress * maxDepth));
+    const rightDepth = Math.max(2, Math.round((1 - progress) * maxDepth));
 
     el.assembly.style.setProperty('--stack-l-depth', `${leftDepth}px`);
     el.assembly.style.setProperty('--stack-r-depth', `${rightDepth}px`);
@@ -257,46 +309,64 @@
 
     state.pages = pages;
     state.totalPages = pages.length;
-    state.totalSpreads = Math.ceil(pages.length / 2);
-    state.currentSpread = 1;
+    state.spreads = computeSpreadsList(pages.length);
+    state.totalSpreads = state.spreads.length;
+    state.currentSpread = 0; // Starts at Page 1 (Closed Front Cover)
     el.docTitle.textContent = "CraftsVeda Master Handbook";
 
     buildDrawers();
-    renderSpread(1);
+    renderSpread(0);
   }
 
   // --- BUILD THUMBNAILS & TOC DRAWERS ---
   function buildDrawers() {
     // Thumbnails Grid
     el.gridThumbnails.innerHTML = '';
-    for (let s = 1; s <= state.totalSpreads; s++) {
-      const p1 = (s - 1) * 2 + 1;
-      const p2 = Math.min(p1 + 1, state.totalPages);
+    state.spreads.forEach((spread, sIdx) => {
       const card = document.createElement('div');
-      card.className = `thumb-card ${s === state.currentSpread ? 'active' : ''}`;
+      card.className = `thumb-card ${sIdx === state.currentSpread ? 'active' : ''}`;
+      
+      let label = '';
+      if (spread.mode === 'closed-front') {
+        label = 'Cover (p. 1)';
+      } else if (spread.mode === 'closed-back') {
+        label = `Back (p. ${spread.left})`;
+      } else {
+        label = `p. ${spread.left}-${spread.right}`;
+      }
+
       card.innerHTML = `
-        <span style="font-size:1.2rem; opacity:0.6;">📖</span>
-        <span class="thumb-mini-label">${p1}-${p2}</span>
+        <span style="font-size:1.2rem; opacity:0.6;">${spread.mode === 'open' ? '📖' : '📕'}</span>
+        <span class="thumb-mini-label">${label}</span>
       `;
       card.addEventListener('click', () => {
-        renderSpread(s);
+        renderSpread(sIdx);
         el.drawerThumbnails.classList.remove('open');
       });
       el.gridThumbnails.appendChild(card);
-    }
+    });
 
     // TOC List
     el.listToc.innerHTML = '';
     state.pages.forEach((p, idx) => {
-      const spreadIdx = Math.floor(idx / 2) + 1;
+      const pageNum = idx + 1;
+      // Find corresponding spread
+      const spreadIdx = state.spreads.findIndex(sp => 
+        (sp.mode === 'closed-front' && sp.right === pageNum) ||
+        (sp.mode === 'closed-back' && sp.left === pageNum) ||
+        (sp.mode === 'open' && (sp.left === pageNum || sp.right === pageNum))
+      );
+
       const item = document.createElement('div');
       item.className = `toc-item ${spreadIdx === state.currentSpread ? 'active' : ''}`;
       item.innerHTML = `
-        <span>${p.title || `Page ${p.pageNum}`}</span>
-        <span class="toc-page-num">p. ${p.pageNum}</span>
+        <span>${p.title || `Page ${pageNum}`}</span>
+        <span class="toc-page-num">${pageNum === 1 ? 'Cover' : `p. ${pageNum}`}</span>
       `;
       item.addEventListener('click', () => {
-        renderSpread(spreadIdx);
+        if (spreadIdx !== -1) {
+          renderSpread(spreadIdx);
+        }
         el.drawerToc.classList.remove('open');
       });
       el.listToc.appendChild(item);
@@ -306,7 +376,7 @@
   function updateActiveThumbnails() {
     const cards = el.gridThumbnails.querySelectorAll('.thumb-card');
     cards.forEach((c, idx) => {
-      if (idx + 1 === state.currentSpread) {
+      if (idx === state.currentSpread) {
         c.classList.add('active');
         c.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       } else {
@@ -315,29 +385,32 @@
     });
 
     const tocItems = el.listToc.querySelectorAll('.toc-item');
+    const currentSpreadObj = state.spreads[state.currentSpread];
     tocItems.forEach((t, idx) => {
-      const spreadIdx = Math.floor(idx / 2) + 1;
-      if (spreadIdx === state.currentSpread) {
-        t.classList.add('active');
-      } else {
-        t.classList.remove('active');
-      }
+      const pageNum = idx + 1;
+      const isCurrent = currentSpreadObj && (
+        (currentSpreadObj.left === pageNum) || (currentSpreadObj.right === pageNum)
+      );
+      t.classList.toggle('active', !!isCurrent);
     });
   }
 
   // --- RENDER SPREAD ---
   function renderSpread(spreadIdx) {
-    state.currentSpread = Math.max(1, Math.min(spreadIdx, state.totalSpreads));
-    const leftPageIdx = (state.currentSpread - 1) * 2;
-    const rightPageIdx = leftPageIdx + 1;
+    if (!state.spreads.length) return;
+    state.currentSpread = Math.max(0, Math.min(spreadIdx, state.spreads.length - 1));
+    const currentSpreadObj = state.spreads[state.currentSpread];
+
+    // Set layout mode attribute for CSS positioning (closed-front, open, closed-back)
+    el.assembly.setAttribute('data-spread-mode', currentSpreadObj.mode);
 
     el.leftArt.innerHTML = '';
     el.rightArt.innerHTML = '';
 
-    // Left Page
-    if (leftPageIdx < state.pages.length) {
-      const leftPageData = state.pages[leftPageIdx];
-      el.leftPageNum.textContent = leftPageData.pageNum || (leftPageIdx + 1);
+    // LEFT PAGE
+    if (currentSpreadObj.left !== null && currentSpreadObj.left <= state.pages.length) {
+      const leftPageData = state.pages[currentSpreadObj.left - 1];
+      el.leftPageNum.textContent = currentSpreadObj.left;
       leftPageData.render(el.leftArt);
       el.pageLeft.style.visibility = 'visible';
     } else {
@@ -345,10 +418,10 @@
       el.pageLeft.style.visibility = 'hidden';
     }
 
-    // Right Page
-    if (rightPageIdx < state.pages.length) {
-      const rightPageData = state.pages[rightPageIdx];
-      el.rightPageNum.textContent = rightPageData.pageNum || (rightPageIdx + 1);
+    // RIGHT PAGE
+    if (currentSpreadObj.right !== null && currentSpreadObj.right <= state.pages.length) {
+      const rightPageData = state.pages[currentSpreadObj.right - 1];
+      el.rightPageNum.textContent = currentSpreadObj.right;
       rightPageData.render(el.rightArt);
       el.pageRight.style.visibility = 'visible';
     } else {
@@ -356,19 +429,17 @@
       el.pageRight.style.visibility = 'hidden';
     }
 
-    // FlippingBook Counter format: "pages 1 - 2 of 20"
-    const p1 = leftPageIdx + 1;
-    const p2 = Math.min(p1 + 1, state.totalPages);
-    el.pageCounter.textContent = `pages ${p1} - ${p2} of ${state.totalPages}`;
+    // Top Counter Text
+    el.pageCounter.textContent = currentSpreadObj.label;
 
-    // Scrubber
-    el.scrubber.min = 1;
-    el.scrubber.max = state.totalSpreads;
+    // Scrubber Range (0 to totalSpreads - 1)
+    el.scrubber.min = 0;
+    el.scrubber.max = state.spreads.length - 1;
     el.scrubber.value = state.currentSpread;
 
-    // Disabled states
-    const isAtStart = (state.currentSpread <= 1);
-    const isAtEnd = (state.currentSpread >= state.totalSpreads);
+    // Side Navigation Disabled States
+    const isAtStart = (state.currentSpread === 0);
+    const isAtEnd = (state.currentSpread === state.spreads.length - 1);
 
     el.btnSidePrev.disabled = isAtStart;
     el.btnJumpFirst.disabled = isAtStart;
@@ -381,7 +452,7 @@
 
   // --- FLIP ANIMATIONS WITH AUDIO ---
   function flipNext() {
-    if (state.isFlipping || state.currentSpread >= state.totalSpreads) return;
+    if (state.isFlipping || state.currentSpread >= state.spreads.length - 1) return;
     state.isFlipping = true;
     playPageFlipSound();
 
@@ -394,7 +465,7 @@
   }
 
   function flipPrev() {
-    if (state.isFlipping || state.currentSpread <= 1) return;
+    if (state.isFlipping || state.currentSpread <= 0) return;
     state.isFlipping = true;
     playPageFlipSound();
 
@@ -471,12 +542,13 @@
 
       state.pages = pages;
       state.totalPages = numPages;
-      state.totalSpreads = Math.ceil(numPages / 2);
-      state.currentSpread = 1;
+      state.spreads = computeSpreadsList(numPages);
+      state.totalSpreads = state.spreads.length;
+      state.currentSpread = 0; // Starts at Page 1 (Closed Front Cover)
 
       el.docTitle.textContent = file.name.replace(/\.[^/.]+$/, "");
       buildDrawers();
-      renderSpread(1);
+      renderSpread(0);
 
     } catch (err) {
       console.error('Error rendering PDF:', err);
@@ -515,12 +587,13 @@
 
     state.pages = pages;
     state.totalPages = pages.length;
-    state.totalSpreads = Math.ceil(pages.length / 2);
-    state.currentSpread = 1;
+    state.spreads = computeSpreadsList(pages.length);
+    state.totalSpreads = state.spreads.length;
+    state.currentSpread = 0; // Starts at Page 1 (Closed Front Cover)
     el.docTitle.textContent = `Portfolio (${validImages.length} Images)`;
 
     buildDrawers();
-    renderSpread(1);
+    renderSpread(0);
   }
 
   // --- BINDING SWITCHER ---
@@ -623,16 +696,16 @@
 
     // Jump to ends
     el.btnJumpFirst.addEventListener('click', () => {
-      if (state.currentSpread > 1) {
+      if (state.currentSpread > 0) {
         playPageFlipSound();
-        renderSpread(1);
+        renderSpread(0);
       }
     });
 
     el.btnJumpLast.addEventListener('click', () => {
-      if (state.currentSpread < state.totalSpreads) {
+      if (state.currentSpread < state.spreads.length - 1) {
         playPageFlipSound();
-        renderSpread(state.totalSpreads);
+        renderSpread(state.spreads.length - 1);
       }
     });
 
@@ -643,9 +716,9 @@
       } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
         flipPrev();
       } else if (e.key === 'Home') {
-        renderSpread(1);
+        renderSpread(0);
       } else if (e.key === 'End') {
-        renderSpread(state.totalSpreads);
+        renderSpread(state.spreads.length - 1);
       }
     });
 
@@ -698,8 +771,8 @@
         el.btnAutoPlay.classList.add('active');
         el.autoPlayIcon.innerHTML = `<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>`;
         state.autoPlayTimer = setInterval(() => {
-          if (state.currentSpread >= state.totalSpreads) {
-            renderSpread(1);
+          if (state.currentSpread >= state.spreads.length - 1) {
+            renderSpread(0);
           } else {
             flipNext();
           }
