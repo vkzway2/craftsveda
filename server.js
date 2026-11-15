@@ -59,14 +59,20 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Handle directory or extensionless route (e.g. /admin -> /admin.html)
+  // Handle directory, extensionless route, or folder-fallback (e.g. /styles.css -> /css/styles.css)
   if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
     const indexInDir = path.join(filePath, 'index.html');
     if (fs.existsSync(indexInDir)) {
       filePath = indexInDir;
     }
-  } else if (!fs.existsSync(filePath) && fs.existsSync(filePath + '.html')) {
-    filePath = filePath + '.html';
+  } else if (!fs.existsSync(filePath)) {
+    if (fs.existsSync(filePath + '.html')) {
+      filePath = filePath + '.html';
+    } else if (relativePath.endsWith('.css') && fs.existsSync(path.join(ROOT, 'css', path.basename(relativePath)))) {
+      filePath = path.join(ROOT, 'css', path.basename(relativePath));
+    } else if (relativePath.endsWith('.js') && fs.existsSync(path.join(ROOT, 'js', path.basename(relativePath)))) {
+      filePath = path.join(ROOT, 'js', path.basename(relativePath));
+    }
   }
 
   fs.stat(filePath, (err, stats) => {

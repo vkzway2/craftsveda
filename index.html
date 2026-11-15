@@ -17,7 +17,7 @@
     <title>CraftsVeda – Premium Printing Studio | Saki Naka, Mumbai</title>
     <meta
       name="description"
-      content="Premium business cards &amp; bespoke packaging in Mumbai by CraftsVeda. Gold foil stamping, Spot UV, embossing, rigid boxes &amp; wedding stationery."
+      content="From business cards to premium packaging — CraftsVeda turns your ideas into beautifully finished prints. Foil stamping, Spot UV, embossing, rigid boxes, and bespoke wedding stationery in Mumbai."
     />
     <link rel="canonical" href="https://craftsveda.in/" />
 
@@ -25,7 +25,7 @@
     <meta property="og:title" content="CraftsVeda – Premium Printing Studio | Saki Naka, Mumbai" />
     <meta
       property="og:description"
-      content="Premium business cards &amp; bespoke packaging in Mumbai by CraftsVeda. Gold foil stamping, Spot UV, embossing, rigid boxes &amp; wedding stationery."
+      content="From business cards to premium packaging — CraftsVeda turns your ideas into beautifully finished prints. Foil stamping, Spot UV, embossing, rigid boxes, and bespoke wedding stationery in Mumbai."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://craftsveda.in/" />
@@ -37,7 +37,7 @@
     <meta name="twitter:title" content="CraftsVeda – Premium Printing Studio | Saki Naka, Mumbai" />
     <meta
       name="twitter:description"
-      content="Premium business cards &amp; bespoke packaging in Mumbai by CraftsVeda. Gold foil stamping, Spot UV, embossing, rigid boxes &amp; wedding stationery."
+      content="From business cards to premium packaging — CraftsVeda turns your ideas into beautifully finished prints. Foil stamping, Spot UV, embossing, rigid boxes, and bespoke wedding stationery in Mumbai."
     />
     <meta name="twitter:image" content="https://craftsveda.in/assets/hero-card.webp" />
 
@@ -78,10 +78,51 @@
       fetchpriority="high"
     />
 
-    <link rel="stylesheet" href="styles.css?v=2.1" />
+    <link rel="stylesheet" href="css/styles.css?v=2.1" />
+
+    <!-- Organization & WebSite JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://craftsveda.in/#organization",
+          "name": "CraftsVeda",
+          "url": "https://craftsveda.in/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://craftsveda.in/assets/Emboss%20vs%20Deboss_%20CraftsVeda%20Logo%20Mockup.png"
+          },
+          "email": "info@craftsveda.in",
+          "telephone": "+91-8840035249",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Saki Naka",
+            "addressLocality": "Mumbai",
+            "addressRegion": "Maharashtra",
+            "postalCode": "400072",
+            "addressCountry": "IN"
+          },
+          "sameAs": [
+            "https://www.instagram.com/craftsveda/"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://craftsveda.in/#website",
+          "url": "https://craftsveda.in/",
+          "name": "CraftsVeda",
+          "publisher": {
+            "@id": "https://craftsveda.in/#organization"
+          }
+        }
+      ]
+    }
+    </script>
 
     <!-- GSAP Core (Local High Performance) -->
-    <script src="gsap.min.js" defer></script>
+    <script src="js/gsap.min.js" defer></script>
   </head>
   <body>
     <!-- DYNAMIC LUXURY BACKGROUND ANIMATION CANVAS & AMBIENT GLOW -->
@@ -118,7 +159,7 @@
             </svg>
             +91 8840035249
           </a>
-          <a href="mailto:vkzway2@gmail.com" class="top-bar-link top-bar-right">
+          <a href="mailto:info@craftsveda.in" class="top-bar-link top-bar-right">
             <svg
               width="13"
               height="13"
@@ -134,7 +175,7 @@
               />
               <polyline points="22,6 12,13 2,6" />
             </svg>
-            vkzway2@gmail.com
+            info@craftsveda.in
           </a>
         </div>
       </div>
@@ -155,59 +196,49 @@
           <nav class="main-nav" id="mainNav">
             <ul class="nav-list">
               <li>
+                <a href="luxury-business-cards.html" class="nav-link">Premium Business Cards</a>
+              </li>
+              <li>
                 <a href="#what-we-print" class="nav-link">What We Print</a>
               </li>
               <li>
-                <a href="#special-finishes" class="nav-link"
-                  >Special Finishes</a
-                >
+                <a href="#special-finishes" class="nav-link">Special Finishes</a>
               </li>
               <li>
-                <a href="book-viewer.html" class="nav-link">3D Book Preview</a>
+                <a href="#our-work" class="nav-link">Portfolio</a>
               </li>
               <li>
-                <a href="#why-craftsveda" class="nav-link">Why CraftsVeda</a>
-              </li>
-              <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
-              <li><a href="#our-work" class="nav-link">Our Work</a></li>
-              <li><a href="#testimonials" class="nav-link">Reviews</a></li>
-              <li class="mobile-nav-cta">
-                <a
-                  href="#quoteModal"
-                  class="btn btn-gold btn-block nav-link"
-                  id="mobileNavGetQuoteBtn"
-                  data-open-modal="quote"
-                  >Get a Quote</a
-                >
+                <a href="track.html" class="nav-link">Track Order</a>
               </li>
               <li class="mobile-nav-cta">
                 <a
-                  href="luxury-business-cards.html#pricing-matrix"
-                  class="btn btn-gold btn-block nav-link"
-                  id="mobileNavOrderCardBtn"
-                >
-                  Order Premium Business Card
-                </a>
-              </li>
-              <li class="mobile-nav-cta">
-                <a
-                  href="https://wa.me/918840035249?text=Hi%20CraftsVeda%2C%20mujhe%20printing%20ke%20baare%20me%20enquiry%20karni%20hai"
+                  href="https://wa.me/918840035249?text=Hi%20CraftsVeda%2C%20I%20would%20like%20to%20get%20an%20instant%20quote%20for%20printing"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="btn btn-whatsapp btn-block nav-link"
-                  >Chat on WhatsApp</a
+                >Get Instant Quote (WhatsApp)</a>
+              </li>
+              <li class="mobile-nav-cta">
+                <button
+                  type="button"
+                  class="btn btn-gold btn-block nav-link btn-open-card-config"
+                  id="mobileNavOrderCardBtn"
+                  data-open-card-studio="true"
                 >
+                  Order Premium Business Card
+                </button>
               </li>
             </ul>
           </nav>
 
           <div class="header-actions">
             <a
-              href="#quoteModal"
+              href="https://wa.me/918840035249?text=Hi%20CraftsVeda%2C%20I%20would%20like%20to%20get%20an%20instant%20quote%20for%20printing"
+              target="_blank"
+              rel="noopener noreferrer"
               class="btn btn-gold btn-sm desktop-action-btn"
               id="headerGetQuoteBtn"
-              data-open-modal="quote"
-            >Get a Quote</a>
+            >Get Instant Quote</a>
             <button
               class="mobile-toggle"
               id="mobileToggle"
@@ -253,14 +284,15 @@
                 >
               </h1>
 
-              <p class="hero-description" id="heroDesc">
-                From business cards to premium packaging — we turn your ideas
-                into beautifully finished prints.
-              </p>
-
               <div class="hero-cta-group" id="heroCta">
-                <a href="#our-work" class="btn btn-gold btn-lg">
-                  <span>View Our Work</span>
+                <button
+                  type="button"
+                  class="btn btn-gold btn-lg btn-open-card-config"
+                  id="heroOrderCardBtn"
+                  data-open-card-studio="true"
+                  aria-haspopup="dialog"
+                >
+                  <span>Order Premium Business Card</span>
                   <svg
                     width="17"
                     height="17"
@@ -275,19 +307,19 @@
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                     <polyline points="12 5 19 12 12 19"></polyline>
                   </svg>
-                </a>
-                <a
-                  href="luxury-business-cards.html#pricing-matrix"
-                  class="btn btn-gold btn-lg"
-                  id="heroOrderCardBtn"
-                >
-                  <span>Order Premium Business Card</span>
+                </button>
+                <a href="#our-work" class="btn btn-outline-gold btn-lg">
+                  <span>View Our Work</span>
                 </a>
               </div>
 
-              <!-- Precision SVG Infographics Strip -->
+              <p class="hero-description" id="heroDesc">
+                From business cards to bespoke packaging — we turn your brand identity into tactile, unforgettable physical prints in Mumbai.
+              </p>
+
+              <!-- Verified Trust Badges / Stats Strip -->
               <div class="hero-infographics-strip" id="heroInfographics">
-                <!-- Stat 1: 600+ GSM with Paper Thickness Layers -->
+                <!-- Stat 1: 350-400 GSM Heavy Stocks -->
                 <div class="info-stat-block" data-stat="gsm">
                   <div class="stat-visual-row">
                     <svg
@@ -329,78 +361,39 @@
                         fill="rgba(245,230,168,0.5)"
                       />
                     </svg>
-                    <span class="stat-number"
-                      ><span class="counter-num" id="statGsm">600</span
-                      ><span class="stat-symbol">+</span></span
-                    >
+                    <span class="stat-number">350–400 <span class="stat-unit">GSM</span></span>
                   </div>
-                  <span class="stat-label">GSM IMPORTED STOCKS</span>
+                  <span class="stat-label">Heavy Stocks</span>
                 </div>
 
                 <div class="stat-hairline-sep"></div>
 
-                <!-- Stat 2: 100% Pantone with Drawing Ring -->
+                <!-- Stat 2: 100% Pre-Flight File Check -->
                 <div class="info-stat-block" data-stat="pantone">
                   <div class="stat-visual-row">
                     <svg
                       width="20"
                       height="20"
                       viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#d4af37"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
                       class="stat-svg-ring"
                       aria-hidden="true"
                     >
-                      <circle
-                        cx="12"
-                        cy="12"
-                        r="9"
-                        stroke="rgba(212,175,55,0.2)"
-                        stroke-width="2"
-                        fill="none"
-                      />
-                      <circle
-                        id="pantoneRing"
-                        cx="12"
-                        cy="12"
-                        r="9"
-                        stroke="url(#goldRingGrad)"
-                        stroke-width="2"
-                        fill="none"
-                        stroke-linecap="round"
-                        stroke-dasharray="56.54"
-                        stroke-dashoffset="56.54"
-                        transform="rotate(-90 12 12)"
-                      />
-                      <circle
-                        cx="12"
-                        cy="3"
-                        r="1.6"
-                        fill="#d4af37"
-                        class="ring-dot"
-                      />
-                      <defs>
-                        <linearGradient
-                          id="goldRingGrad"
-                          x1="0%"
-                          y1="0%"
-                          x2="100%"
-                          y2="100%"
-                        >
-                          <stop offset="0%" stop-color="#F5E6A8" />
-                          <stop offset="100%" stop-color="#D4AF37" />
-                        </linearGradient>
-                      </defs>
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                      <polyline points="22 4 12 14.01 9 11.01"></polyline>
                     </svg>
-                    <span class="stat-number"
-                      ><span class="counter-num" id="statPantone">100</span
-                      ><span class="stat-symbol">%</span></span
-                    >
+                    <span class="stat-number">100%</span>
                   </div>
-                  <span class="stat-label">PANTONE COLOR MATCH</span>
+                  <span class="stat-label">Pre-Flight File Check (CorelDRAW / PDF / AI)</span>
                 </div>
 
                 <div class="stat-hairline-sep"></div>
 
-                <!-- Stat 3: 24-48h Mumbai Rush with Clock Arc -->
+                <!-- Stat 3: 24-48 Hr Mumbai Dispatch -->
                 <div class="info-stat-block" data-stat="rush">
                   <div class="stat-visual-row">
                     <svg
@@ -419,14 +412,11 @@
                         fill="none"
                       />
                       <path
-                        id="clockArc"
                         d="M 12 3 A 9 9 0 1 1 3 12"
                         stroke="#d4af37"
                         stroke-width="1.8"
                         fill="none"
                         stroke-linecap="round"
-                        stroke-dasharray="42.4"
-                        stroke-dashoffset="42.4"
                       />
                       <line
                         x1="12"
@@ -448,12 +438,9 @@
                       />
                       <circle cx="12" cy="12" r="1.4" fill="#f5e6a8" />
                     </svg>
-                    <span class="stat-number"
-                      ><span class="counter-num" id="statRush">24-48</span
-                      ><span class="stat-symbol">h</span></span
-                    >
+                    <span class="stat-number">24–48 <span class="stat-unit">Hr</span></span>
                   </div>
-                  <span class="stat-label">MUMBAI RUSH TURNAROUND</span>
+                  <span class="stat-label">Mumbai Dispatch</span>
                 </div>
               </div>
             </div>
@@ -868,467 +855,377 @@
           </div>
 
           <div class="print-categories-grid">
-            <!-- CARD 01: Business & Corporate Stationery -->
-            <article class="category-card" data-category="stationery">
+            <!-- CARD 01: Premium Business Cards (Flagship Highlight) -->
+            <article class="category-card flagship-highlight" data-category="cards">
+              <span class="flagship-badge-pill">★ Flagship Product</span>
               <span class="card-crop-mark crop-tl" aria-hidden="true"></span>
               <span class="card-crop-mark crop-tr" aria-hidden="true"></span>
               <span class="card-crop-mark crop-bl" aria-hidden="true"></span>
               <span class="card-crop-mark crop-br" aria-hidden="true"></span>
               <div class="card-top-label">
-                <span class="cat-num-label"
-                  >BUSINESS & CORPORATE STATIONERY</span
-                >
+                <span class="cat-num-label">FLAGSHIP PRINT</span>
               </div>
               <div class="card-media">
                 <img
-                  src="assets/cat-01-stationery.jpg"
+                  src="assets/hero-card.webp"
                   width="1376"
                   height="768"
-                  alt="Premium corporate stationery suite with business cards, letterheads, and presentation folders printed by CraftsVeda"
+                  alt="400 GSM Velvet Matte Business Card with Gold Foil and Spot UV Mumbai"
                   loading="lazy"
                   decoding="async"
                 />
               </div>
               <div class="card-body">
-                <h3 class="card-title">Business & Corporate Stationery</h3>
+                <h3 class="card-title">Premium Business Cards</h3>
                 <p class="card-desc">
-                  Professional stationery designed for everyday business
-                  communication and consistent brand presentation.
+                  Heavy 350 GSM & 400 GSM art stocks engineered with tactile Velvet Soft-Touch, heated 24K Gold Foil, and dimensional 3D Spot UV.
                 </p>
                 <div class="card-products-list">
-                  <span class="products-text"
-                    >Business Cards • Letterheads • Envelopes • Compliment Slips
-                    • Company Folders • Presentation Folders • Certificates •
-                    Notepads</span
-                  >
+                  <span class="products-text">350 GSM Art Card • 400 GSM Art Card • Velvet Soft-Touch • Gold Foil Stamping • Raised 3D Spot UV</span>
                 </div>
                 <div class="card-action">
-                  <a
-                    href="luxury-business-cards.html"
-                    class="card-cta"
+                  <button
+                    type="button"
+                    class="btn btn-gold card-cta-btn btn-open-card-config"
+                    data-open-card-studio="true"
                   >
-                    <span>Explore Premium Cards</span>
-                    <svg
-                      class="cta-arrow"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                  </a>
+                    <span>Calculate Live Price & Order →</span>
+                  </button>
                 </div>
               </div>
             </article>
 
-            <!-- CARD 02: Marketing Materials -->
-            <article class="category-card" data-category="marketing">
-              <span class="card-crop-mark crop-tl" aria-hidden="true"></span>
-              <span class="card-crop-mark crop-tr" aria-hidden="true"></span>
-              <span class="card-crop-mark crop-bl" aria-hidden="true"></span>
-              <span class="card-crop-mark crop-br" aria-hidden="true"></span>
-              <div class="card-top-label">
-                <span class="cat-num-label">MARKETING MATERIALS</span>
-              </div>
-              <div class="card-media">
-                <img
-                  src="assets/cat-02-marketing.jpg"
-                  width="1376"
-                  height="768"
-                  alt="High-impact printed marketing materials, brochures, and catalogues printed by CraftsVeda"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-              <div class="card-body">
-                <h3 class="card-title">Marketing Materials</h3>
-                <p class="card-desc">
-                  High-impact printed materials for promotions, presentations
-                  and brand communication.
-                </p>
-                <div class="card-products-list">
-                  <span class="products-text"
-                    >Flyers • Leaflets • Bi-Fold Brochures • Tri-Fold Brochures
-                    • Posters • Product Catalogues • Company Profiles • Rate
-                    Cards</span
-                  >
-                </div>
-                <div class="card-action">
-                  <a
-                    href="#quote-generator"
-                    class="card-cta"
-                    onclick="preselectQuoteProduct('Marketing Materials')"
-                  >
-                    <span>Explore Category</span>
-                    <svg
-                      class="cta-arrow"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                  </a>
-                </div>
-              </div>
-            </article>
-
-            <!-- CARD 03: Packaging & Boxes -->
+            <!-- CARD 02: Packaging Boxes -->
             <article class="category-card" data-category="packaging">
               <span class="card-crop-mark crop-tl" aria-hidden="true"></span>
               <span class="card-crop-mark crop-tr" aria-hidden="true"></span>
               <span class="card-crop-mark crop-bl" aria-hidden="true"></span>
               <span class="card-crop-mark crop-br" aria-hidden="true"></span>
               <div class="card-top-label">
-                <span class="cat-num-label">PACKAGING & BOXES</span>
+                <span class="cat-num-label">PACKAGING BOXES</span>
               </div>
               <div class="card-media">
                 <img
                   src="assets/cat-03-packaging.jpg"
                   width="1376"
                   height="768"
-                  alt="Custom rigid boxes, magnetic flap packaging, and paper bags crafted by CraftsVeda"
+                  alt="Custom Rigid Packaging Boxes and Magnetic Flap Boxes CraftsVeda Mumbai"
                   loading="lazy"
                   decoding="async"
                 />
               </div>
               <div class="card-body">
-                <h3 class="card-title">Packaging & Boxes</h3>
+                <h3 class="card-title">Packaging Boxes</h3>
                 <p class="card-desc">
-                  Custom packaging created to protect the product and elevate
-                  the unboxing experience.
+                  Custom rigid gift boxes, mono cartons, and magnetic flap presentation packaging created for unforgettable unboxing experiences.
                 </p>
                 <div class="card-products-list">
-                  <span class="products-text"
-                    >Mono Cartons • Rigid Boxes • Magnetic Flap Boxes • Drawer
-                    Boxes • Product Sleeves • Cosmetic Boxes • Paper Bags •
-                    Packaging Inserts</span
-                  >
+                  <span class="products-text">Rigid Gift Boxes • Magnetic Flap Boxes • Drawer Boxes • Mono Cartons • Cosmetic Boxes • Product Sleeves</span>
                 </div>
-                <div class="card-action">
+                <div class="card-action" style="display: flex; gap: 8px; flex-wrap: wrap;">
                   <a
-                    href="#quote-generator"
-                    class="card-cta"
-                    onclick="preselectQuoteProduct('Packaging & Boxes')"
+                    href="packaging-boxes.html"
+                    class="btn btn-gold card-cta-btn"
+                    style="flex: 1; text-align: center;"
                   >
-                    <span>Explore Category</span>
-                    <svg
-                      class="cta-arrow"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
+                    <span>View Box Styles & Specs →</span>
+                  </a>
+                  <a
+                    href="https://wa.me/918840035249?text=Hi%20CraftsVeda%2C%20I%20would%20like%20a%20quote%20for%20Packaging%20Boxes"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="card-cta-btn card-cta-whatsapp"
+                    title="Instant WhatsApp Quote"
+                  >
+                    <span>WhatsApp</span>
                   </a>
                 </div>
               </div>
             </article>
 
-            <!-- CARD 04: Labels & Stickers -->
-            <article class="category-card" data-category="labels">
+            <!-- CARD 03: Flyers (Up to 170 GSM) -->
+            <article class="category-card" data-category="flyers">
               <span class="card-crop-mark crop-tl" aria-hidden="true"></span>
               <span class="card-crop-mark crop-tr" aria-hidden="true"></span>
               <span class="card-crop-mark crop-bl" aria-hidden="true"></span>
               <span class="card-crop-mark crop-br" aria-hidden="true"></span>
               <div class="card-top-label">
-                <span class="cat-num-label">LABELS & STICKERS</span>
+                <span class="cat-num-label">MARKETING FLYERS</span>
+              </div>
+              <div class="card-media">
+                <img
+                  src="assets/cat-02-marketing.jpg"
+                  width="1376"
+                  height="768"
+                  alt="High-impact marketing flyers and leaflets printed up to 170 GSM by CraftsVeda Mumbai"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div class="card-body">
+                <h3 class="card-title">Flyers (Up to 170 GSM)</h3>
+                <p class="card-desc">
+                  High-definition promotional leaflets and marketing flyers printed with crisp offset clarity on gloss and matte art stocks.
+                </p>
+                <div class="card-products-list">
+                  <span class="products-text">130 GSM Gloss • 170 GSM Matte Art Paper • Single & Double Sided • A4 / A5 / DL Formats</span>
+                </div>
+                <div class="card-action" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <a
+                    href="flyer-printing.html"
+                    class="btn btn-gold card-cta-btn"
+                    style="flex: 1; text-align: center;"
+                  >
+                    <span>View Paper Stocks & Specs →</span>
+                  </a>
+                  <a
+                    href="https://wa.me/918840035249?text=Hi%20CraftsVeda%2C%20I%20would%20like%20a%20quote%20for%20Flyers%20(Up%20to%20170%20GSM)"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="card-cta-btn card-cta-whatsapp"
+                    title="Instant WhatsApp Quote"
+                  >
+                    <span>WhatsApp</span>
+                  </a>
+                </div>
+              </div>
+            </article>
+
+            <!-- CARD 04: Stickers & Labels -->
+            <article class="category-card" data-category="stickers">
+              <span class="card-crop-mark crop-tl" aria-hidden="true"></span>
+              <span class="card-crop-mark crop-tr" aria-hidden="true"></span>
+              <span class="card-crop-mark crop-bl" aria-hidden="true"></span>
+              <span class="card-crop-mark crop-br" aria-hidden="true"></span>
+              <div class="card-top-label">
+                <span class="cat-num-label">STICKERS & LABELS</span>
               </div>
               <div class="card-media">
                 <img
                   src="assets/cat-04-labels.jpg"
                   width="1376"
                   height="768"
-                  alt="Precision-made labels, die-cut stickers, and waterproof packaging labels printed by CraftsVeda"
+                  alt="Custom die-cut stickers and waterproof bottle packaging labels CraftsVeda Mumbai"
                   loading="lazy"
                   decoding="async"
                 />
               </div>
               <div class="card-body">
-                <h3 class="card-title">Labels & Stickers</h3>
+                <h3 class="card-title">Stickers & Labels</h3>
                 <p class="card-desc">
-                  Precision-made labels and stickers for products, packaging and
-                  retail applications.
+                  Precision-cut vinyl decals, waterproof product labels, barcode stickers, and foil-accented roll and sheet labels.
                 </p>
                 <div class="card-products-list">
-                  <span class="products-text"
-                    >Product Labels • Bottle Labels • Packaging Labels • Die-Cut
-                    Stickers • Barcode Labels • QR Labels • Transparent Labels •
-                    Waterproof Labels</span
-                  >
+                  <span class="products-text">Die-Cut Vinyl Stickers • Waterproof Bottle Labels • Metallic Foil Labels • Roll & Sheet Stickers</span>
                 </div>
-                <div class="card-action">
+                <div class="card-action" style="display: flex; gap: 8px; flex-wrap: wrap;">
                   <a
-                    href="#quote-generator"
-                    class="card-cta"
-                    onclick="preselectQuoteProduct('Labels & Stickers')"
+                    href="sticker-label-printing.html"
+                    class="btn btn-gold card-cta-btn"
+                    style="flex: 1; text-align: center;"
                   >
-                    <span>Explore Category</span>
-                    <svg
-                      class="cta-arrow"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
+                    <span>View Vinyl & Labels Specs →</span>
+                  </a>
+                  <a
+                    href="https://wa.me/918840035249?text=Hi%20CraftsVeda%2C%20I%20would%20like%20a%20quote%20for%20Stickers%20and%20Labels"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="card-cta-btn card-cta-whatsapp"
+                    title="Instant WhatsApp Quote"
+                  >
+                    <span>WhatsApp</span>
                   </a>
                 </div>
               </div>
             </article>
 
-            <!-- CARD 05: Books & Publications -->
-            <article class="category-card" data-category="books">
+            <!-- CARD 05: Letterheads (100/120 GSM) -->
+            <article class="category-card" data-category="letterheads">
               <span class="card-crop-mark crop-tl" aria-hidden="true"></span>
               <span class="card-crop-mark crop-tr" aria-hidden="true"></span>
               <span class="card-crop-mark crop-bl" aria-hidden="true"></span>
               <span class="card-crop-mark crop-br" aria-hidden="true"></span>
               <div class="card-top-label">
-                <span class="cat-num-label">BOOKS & PUBLICATIONS</span>
+                <span class="cat-num-label">OFFICE STATIONERY</span>
+              </div>
+              <div class="card-media">
+                <img
+                  src="assets/cat-01-stationery.jpg"
+                  width="1376"
+                  height="768"
+                  alt="Executive Corporate Letterheads 100 GSM and 120 GSM fine paper CraftsVeda Mumbai"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div class="card-body">
+                <h3 class="card-title">Letterheads (100/120 GSM)</h3>
+                <p class="card-desc">
+                  Executive corporate letterheads printed on virgin bond and smooth alabaster fine papers with matching premium envelopes.
+                </p>
+                <div class="card-products-list">
+                  <span class="products-text">100 GSM Bond Paper • 120 GSM Executive Fine Paper • Alabaster Stock • Matching Office Stationery</span>
+                </div>
+                <div class="card-action" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <a
+                    href="letterhead-printing.html"
+                    class="btn btn-gold card-cta-btn"
+                    style="flex: 1; text-align: center;"
+                  >
+                    <span>View Bond Papers & Specs →</span>
+                  </a>
+                  <a
+                    href="https://wa.me/918840035249?text=Hi%20CraftsVeda%2C%20I%20would%20like%20a%20quote%20for%20Letterheads%20(100%2F120%20GSM)"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="card-cta-btn card-cta-whatsapp"
+                    title="Instant WhatsApp Quote"
+                  >
+                    <span>WhatsApp</span>
+                  </a>
+                </div>
+              </div>
+            </article>
+
+            <!-- CARD 06: Brochures -->
+            <article class="category-card" data-category="brochures">
+              <span class="card-crop-mark crop-tl" aria-hidden="true"></span>
+              <span class="card-crop-mark crop-tr" aria-hidden="true"></span>
+              <span class="card-crop-mark crop-bl" aria-hidden="true"></span>
+              <span class="card-crop-mark crop-br" aria-hidden="true"></span>
+              <div class="card-top-label">
+                <span class="cat-num-label">CORPORATE PROFILES</span>
               </div>
               <div class="card-media">
                 <img
                   src="assets/cat-05-books.jpg"
                   width="1376"
                   height="768"
-                  alt="Editorial-quality books, lookbooks, annual reports, and magazines printed by CraftsVeda"
+                  alt="Multi-page corporate brochures, catalogues, and company profiles CraftsVeda Mumbai"
                   loading="lazy"
                   decoding="async"
                 />
               </div>
               <div class="card-body">
-                <h3 class="card-title">Books & Publications</h3>
+                <h3 class="card-title">Brochures</h3>
                 <p class="card-desc">
-                  Editorial-quality publications built around premium paper,
-                  structure and presentation.
+                  Bi-fold, tri-fold, and perfect-bound corporate brochures, lookbooks, and product catalogues with tactile finishings.
                 </p>
                 <div class="card-products-list">
-                  <span class="products-text"
-                    >Booklets • Magazines • Lookbooks • Company Reports • Annual
-                    Reports • Manuals • Coffee Table Books • Product
-                    Catalogues</span
-                  >
+                  <span class="products-text">Bi-Fold & Tri-Fold Brochures • Multi-Page Booklets • Product Catalogues • Company Profiles</span>
                 </div>
-                <div class="card-action">
+                <div class="card-action" style="display: flex; gap: 8px; flex-wrap: wrap;">
                   <a
-                    href="#quote-generator"
-                    class="card-cta"
-                    onclick="preselectQuoteProduct('Books & Publications')"
+                    href="brochure-printing.html"
+                    class="btn btn-gold card-cta-btn"
+                    style="flex: 1; text-align: center;"
                   >
-                    <span>Explore Category</span>
-                    <svg
-                      class="cta-arrow"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
+                    <span>View Binding Styles & Specs →</span>
+                  </a>
+                  <a
+                    href="https://wa.me/918840035249?text=Hi%20CraftsVeda%2C%20I%20would%20like%20a%20quote%20for%20Brochures"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="card-cta-btn card-cta-whatsapp"
+                    title="Instant WhatsApp Quote"
+                  >
+                    <span>WhatsApp</span>
                   </a>
                 </div>
               </div>
             </article>
 
-            <!-- CARD 06: Wedding & Events -->
-            <article class="category-card" data-category="wedding">
+            <!-- CARD 07: Corporate Printing -->
+            <article class="category-card" data-category="corporate">
               <span class="card-crop-mark crop-tl" aria-hidden="true"></span>
               <span class="card-crop-mark crop-tr" aria-hidden="true"></span>
               <span class="card-crop-mark crop-bl" aria-hidden="true"></span>
               <span class="card-crop-mark crop-br" aria-hidden="true"></span>
               <div class="card-top-label">
-                <span class="cat-num-label">WEDDING & EVENTS</span>
-              </div>
-              <div class="card-media">
-                <img
-                  src="assets/cat-06-wedding.jpg"
-                  width="1376"
-                  height="768"
-                  alt="Bespoke wedding stationery, deckle-edge invitations, and event suites printed by CraftsVeda"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-              <div class="card-body">
-                <h3 class="card-title">Wedding & Event Printing</h3>
-                <p class="card-desc">
-                  Beautifully produced stationery for weddings, celebrations and
-                  premium events.
-                </p>
-                <div class="card-products-list">
-                  <span class="products-text"
-                    >Wedding Invitations • Save the Date • RSVP Cards • Thank
-                    You Cards • Menu Cards • Event Invitations • Table Cards •
-                    Event Tickets</span
-                  >
-                </div>
-                <div class="card-action">
-                  <a
-                    href="#quote-generator"
-                    class="card-cta"
-                    onclick="preselectQuoteProduct('Wedding & Event Printing')"
-                  >
-                    <span>Explore Category</span>
-                    <svg
-                      class="cta-arrow"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                  </a>
-                </div>
-              </div>
-            </article>
-
-            <!-- CARD 07: Retail & POS Materials -->
-            <article class="category-card" data-category="retail">
-              <span class="card-crop-mark crop-tl" aria-hidden="true"></span>
-              <span class="card-crop-mark crop-tr" aria-hidden="true"></span>
-              <span class="card-crop-mark crop-bl" aria-hidden="true"></span>
-              <span class="card-crop-mark crop-br" aria-hidden="true"></span>
-              <div class="card-top-label">
-                <span class="cat-num-label">RETAIL & POS MATERIALS</span>
+                <span class="cat-num-label">CORPORATE SUITES</span>
               </div>
               <div class="card-media">
                 <img
                   src="assets/cat-07-retail-pos.jpg"
                   width="1376"
                   height="768"
-                  alt="Retail point-of-sale materials, premium apparel hang tags, and display cards printed by CraftsVeda"
+                  alt="Executive presentation folders, notepads, and corporate welcome kits CraftsVeda Mumbai"
                   loading="lazy"
                   decoding="async"
                 />
               </div>
               <div class="card-body">
-                <h3 class="card-title">Retail & POS Materials</h3>
+                <h3 class="card-title">Corporate Printing</h3>
                 <p class="card-desc">
-                  Point-of-sale materials designed to attract attention where
-                  customers make purchasing decisions.
+                  Complete corporate collateral packages including executive presentation folders, branded notepads, and employee onboarding kits.
                 </p>
                 <div class="card-products-list">
-                  <span class="products-text"
-                    >Hang Tags • Product Tags • Shelf Talkers • Wobblers •
-                    Danglers • Tent Cards • Counter Cards • Display Cards</span
-                  >
+                  <span class="products-text">Presentation Folders • Notepads • Employee Welcome Kits • Certificates • Desk Calendars</span>
                 </div>
-                <div class="card-action">
+                <div class="card-action" style="display: flex; gap: 8px; flex-wrap: wrap;">
                   <a
-                    href="#quote-generator"
-                    class="card-cta"
-                    onclick="preselectQuoteProduct('Retail & POS Materials')"
+                    href="corporate-printing.html"
+                    class="btn btn-gold card-cta-btn"
+                    style="flex: 1; text-align: center;"
                   >
-                    <span>Explore Category</span>
-                    <svg
-                      class="cta-arrow"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
+                    <span>View Welcome Kits & Specs →</span>
+                  </a>
+                  <a
+                    href="https://wa.me/918840035249?text=Hi%20CraftsVeda%2C%20I%20would%20like%20a%20quote%20for%20Corporate%20Printing"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="card-cta-btn card-cta-whatsapp"
+                    title="Instant WhatsApp Quote"
+                  >
+                    <span>WhatsApp</span>
                   </a>
                 </div>
               </div>
             </article>
 
-            <!-- CARD 08: Banners & Displays -->
-            <article class="category-card" data-category="displays">
+            <!-- CARD 08: Wedding Invitations -->
+            <article class="category-card" data-category="wedding">
               <span class="card-crop-mark crop-tl" aria-hidden="true"></span>
               <span class="card-crop-mark crop-tr" aria-hidden="true"></span>
               <span class="card-crop-mark crop-bl" aria-hidden="true"></span>
               <span class="card-crop-mark crop-br" aria-hidden="true"></span>
               <div class="card-top-label">
-                <span class="cat-num-label">BANNERS & DISPLAYS</span>
+                <span class="cat-num-label">ROYAL INVITATIONS</span>
               </div>
               <div class="card-media">
                 <img
-                  src="assets/cat-08-displays.jpg"
+                  src="assets/cat-06-wedding.jpg"
                   width="1376"
                   height="768"
-                  alt="Large format exhibition banners, roll-up standees, and display graphics printed by CraftsVeda"
+                  alt="Bespoke deckle-edge wedding invitations with wax seals and gold foil CraftsVeda Mumbai"
                   loading="lazy"
                   decoding="async"
                 />
               </div>
               <div class="card-body">
-                <h3 class="card-title">Banners & Display Printing</h3>
+                <h3 class="card-title">Wedding Invitations</h3>
                 <p class="card-desc">
-                  Large-format and display printing for retail spaces,
-                  exhibitions, events and promotions.
+                  Bespoke wedding stationery suites crafted on deckle-edge cotton papers with heated gold foil stamping, velvet envelopes, and wax seals.
                 </p>
                 <div class="card-products-list">
-                  <span class="products-text"
-                    >Roll-Up Standees • Posters • Backdrops • Flex Banners •
-                    Display Boards • Window Graphics • Exhibition Graphics •
-                    Event Displays</span
-                  >
+                  <span class="products-text">Royal Invitation Suites • Deckle-Edge Cotton Paper • Gold Foil Stamping • Wax Seals & Velvet Envelopes</span>
                 </div>
-                <div class="card-action">
+                <div class="card-action" style="display: flex; gap: 8px; flex-wrap: wrap;">
                   <a
-                    href="#quote-generator"
-                    class="card-cta"
-                    onclick="
-                      preselectQuoteProduct('Banners & Display Printing')
-                    "
+                    href="envelope-printing.html"
+                    class="btn btn-gold card-cta-btn"
+                    style="flex: 1; text-align: center;"
                   >
-                    <span>Explore Category</span>
-                    <svg
-                      class="cta-arrow"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
+                    <span>View Wedding Envelopes →</span>
+                  </a>
+                  <a
+                    href="https://wa.me/918840035249?text=Hi%20CraftsVeda%2C%20I%20would%20like%20a%20quote%20for%20Wedding%20Invitations"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="card-cta-btn card-cta-whatsapp"
+                    title="Instant WhatsApp Quote"
+                  >
+                    <span>WhatsApp</span>
                   </a>
                 </div>
               </div>
@@ -1346,7 +1243,7 @@
                 Have an Unlisted or Custom Print Requirement?
               </h3>
               <p class="banner-copy">
-                From high-volume daily enterprise stationery to one-of-a-kind
+                From high-volume daily corporate stationery to one-of-a-kind
                 packaging and unusual print formats — our production studio
                 handles custom print requirements from specification to finished
                 product.
@@ -1369,6 +1266,79 @@
                   <polyline points="12 5 19 12 12 19"></polyline>
                 </svg>
               </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- 04 — CORE PRODUCT & PRICING SPOTLIGHT (FLAGSHIP) -->
+      <!-- ================================================================ -->
+      <section class="section section-core-spotlight" id="core-product-spotlight">
+        <div class="container">
+          <div class="spotlight-card gold-frame">
+            <div class="spotlight-grid">
+              <div class="spotlight-media">
+                <div class="spotlight-badge">★ FLAGSHIP SPOTLIGHT</div>
+                <img
+                  src="assets/hero-card.webp"
+                  width="1376"
+                  height="768"
+                  alt="CraftsVeda 400 GSM Velvet Business Card with Raised Spot UV and 24K Gold Foil Mumbai"
+                  class="spotlight-img"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div class="spotlight-content">
+                <span class="section-eyebrow">CORE PRODUCT SPOTLIGHT</span>
+                <h2 class="spotlight-title">Premium Business Cards</h2>
+                <p class="spotlight-desc">
+                  Engineered on rigid 350 GSM and 400 GSM heavy art stock with tactile Velvet Soft-Touch lamination, mirror 24K Gold Foil stamping, and glass-like 3D Raised Spot UV. Built to command authority at first touch.
+                </p>
+                <div class="spotlight-specs-grid">
+                  <div class="spec-pill">
+                    <span class="spec-icon">✦</span>
+                    <div>
+                      <strong>350 / 400 GSM</strong>
+                      <span>Heavy Rigid Stock</span>
+                    </div>
+                  </div>
+                  <div class="spec-pill">
+                    <span class="spec-icon">✦</span>
+                    <div>
+                      <strong>Velvet Soft-Touch</strong>
+                      <span>or Matte Lamination</span>
+                    </div>
+                  </div>
+                  <div class="spec-pill">
+                    <span class="spec-icon">✦</span>
+                    <div>
+                      <strong>24K Gold Foil</strong>
+                      <span>Heated Brass Stamping</span>
+                    </div>
+                  </div>
+                  <div class="spec-pill">
+                    <span class="spec-icon">✦</span>
+                    <div>
+                      <strong>3D Raised Spot UV</strong>
+                      <span>Tactile Gloss Accent</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="spotlight-actions">
+                  <button
+                    type="button"
+                    class="btn btn-gold btn-lg btn-open-card-config"
+                    data-open-card-studio="true"
+                  >
+                    <span>Calculate Live Price & Order →</span>
+                  </button>
+                  <a href="luxury-business-cards.html" class="btn btn-outline-gold btn-lg">
+                    <span>Explore All Specs</span>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1691,6 +1661,47 @@
                 real-time video swatch proofs and updates.
               </p>
             </div>
+          
+          <!-- Quality Benchmark Comparison: Standard Local Printing vs. CraftsVeda Precision -->
+          <div class="comparison-section gold-frame">
+            <div class="comparison-header">
+              <span class="section-eyebrow">QUALITY BENCHMARK</span>
+              <h3 class="comparison-title">Standard Local Printing vs. CraftsVeda Precision</h3>
+              <p class="comparison-subtitle">Why Mumbai’s top founders, creative agencies, and premium brands insist on CraftsVeda.</p>
+            </div>
+            <div class="table-responsive">
+              <table class="comparison-table">
+                <thead>
+                  <tr>
+                    <th class="col-feature">Print Benchmark</th>
+                    <th class="col-standard">Standard Local Printers</th>
+                    <th class="col-craftsveda">✦ CraftsVeda Precision Studio</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>True CMYK Calibration</strong></td>
+                    <td class="col-standard"><span class="cross-icon">✕</span> Uncalibrated drift, muddy dark tones & hue shifts</td>
+                    <td class="col-craftsveda"><span class="check-icon">✓</span> Densitometer-calibrated True CMYK & Pantone match</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Exact GSM Guarantee</strong></td>
+                    <td class="col-standard"><span class="cross-icon">✕</span> Paper weight downgraded without notice (300 GSM sold as 350)</td>
+                    <td class="col-craftsveda"><span class="check-icon">✓</span> 100% Verified 350 GSM & 400 GSM heavy imported art boards</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Zero White-Edge Laser Cutting</strong></td>
+                    <td class="col-standard"><span class="cross-icon">✕</span> Frayed borders, visible white paper cracks on dark cards</td>
+                    <td class="col-craftsveda"><span class="check-icon">✓</span> Optical alignment laser die-trimming with zero edge cracking</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Pre-Flight File Verification</strong></td>
+                    <td class="col-standard"><span class="cross-icon">✕</span> Printed blindly with low-res artwork, missing fonts, or bleed errors</td>
+                    <td class="col-craftsveda"><span class="check-icon">✓</span> Free pre-press technical review (CorelDRAW / PDF / AI / PSD)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>
@@ -1718,148 +1729,71 @@
               ></div>
             </div>
 
+            <!-- Step 1 -->
             <div class="process-step" data-step="1">
               <div class="step-badge">01</div>
               <div class="step-icon-wrap">
-                <svg
-                  width="28"
-                  height="28"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path
-                    d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
-                  ></path>
-                  <polyline points="14 2 14 8 20 8"></polyline>
-                  <line x1="16" y1="13" x2="8" y2="13"></line>
-                  <line x1="16" y1="17" x2="8" y2="17"></line>
-                  <polyline points="10 9 9 9 8 9"></polyline>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                  <line x1="8" y1="21" x2="16" y2="21"></line>
+                  <line x1="12" y1="17" x2="12" y2="21"></line>
                 </svg>
               </div>
-              <h3 class="step-title">Requirement & Artwork</h3>
+              <h3 class="step-title">Select Specs & Live Price</h3>
               <p class="step-desc">
-                Share your specs, quantities, dimensions, and artwork files. If
-                you need dielines or custom sizing, we provide them free of
-                cost.
+                Choose your exact paper weight (350–400 GSM), quantity, and premium finishes. See transparent live instant pricing with zero hidden surcharges.
               </p>
             </div>
 
+            <!-- Step 2 -->
             <div class="process-step" data-step="2">
               <div class="step-badge">02</div>
               <div class="step-icon-wrap">
-                <svg
-                  width="28"
-                  height="28"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path
-                    d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
-                  ></path>
-                  <line x1="8" y1="10" x2="16" y2="10"></line>
-                  <line x1="8" y1="14" x2="13" y2="14"></line>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
                 </svg>
               </div>
-              <h3 class="step-title">Instant Quote & Swatches</h3>
+              <h3 class="step-title">Share Print File</h3>
               <p class="step-desc">
-                Receive a transparent price quotation within 30 minutes. We can
-                share paper photos, video swatch comparisons, or physical sample
-                kits.
+                Upload your print-ready file (CorelDRAW .CDR with curves, PDF, AI, PSD) via our instant upload dropzone or share a Google Drive link.
               </p>
             </div>
 
+            <!-- Step 3 -->
             <div class="process-step" data-step="3">
               <div class="step-badge">03</div>
               <div class="step-icon-wrap">
-                <svg
-                  width="28"
-                  height="28"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                  <path d="M8 11.5l2 2 4-4"></path>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
                 </svg>
               </div>
-              <h3 class="step-title">Digital Proof Approval</h3>
+              <h3 class="step-title">Free Pre-Flight & WhatsApp Proof</h3>
               <p class="step-desc">
-                You approve high-resolution 3D digital mockups or a 1-off
-                physical press proof so there are zero surprises on finish
-                alignment or color.
+                Our prepress engineers verify bleed, resolution, and vector foil masks free of charge, then send a digital proof for your final WhatsApp approval.
               </p>
             </div>
 
+            <!-- Step 4 -->
             <div class="process-step" data-step="4">
               <div class="step-badge">04</div>
               <div class="step-icon-wrap">
-                <svg
-                  width="28"
-                  height="28"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                  <path
-                    d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"
-                  ></path>
-                  <rect x="6" y="14" width="12" height="8"></rect>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="1" y="3" width="15" height="13"></rect>
+                  <polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon>
+                  <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                  <circle cx="18.5" cy="18.5" r="2.5"></circle>
                 </svg>
               </div>
-              <h3 class="step-title">Precision Printing</h3>
+              <h3 class="step-title">Precision Print & Fast Mumbai Delivery</h3>
               <p class="step-desc">
-                Your job enters press runs, custom brass die stamping,
-                high-viscosity UV coating, laminations, and manual edge
-                finishing.
-              </p>
-            </div>
-
-            <div class="process-step" data-step="5">
-              <div class="step-badge">05</div>
-              <div class="step-icon-wrap">
-                <svg
-                  width="28"
-                  height="28"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path
-                    d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
-                  ></path>
-                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                  <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                </svg>
-              </div>
-              <h3 class="step-title">Protective Delivery</h3>
-              <p class="step-desc">
-                Inspected, shrink-wrapped, corner-protected, and dispatched via
-                express courier to your doorstep in Mumbai or anywhere across
-                India.
+                Your order is precision-printed, hand-inspected, and dispatched with live Order ID tracking directly to your address in 24–48 hours across Mumbai.
               </p>
             </div>
           </div>
-        </div>
-      </section>
+        </div></section>
 
       <!-- ================================================================ -->
       <!-- 06 — OUR WORK (ACTUAL PRINTED PRODUCT SHOWCASE) -->
@@ -2243,15 +2177,83 @@
               <span class="m-lbl">Express Delivery For Mumbai Orders</span>
             </div>
             <div class="metric-card">
-              <span class="m-val">50,000+</span>
-              <span class="m-lbl">Bespoke Prints Delivered</span>
+              <span class="m-val">1,200+</span>
+              <span class="m-lbl">Corporate & Studio Clients Served</span>
             </div>
           </div>
         </div>
       </section>
 
       <!-- ================================================================ -->
-      <!-- 08 — GET A QUOTE -->
+      <!-- ================================================================ -->
+      <!-- 09 — FREQUENTLY ASKED QUESTIONS (AEO READY) -->
+      <!-- ================================================================ -->
+      <section class="section section-faq" id="faq">
+        <div class="container">
+          <div class="section-header text-center">
+            <span class="section-eyebrow">PRINTING FAQS</span>
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <p class="section-subtitle">
+              Clear, upfront answers about artwork preparation, turnaround times, and print finishes.
+            </p>
+          </div>
+
+          <div class="faq-grid" itemscope itemtype="https://schema.org/FAQPage">
+            <!-- FAQ 1 -->
+            <article class="faq-card" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+              <h3 class="faq-question" itemprop="name">What file formats do you accept for printing?</h3>
+              <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                <p class="faq-answer" itemprop="text">
+                  We accept <strong>CorelDRAW (.CDR with all fonts converted to curves)</strong>, print-ready <strong>PDF/X-1a</strong>, <strong>Adobe Illustrator (.AI)</strong>, and <strong>Photoshop (.PSD)</strong>. Please ensure your canvas uses the <strong>CMYK color mode</strong>, has a minimum resolution of <strong>300 DPI</strong>, and includes a <strong>3mm bleed margin</strong> on all edges.
+                </p>
+              </div>
+            </article>
+
+            <!-- FAQ 2 -->
+            <article class="faq-card" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+              <h3 class="faq-question" itemprop="name">What is the difference between 350 GSM and 400 GSM business cards?</h3>
+              <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                <p class="faq-answer" itemprop="text">
+                  <strong>350 GSM</strong> is a rigid, substantial cardstock ideal for premium corporate stationery. <strong>400 GSM</strong> is our ultra-heavyweight imported board designed specifically to support double-sided Velvet soft-touch lamination, heavy 24K heated brass foil stamping, and dimensional raised Spot UV without warping.
+                </p>
+              </div>
+            </article>
+
+            <!-- FAQ 3 -->
+            <article class="faq-card" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+              <h3 class="faq-question" itemprop="name">Will I get a digital proof before final printing?</h3>
+              <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                <p class="faq-answer" itemprop="text">
+                  Yes, absolutely. Every single print job undergoes a <strong>100% free pre-flight technical inspection</strong> by our studio engineers. We generate a 3D digital simulation and high-resolution PDF proof, sharing it via WhatsApp or email for your final confirmation before plate exposing and printing.
+                </p>
+              </div>
+            </article>
+
+            <!-- FAQ 4 -->
+            <article class="faq-card" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+              <h3 class="faq-question" itemprop="name">How do I send large design files?</h3>
+              <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                <p class="faq-answer" itemprop="text">
+                  You can upload files up to 25MB directly using our checkout dropzone. For large CorelDRAW or Adobe Illustrator files (up to several gigabytes), you can paste a <strong>Google Drive or WeTransfer download link</strong> into our order form or send the file directly to us on <strong>WhatsApp (+91 88400 35249)</strong>.
+                </p>
+              </div>
+            </article>
+
+            <!-- FAQ 5 -->
+            <article class="faq-card" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+              <h3 class="faq-question" itemprop="name">How fast is delivery in Mumbai?</h3>
+              <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                <p class="faq-answer" itemprop="text">
+                  Our central studio in <strong>Saki Naka, Mumbai</strong> enables express <strong>24 to 48-hour doorstep dispatch</strong> across the entire Mumbai Metropolitan Region (MMR). Urgent same-day bike courier options are also available for rush corporate emergencies upon request.
+                </p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ -->
+      <!-- 10 — GET A QUOTE -->
       <!-- ================================================================ -->
       <section class="section section-quote" id="quote-generator">
         <div class="container">
@@ -2385,7 +2387,7 @@
                 <input
                   type="hidden"
                   name="to_email"
-                  value="vkzway2@gmail.com"
+                  value="info@craftsveda.in"
                 />
                 <input
                   type="hidden"
@@ -2796,7 +2798,7 @@
                     <span id="submitBtnLabel">Get Instant Quote</span>
                   </button>
                   <p class="unified-submit-note">
-                    ✓ Sends inquiry to studio inbox (vkzway2@gmail.com) & opens
+                    ✓ Sends inquiry to studio inbox (info@craftsveda.in) & opens
                     WhatsApp chat with our print team.
                   </p>
                 </div>
@@ -2866,7 +2868,7 @@
                   <a
                     href="tel:8840035249"
                     class="btn btn-outline-gold btn-sm quick-btn-call"
-                    aria-label="Call Us directly"
+                    aria-label="Call Now (+91 88400 35249)"
                   >
                     <svg
                       width="15"
@@ -2880,14 +2882,14 @@
                         d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
                       />
                     </svg>
-                    <span>Call Us</span>
+                    <span>Call Now (+91 88400 35249)</span>
                   </a>
                   <a
                     href="https://wa.me/918840035249?text=Hi%20CraftsVeda%2C%20I%20want%20to%20discuss%20a%20print%20project"
                     target="_blank"
                     rel="noopener noreferrer"
                     class="btn btn-whatsapp-direct btn-sm"
-                    aria-label="WhatsApp directly"
+                    aria-label="Chat on WhatsApp"
                   >
                     <svg
                       width="15"
@@ -2899,9 +2901,38 @@
                         d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.861.174.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.144.39-.086s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824z"
                       />
                     </svg>
-                    <span>WhatsApp</span>
+                    <span>Chat on WhatsApp</span>
                   </a>
                 </div>
+              </div>
+
+              <!-- Online Order & Live Tracking Line -->
+              <div class="portal-order-banner">
+                <span class="portal-order-banner-text">
+                  <span class="portal-order-sparkle" aria-hidden="true">✦</span>
+                  Order online and track it live
+                </span>
+                <a
+                  href="https://portal.craftsveda.in/new-order.html"
+                  class="portal-order-link-btn"
+                  id="quoteSectionPlaceOrderBtn"
+                >
+                  <span>Place an order</span>
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </a>
               </div>
             </div>
           </div>
@@ -2999,11 +3030,11 @@
                   <polyline points="22,6 12,13 2,6" />
                 </svg>
                 <a
-                  href="mailto:vkzway2@gmail.com"
-                  onclick="copyEmailToClipboard('vkzway2@gmail.com', event)"
+                  href="mailto:info@craftsveda.in"
+                  onclick="copyEmailToClipboard('info@craftsveda.in', event)"
                   title="Click to copy email"
                   style="cursor: copy"
-                  >vkzway2@gmail.com</a
+                  >info@craftsveda.in</a
                 >
               </div>
               <div class="fc-item">
@@ -3024,18 +3055,17 @@
           </div>
 
           <div class="footer-nav-col">
-            <h3 class="footer-heading">What We Print</h3>
+            <h3 class="footer-heading">Printing Services</h3>
             <ul class="footer-links">
-              <li>
-                <a href="#what-we-print">Business & Corporate Stationery</a>
-              </li>
-              <li><a href="#what-we-print">Marketing Materials</a></li>
-              <li><a href="#what-we-print">Packaging & Boxes</a></li>
-              <li><a href="#what-we-print">Labels & Stickers</a></li>
-              <li><a href="#what-we-print">Books & Publications</a></li>
-              <li><a href="#what-we-print">Wedding & Event Printing</a></li>
-              <li><a href="#what-we-print">Retail & POS Materials</a></li>
-              <li><a href="#what-we-print">Banners & Display Printing</a></li>
+              <li><a href="luxury-business-cards.html">Premium Business Cards</a></li>
+              <li><a href="packaging-boxes.html">Packaging & Rigid Boxes</a></li>
+              <li><a href="letterhead-printing.html">Corporate Letterheads</a></li>
+              <li><a href="brochure-printing.html">Brochures & Catalogs</a></li>
+              <li><a href="flyer-printing.html">Flyers & Pamphlets</a></li>
+              <li><a href="sticker-label-printing.html">Stickers & Labels</a></li>
+              <li><a href="envelope-printing.html">Corporate Envelopes</a></li>
+              <li><a href="paper-bag-printing.html">Luxury Paper Bags</a></li>
+              <li><a href="corporate-printing.html">Corporate Printing</a></li>
             </ul>
           </div>
 
@@ -3071,7 +3101,9 @@
                 >
               </li>
               <li><a href="#our-work">View Studio Portfolio</a></li>
-              <li><a href="#how-it-works">5-Step Printing Process</a></li>
+              <li><a href="luxury-business-cards.html">Premium Business Cards</a></li>
+              <li><a href="track.html">Track Order</a></li>
+              <li><a href="#how-it-works">5-Step Master Process</a></li>
               <li><a href="tel:8840035249">Call: +91 8840035249</a></li>
             </ul>
           </div>
@@ -3724,24 +3756,19 @@
 
           <!-- Checkout 2 Action Buttons -->
           <div class="modal-actions-group checkout-two-buttons">
-            <!-- Option 1: Advance Pay -->
-            <div class="checkout-option-block">
-              <button type="button" class="btn btn-gold btn-block btn-lg btn-advance-pay" id="btnAdvancePay">
-                <span id="btnAdvancePaySpinner" class="btn-spinner" style="display:none;"></span>
-                <span class="btn-advance-icon">⚡</span>
-                <span id="btnAdvancePayText">Pay 50% Advance via UPI</span>
-              </button>
-              <div class="checkout-option-hint advance-pay-hint">Pay 50% advance now via UPI for instant confirmation and priority production.</div>
-            </div>
+            <!-- Button 1: Advance Pay Karo -->
+            <button type="button" class="btn btn-gold btn-block btn-lg btn-advance-pay" id="btnAdvancePay">
+              <span id="btnAdvancePaySpinner" class="btn-spinner" style="display:none;"></span>
+              <span class="btn-advance-icon">⚡</span>
+              <span id="btnAdvancePayText">Advance Pay Karo (50%)</span>
+            </button>
 
-            <!-- Option 2: Place Order & Pay Later -->
-            <div class="checkout-option-block">
-              <button type="button" class="btn btn-outline-gold btn-block btn-skip-pay" id="btnSkipPay">
-                <span id="btnSkipPaySpinner" class="btn-spinner" style="display:none;"></span>
-                <span id="btnSkipPayText">Place Order & Pay Later</span>
-              </button>
-              <div class="checkout-option-hint skip-pay-hint">Place order without advance • Sales team will call you to confirm before printing.</div>
-            </div>
+            <!-- Button 2: Skip Payment, Order Place Karo -->
+            <button type="button" class="btn btn-outline-gold btn-block btn-skip-pay" id="btnSkipPay">
+              <span id="btnSkipPaySpinner" class="btn-spinner" style="display:none;"></span>
+              <span id="btnSkipPayText">Skip Payment, Order Place Karo</span>
+            </button>
+            <div class="skip-pay-hint">Sales team aapse phone par baat karegi • Order Pending rahega</div>
 
             <a href="https://wa.me/918840035249" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-block" id="modalDirectWaBtn">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -3806,30 +3833,13 @@
             </div>
           </div>
 
-          <!-- Required UTR / Transaction ID Input & "Maine Pay Kar Diya" button -->
+          <!-- Single-tap "Maine Pay Kar Diya" button -->
           <div class="payment-actions-wrap">
-            <div class="cv-modal-field utr-field-wrap">
-              <label for="paymentUtrInput" class="cv-field-label">Bank UTR / UPI Transaction ID (12 Digits) <span style="color:#ef4444;">*</span></label>
-              <input
-                type="text"
-                id="paymentUtrInput"
-                name="utr"
-                class="cv-field-input"
-                maxlength="12"
-                inputmode="numeric"
-                pattern="[0-9]{12}"
-                placeholder="Enter 12-digit UTR (e.g. 4289XXXXXXXX)"
-                required
-                autocomplete="off"
-              />
-              <div id="paymentUtrError" class="cv-field-error" style="display:none; color:#ef4444; font-size:0.8rem; margin-top:4px;">Please enter a valid 12-digit numeric UTR / Transaction ID.</div>
-              <div class="payment-utr-hint" style="font-size:0.75rem; color:var(--text-dim, #8c877b); margin-top:4px;">Payment complete karne ke baad apne UPI app (GPay/PhonePe/Paytm) se 12-digit UTR / UPI Ref number yahan darj karein.</div>
-            </div>
-
             <button type="button" class="btn btn-success btn-block btn-lg" id="btnMainePayKarDiya">
               <span id="btnMainePaySpinner" class="btn-spinner" style="display:none;"></span>
               <span id="btnMainePayText">Maine Pay Kar Diya ✓</span>
             </button>
+            <div class="payment-no-utr-hint">Sirf ek tap karein — koi UTR ya screenshot upload karne ki zaroorat nahi hai.</div>
           </div>
         </div>
 
@@ -3890,7 +3900,7 @@
       </div>
     </div>
 
-    <script src="qrcode.min.js"></script>
-    <script src="script.js?v=2.2" defer></script>
+    <script src="js/qrcode.min.js"></script>
+    <script src="js/script.js?v=2.2" defer></script>
   </body>
 </html>
